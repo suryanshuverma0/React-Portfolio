@@ -39,6 +39,7 @@ const ContactForm = () => {
         toast.error("Failed to send message. Please try again.");
       }
     } catch (error) {
+      console.error("Failed to send message. Please try again", error);
       toast.error("An error occurred. Please try again.");
     } finally {
       setIsSubmitting(false); // Re-enable the button after the process finishes

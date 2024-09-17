@@ -7,9 +7,10 @@ export const projects_data = [
     project_image: pixel_studio_img,
     description:
       "Pixel Studio is an interactive web application for creating pixel art and freehand drawings. It features secure user authentication, a user-friendly pixel art editor, and a versatile HTML canvas with a color picker for drawing. Developed for a computer graphics course, it showcases creative digital art tools in a streamlined platform.",
-    technology_used: ["React", "Firebase"],
+    technology_used: ["React", "Firebase" , "Tailwind"],
     github_link: "https://github.com/suryanshuverma0/pixel-studio",
     is_deployed: true,
+    deployment_url: "https://pixelstudio-2e0bd.web.app/",
   },
   {
     id: 2,
@@ -18,8 +19,9 @@ export const projects_data = [
 
     description:
       "NoteMaina is a simple note taking platform build using React library for frontend and Firebase for backend, Authentication, Database and Hosting. Note can be save as PDF for further use.",
-    technology_used: ["React", "Firebase"],
+    technology_used: ["React", "Firebase", "Tailwind"],
     github_link: "https://note-taking-application-f1180.web.app/notes",
     is_deployed: true,
+    deployment_url: "https://note-taking-application-f1180.web.app/notes",
   },
 ];

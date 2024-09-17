@@ -3,8 +3,13 @@ import fav from "../assets/fav.jpg";
 import { FaLinkedin } from "react-icons/fa";
 import { FaGithub } from "react-icons/fa";
 import { FaSquareXTwitter } from "react-icons/fa6";
-
 const Home = () => {
+  const handleDownload = () => {
+    const link = document.createElement('a');
+    link.href = '../../public/cv.pdf'; 
+    link.download = 'Suryanshu_Verma_CV.pdf'; 
+    link.click(); 
+  };
   return (
     <>
       <div className="flex flex-col items-center gap-6 text-black dark:text-white ">
@@ -50,9 +55,10 @@ const Home = () => {
 
         <div className="p-2">
           <button
+          onClick={handleDownload}
             className={`px-4 py-2 bg-transparent border-black hover:bg-black hover:text-white dark:hover:bg-white dark:text-white dark:hover:text-black transition-colors border dark:border-white rounded:md cursor-pointer`}
           >
-            Contact Me
+            Download Resume
           </button>
         </div>
       </div>

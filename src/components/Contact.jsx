@@ -14,7 +14,7 @@ const Contact = () => {
           <ContactForm />
         </div>
 
-        <div className="flex items-center flex-col gap-3 bg-white text-black dark:bg-neutral-900 rounded-2xl w-[80%] m-4">
+        <div className="flex items-center flex-col gap-3 bg-white text-black dark:bg-neutral-900 rounded-2xl w-[90%] m-4">
           <div className="text-black dark:text-white text-lg">
             <p>Let&apos;s Collaborate!</p>
           </div>
