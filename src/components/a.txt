@@ -1,0 +1,2 @@
+text-black dark:text-white bg-gray-100 dark:bg-neutral-800 px-4 py-2 text-center mx-4 my-2 rounded-lg border border-neutral-700 shadow-sm placeholder:text-gray-500" placeholder="Enter your name" />
+          <input type="email" className="text-black dark:text-white bg-gray-100 dark:bg-neutral-800 px-4 py-2 text-center mx-4 my-2 rounded-lg border border-neutral-700 shadow-sm placeholder:text-gray-500
