@@ -9,15 +9,15 @@ const About = () => {
           <p>
             I&apos;m <strong>Suryanshu Verma</strong>, a Computer Engineering
             student at Advanced College of Engineering and Management. I&apos;ve
-            explored the <b>MERN stack</b>, focusing on <b>React</b> and{" "}
-            <b>Node.js</b>, and have a strong foundation in <b>C</b>, <b>C++</b>
-            , and <b>Python</b>.
+            explored the <b>MERN stack</b>, focusing on <b>React</b> and 
+             <b> Node.js</b>, and have a strong foundation in <b>C</b>, <b>C++</b>
+            , and
+            <b>Python</b>.
           </p>
           <p>
-            I&apos;m now excited to dive into mobile app development with{" "}
-            <b>React Native</b> and continue building efficient, scalable
-            applications. Let&apos;s connect and create something great
-            together!
+            I&apos;m currently deepening my knowledge of the <b>MERN stack</b>{" "}
+            and continue building efficient, scalable applications. Let&apos;s
+            connect and create something great together!
           </p>
         </div>
         <TitleComponent title="Education" />

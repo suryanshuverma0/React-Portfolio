@@ -1,5 +1,5 @@
 import App from "../App";
-import ProjectDetailPage from "../pages/ProjectDetailPage";
+import ProjectDetailPage from "../pagex/ProjectDetailPage";
 import { BrowserRouter as Router , Routes , Route } from "react-router-dom"
 const ProjectRoute = () => {
   return (
