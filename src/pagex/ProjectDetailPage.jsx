@@ -9,7 +9,7 @@ const ProjectDetailPage = () => {
         <div>
           <TitleComponent title="Project Detail" />
         </div>
-        <div className="grid grid-cols-1 md:grid-cols-1 lg:grid-cols-1 gap-24 w-4/5 md:w-1/2 lg:w-[60%] p-5">
+        <div className="grid grid-cols-1 md:grid-cols-1 lg:grid-cols-1 gap-24 w-full md:w-1/2 lg:w-[60%] p-5">
           {projects_data &&
             projects_data.map((data) => (
               <div key={data.name}>
