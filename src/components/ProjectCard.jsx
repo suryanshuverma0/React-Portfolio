@@ -11,20 +11,20 @@ const ProjectCard = ({ data }) => {
   };
   return (
     <>
-      <div className="flex flex-col gap-4 bg-gray-200 justify-center items-center dark:bg-neutral-800 text-black dark:text-white rounded-xl shadow-lg dark:shadow-glow p-4">
-        <div className="">
+      <div className="flex flex-col gap-4 bg-gray-200 dark:bg-neutral-800 text-neutral-800 dark:text-gray-200 rounded-xl shadow-lg dark:shadow-glow p-4 max-h-[1000px] h-full w-full md:w-full lg:w-9/10">
+        <div className="flex flex-col justify-center items-center">
           <img
             src={data?.project_image}
-            className="w-auto h-48 md:h-56 "
+            className="w-auto h-48 md:h-56 lg:h-72 "
             alt="pixel studio"
           />
         </div>
         <div className="flex flex-col justify-center items-center gap-2">
           <h1 className=" text-xl md:text-2xl font-bold">{data?.name}</h1>
-          <p className="text-md md:text-lg">{data?.description}</p>
+          <p className="text-md md:text-lg text-center">{data?.description}</p>
          <div className="flex gap-4">
          {data?.technology_used.map((tech)=>(
-            <p key={data?.tech}>{techIcons[tech]}</p>
+            <p key={data?.id}>{techIcons[tech]}</p>
           ))}
          </div>
         </div>

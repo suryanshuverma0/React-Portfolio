@@ -1,7 +1,3 @@
-// 
-
-
-
 import { useRef } from "react";
 import Navbar from "./components/Navbar";
 import Home from "./components/Home";
@@ -11,6 +7,8 @@ import Services from "./components/Services";
 import Projects from "./components/Projects";
 import Contact from "./components/Contact";
 import Footer from "./components/Footer";
+import Certificate from "./components/Certificate";
+import TitleComponent from "./components/TitleComponent";
 
 function App() {
   const homeRef = useRef(null);
@@ -19,6 +17,7 @@ function App() {
   const servicesRef = useRef(null);
   const projectsRef = useRef(null);
   const contactRef = useRef(null);
+  const certificateRef = useRef(null);
 
   return (
     <div className="bg-gray-200 dark:bg-neutral-950 w-full min-h-screen">
@@ -30,6 +29,7 @@ function App() {
           servicesRef={servicesRef}
           projectsRef={projectsRef}
           contactRef={contactRef}
+          certificateRef={certificateRef}
         />
       </header>
       <section className="pt-12" ref={homeRef}>
@@ -49,6 +49,14 @@ function App() {
       </section>
       <section className="pt-2" ref={projectsRef}>
         <Projects />
+      </section>
+      <section className="flex justify-center items-center flex-col">
+        <div>
+          <TitleComponent title="Certificates" />
+        </div>
+        <div>
+          <Certificate />
+        </div>
       </section>
       <section className="pt-2" ref={contactRef}>
         <Contact />
