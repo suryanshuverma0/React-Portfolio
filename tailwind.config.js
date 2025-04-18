@@ -10,6 +10,16 @@ export default {
       boxShadow: {
         glow: '0 0 15px 5px rgba(255, 255, 255, 0.2)', 
       },
+      keyframes: {
+        progress: {
+          '0%': { transform: 'translateX(-100%)' },
+          '50%': { transform: 'translateX(50%)' },
+          '100%': { transform: 'translateX(100%)' },
+        }
+      },
+      animation: {
+        'progress': 'progress 2s ease-in-out',
+      }
     },
   },
   plugins: [],

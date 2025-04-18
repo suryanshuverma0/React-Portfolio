@@ -1,6 +1,8 @@
 import ProjectCard from '../components/ProjectCard'
 import TitleComponent from '../components/TitleComponent'
-import { projects_data } from '../constants/projects'
+import { projects_data } from '../constants/projects';
+import SocialMedia from '../components/SocialMedia';
+import Footer from "../components/Footer"
 const ProjectDetailPage = () => {
   return (
     <>
@@ -18,6 +20,20 @@ const ProjectDetailPage = () => {
             ))}
         </div>
       </div>
+
+    <div className='flex justify-center items-center m-8'>
+    <div className="flex items-center flex-col gap-5 bg-gray-200 text-gray-800 dark:bg-neutral-900 rounded-2xl max-w-xl shadow-lg  dark:shadow-glow w-4/5 md:w-full lg:w-full">
+          <div className="text-black dark:text-white text-lg">
+            <p className="text-2xl pt-4 font-semibold">Connect With Me!</p>
+          </div>
+          <div className="py-4 pb-5 bg-gray-200 dark:bg-neutral-900 ">
+          <SocialMedia />
+          </div>
+        </div>
+    </div>
+    <div>
+            <Footer/>
+    </div>
     </div>
     </>
   )

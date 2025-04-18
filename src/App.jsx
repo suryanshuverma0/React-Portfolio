@@ -1,4 +1,4 @@
-import { useRef } from "react";
+import { useRef, useState, useEffect } from "react";
 import Navbar from "./components/Navbar";
 import Home from "./components/Home";
 import About from "./components/About";
@@ -9,8 +9,12 @@ import Contact from "./components/Contact";
 import Footer from "./components/Footer";
 import Certificate from "./components/Certificate";
 import TitleComponent from "./components/TitleComponent";
+import Loading from "./components/Loading";
 
 function App() {
+  const [isLoading, setIsLoading] = useState(true);
+
+
   const homeRef = useRef(null);
   const aboutRef = useRef(null);
   const skillsRef = useRef(null);
@@ -18,6 +22,18 @@ function App() {
   const projectsRef = useRef(null);
   const contactRef = useRef(null);
   const certificateRef = useRef(null);
+
+  useEffect(() => {
+    const timer = setTimeout(() => {
+      setIsLoading(false);
+    }, 2000);
+
+    return () => clearTimeout(timer);
+  }, []);
+
+  if (isLoading) {
+    return <Loading />;
+  }
 
   return (
     <div className="bg-gray-200 dark:bg-neutral-950 w-full min-h-screen">

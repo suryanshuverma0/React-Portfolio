@@ -2,12 +2,14 @@ import PropTypes from "prop-types";
 import { IoLogoFirebase } from "react-icons/io5";
 import { RiTailwindCssFill } from "react-icons/ri";
 import { FaReact } from "react-icons/fa";
+import { FaPython } from "react-icons/fa";
 
 const ProjectCard = ({ data }) => {
   const techIcons = {
     Firebase: <IoLogoFirebase className="text-[#FFCA28] text-3xl md:text-3xl" />,
     Tailwind: <RiTailwindCssFill className="text-blue-300 text-3xl md:text-3xl" />,
     React: <FaReact className="text-blue-400 text-3xl md:text-3xl" />,
+    Python: <FaPython className="text-yellow-400 text-3xl md:text-3xl" />,
   };
   return (
     <>

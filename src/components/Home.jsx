@@ -4,7 +4,7 @@ import { FaLinkedin } from "react-icons/fa";
 import { FaGithub } from "react-icons/fa";
 import { FaSquareXTwitter } from "react-icons/fa6";
 import Typewriter from 'typewriter-effect';
-
+// import merofav from "../assets/merofav.png"
 const Home = () => {
   const handleDownload = () => {
     const link = document.createElement("a");
@@ -19,7 +19,8 @@ const Home = () => {
         <div className="overflow-hidden rounded-full hover:scale-105 transition-transform duration-700">
           {/* <img className="" src={main} alt="image"/> */}
           <img
-            className="rounded-full w-56 h-56 object-cover  shadow-md"
+            className="
+            rounded-full w-56 h-56 object-cover  shadow-md"
             src={fav}
             alt="image"
           />

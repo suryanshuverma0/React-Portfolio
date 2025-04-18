@@ -1,9 +1,24 @@
 import pixel_studio_img from "../assets/pixel_studio.png";
 import note from "../assets/note.png";
 import library_management from "../assets/library_management.png";
+import pneumoniaImg from "../assets/pneumonia.jpg";
+import interview from "../assets/interview.png"
+
 export const projects_data = [
   {
     id: 1,
+    name: "Pneumonia Detection System using Deep Learning Techniaues",
+    project_image: pneumoniaImg,
+
+    description:
+      "Developed an AI-powered Pneumonia Detection System using CNN and ResNet-101V2 to classify X-ray images as 'Pneumonia' or 'Normal' with probability scores. Implemented Grad-CAM visualization for explainability, enhancing medical diagnosis. Optimized model performance through data augmentation, regularization, and evaluation metrics to improve accuracy and prevent overfitting.",
+      technology_used: ["Python"],
+    github_link: "https://github.com/suryanshuverma0/PneumoniaDetectionSystem",
+    is_deployed: false,
+   
+  },
+  {
+    id: 2,
     name: "Pixel Studio",
     project_image: pixel_studio_img,
     description:
@@ -14,7 +29,7 @@ export const projects_data = [
     deployment_url: "https://pixelstudio-2e0bd.web.app/",
   },
   {
-    id: 2,
+    id: 3,
     name: "NoteMania",
     project_image: note,
 
@@ -26,7 +41,20 @@ export const projects_data = [
     deployment_url: "https://note-taking-application-f1180.web.app/notes",
   },
   {
-    id: 3,
+    id: 4,
+    name: "AI Interview Mocker",
+    project_image: interview,
+
+    description:
+      "This project helps users prepare for interviews by entering their desired job title and description. The AI generates customized interview questions and provides feedback on answers, including corrections and suggestions for improvement.",
+    technology_used: ["React"],
+    github_link: "https://github.com/suryanshuverma0/Library-Management-System",
+    is_deployed: true,
+    deployment_url: "https://ai-interview-moker.vercel.app/"
+   
+  },
+  {
+    id: 5,
     name: "Library Management System",
     project_image: library_management,
 
@@ -36,5 +64,6 @@ export const projects_data = [
     github_link: "https://github.com/suryanshuverma0/Library-Management-System",
     is_deployed: false,
    
-  },
+  }
+  
 ];
