@@ -3,7 +3,7 @@ import note from "../assets/note.png";
 import library_management from "../assets/library_management.png";
 import pneumoniaImg from "../assets/pneumonia.jpg";
 import interview from "../assets/interview.png"
-
+import InstantDomainChecker from "../assets/instant-domain-checker.png"
 export const projects_data = [
   {
     id: 1,
@@ -63,6 +63,19 @@ export const projects_data = [
     technology_used: ["C++"],
     github_link: "https://github.com/suryanshuverma0/Library-Management-System",
     is_deployed: false,
+   
+  },
+  {
+    id: 6,
+    name: "Instant Domain Checker",
+    project_image: InstantDomainChecker,
+
+    description:
+      "A simple and fast tool built with the MERN stack to check domain name availability in real-time. Designed for entrepreneurs, developers, and creatives looking to secure the perfect domain for their next big idea.",
+    technology_used: ["React", "Node"],
+    github_link: "https://github.com/suryanshuverma0/instant-domain-checker/tree/main/instant-domain-checker",
+    is_deployed: true,
+    deployment_url: "https://instant-domain-checker.vercel.app/"
    
   }
   

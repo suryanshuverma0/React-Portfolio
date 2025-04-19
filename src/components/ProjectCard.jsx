@@ -3,6 +3,7 @@ import { IoLogoFirebase } from "react-icons/io5";
 import { RiTailwindCssFill } from "react-icons/ri";
 import { FaReact } from "react-icons/fa";
 import { FaPython } from "react-icons/fa";
+import { FaNodeJs } from "react-icons/fa";
 
 const ProjectCard = ({ data }) => {
   const techIcons = {
@@ -10,6 +11,7 @@ const ProjectCard = ({ data }) => {
     Tailwind: <RiTailwindCssFill className="text-blue-300 text-3xl md:text-3xl" />,
     React: <FaReact className="text-blue-400 text-3xl md:text-3xl" />,
     Python: <FaPython className="text-yellow-400 text-3xl md:text-3xl" />,
+    Node: <FaNodeJs className="text-green-500 text-3xl md:text-3xl" />,
   };
   return (
     <>
