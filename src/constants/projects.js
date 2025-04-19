@@ -3,7 +3,7 @@ import note from "../assets/note.png";
 import library_management from "../assets/library_management.png";
 import pneumoniaImg from "../assets/pneumonia.jpg";
 import interview from "../assets/interview.png"
-import InstantDomainChecker from "../assets/instant-domain-checker.png"
+import InstantDomainChecker from "../assets/instant_domain_checker.png"
 export const projects_data = [
   {
     id: 1,
