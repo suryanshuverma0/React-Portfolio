@@ -22,25 +22,56 @@ const BlogPostDetail = () => {
   const [nextPost, setNextPost] = useState(null);
   const currentUrl = window.location.href;
 
-const components = {
-  types: {
-    image: ({ value }) => (
-      <img
-        src={urlFor(value).width(800).url()}
-        alt={value.alt || "Blog image"}
-        className="rounded-xl my-8 mx-auto"
-      />
+  const components = {
+    types: {
+      image: ({ value }) => (
+        <img
+          src={urlFor(value).width(800).url()}
+          alt={value.alt || "Blog image"}
+          className="rounded-xl my-8 mx-auto"
+        />
+      ),
+    },
+    block: {
+      normal: ({ children }) => <p>{children}</p>,
+      h1: ({ children }) => (
+        <h1 className="text-3xl font-bold my-4">{children}</h1>
+      ),
+      h2: ({ children }) => (
+        <h2 className="text-2xl font-semibold my-4">{children}</h2>
+      ),
+      h3: ({ children }) => (
+        <h3 className="text-xl font-semibold my-4">{children}</h3>
+      ),
+      blockquote: ({ children }) => (
+        <blockquote className="border-l-4 pl-4 italic my-4">
+          {children}
+        </blockquote>
+      ),
+      // ✅ ADD A DEFAULT/FALLBACK RENDERER
+      _: ({ children }) => <p>{children}</p>,
+    },
+    marks: {
+      strong: ({ children }) => <strong>{children}</strong>,
+      em: ({ children }) => <em>{children}</em>,
+      link: ({ value, children }) => (
+        <a
+          href={value.href}
+          className="text-blue-500 underline"
+          target="_blank"
+          rel="noopener noreferrer"
+        >
+          {children}
+        </a>
+      ),
+    },
+    list: ({ children }) => <ul className="list-disc pl-5">{children}</ul>,
+    listItem: ({ children }) => <li className="my-2">{children}</li>,
+    code: ({ value }) => (
+      <code className="bg-gray-200 p-1 rounded">{value}</code>
     ),
-  },
-  block: {
-    normal: ({ children }) => <p>{children}</p>,
-    h1: ({ children }) => <h1 className="text-3xl font-bold my-4">{children}</h1>,
-    h2: ({ children }) => <h2 className="text-2xl font-semibold my-4">{children}</h2>,
-    h3: ({ children }) => <h3 className="text-xl font-semibold my-4">{children}</h3>,
-    blockquote: ({ children }) => <blockquote className="border-l-4 pl-4 italic my-4">{children}</blockquote>,
-  },
-};
-
+    // Add more custom components as needed
+  };
 
   useEffect(() => {
     client
@@ -122,8 +153,11 @@ const components = {
         </div>
 
         {/* Blog Post Body */}
-          <PortableText  className="prose prose-neutral dark:prose-invert max-w-none" value={post.body} components={components} />
-        
+        <PortableText
+          className="prose prose-neutral dark:prose-invert max-w-none"
+          value={post.body}
+          components={components}
+        />
 
         {/* Author Bio Box */}
         {post.author?.bio && (
@@ -137,10 +171,13 @@ const components = {
             )}
             <div>
               <h3 className="text-lg font-semibold mb-1">{post.author.name}</h3>
-              
-                {/* {post.author.bio} */}
-                <PortableText className="text-gray-600 dark:text-gray-400 text-sm" value={post.author.bio} components={components} />
-              
+
+              {/* {post.author.bio} */}
+              <PortableText
+                className="text-gray-600 dark:text-gray-400 text-sm"
+                value={post.author.bio}
+                components={components}
+              />
             </div>
           </div>
         )}
