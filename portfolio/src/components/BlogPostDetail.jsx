@@ -73,6 +73,20 @@ const BlogPostDetail = () => {
     // Add more custom components as needed
   };
 
+  // Utility function to extract plain text from Sanity Portable Text
+const extractPlainText = (blocks) => {
+  return blocks
+    ?.map((block) => {
+      if (block._type === "block" && Array.isArray(block.children)) {
+        return block.children.map((child) => child.text).join("");
+      }
+      return "";
+    })
+    .join(" ")
+    .trim();
+};
+
+
   useEffect(() => {
     client
       .fetch(
@@ -110,12 +124,13 @@ const BlogPostDetail = () => {
   return (
     <>
       <Helmet>
-        <title>{post.title} | Blog</title>
-        <meta
-          name="description"
-          content={post.body[0]?.children[0]?.text?.slice(0, 150)}
-        />
-      </Helmet>
+  <title>{post.title} | Blog</title>
+  <meta
+    name="description"
+    content={extractPlainText(post.body).slice(0, 150)}
+  />
+</Helmet>
+
 
       <div
         // initial={{ opacity: 0, y: 20 }}
