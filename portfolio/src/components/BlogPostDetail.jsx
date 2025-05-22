@@ -22,17 +22,25 @@ const BlogPostDetail = () => {
   const [nextPost, setNextPost] = useState(null);
   const currentUrl = window.location.href;
 
-  const components = {
-    types: {
-      image: ({ value }) => (
-        <img
-          src={urlFor(value).width(800).url()}
-          alt={value.alt || "Blog image"}
-          className="rounded-xl my-8 mx-auto"
-        />
-      ),
-    },
-  };
+const components = {
+  types: {
+    image: ({ value }) => (
+      <img
+        src={urlFor(value).width(800).url()}
+        alt={value.alt || "Blog image"}
+        className="rounded-xl my-8 mx-auto"
+      />
+    ),
+  },
+  block: {
+    normal: ({ children }) => <p>{children}</p>,
+    h1: ({ children }) => <h1 className="text-3xl font-bold my-4">{children}</h1>,
+    h2: ({ children }) => <h2 className="text-2xl font-semibold my-4">{children}</h2>,
+    h3: ({ children }) => <h3 className="text-xl font-semibold my-4">{children}</h3>,
+    blockquote: ({ children }) => <blockquote className="border-l-4 pl-4 italic my-4">{children}</blockquote>,
+  },
+};
+
 
   useEffect(() => {
     client
