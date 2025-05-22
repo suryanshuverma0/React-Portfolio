@@ -3,7 +3,6 @@ import { useParams, Link } from "react-router-dom";
 import { client, urlFor } from "../sanity";
 import { PortableText } from "@portabletext/react";
 import { Helmet } from "react-helmet";
-// import { motion } from 'framer-motion';
 import {
   FacebookShareButton,
   TwitterShareButton,
@@ -22,15 +21,19 @@ const BlogPostDetail = () => {
   const [nextPost, setNextPost] = useState(null);
   const currentUrl = window.location.href;
 
+  // PortableText custom components
   const components = {
     types: {
-      image: ({ value }) => (
-        <img
-          src={urlFor(value).width(800).url()}
-          alt={value.alt || "Blog image"}
-          className="rounded-xl my-8 mx-auto"
-        />
-      ),
+      image: ({ value }) => {
+        if (!value || !value.asset) return null; // Defensive
+        return (
+          <img
+            src={urlFor(value).width(800).url()}
+            alt={value.alt || "Blog image"}
+            className="rounded-xl my-8 mx-auto"
+          />
+        );
+      },
     },
     block: {
       normal: ({ children }) => <p>{children}</p>,
@@ -44,11 +47,8 @@ const BlogPostDetail = () => {
         <h3 className="text-xl font-semibold my-4">{children}</h3>
       ),
       blockquote: ({ children }) => (
-        <blockquote className="border-l-4 pl-4 italic my-4">
-          {children}
-        </blockquote>
+        <blockquote className="border-l-4 pl-4 italic my-4">{children}</blockquote>
       ),
-      // ✅ ADD A DEFAULT/FALLBACK RENDERER
       _: ({ children }) => <p>{children}</p>,
     },
     marks: {
@@ -56,7 +56,7 @@ const BlogPostDetail = () => {
       em: ({ children }) => <em>{children}</em>,
       link: ({ value, children }) => (
         <a
-          href={value.href}
+          href={value?.href || "#"}
           className="text-blue-500 underline"
           target="_blank"
           rel="noopener noreferrer"
@@ -70,24 +70,25 @@ const BlogPostDetail = () => {
     code: ({ value }) => (
       <code className="bg-gray-200 p-1 rounded">{value}</code>
     ),
-    // Add more custom components as needed
   };
 
-  // Utility function to extract plain text from Sanity Portable Text
-const extractPlainText = (blocks) => {
-  return blocks
-    ?.map((block) => {
-      if (block._type === "block" && Array.isArray(block.children)) {
-        return block.children.map((child) => child.text).join("");
-      }
-      return "";
-    })
-    .join(" ")
-    .trim();
-};
-
+  // Extract plain text for meta description
+  const extractPlainText = (blocks) => {
+    if (!blocks) return "";
+    return blocks
+      .map((block) => {
+        if (block._type === "block" && Array.isArray(block.children)) {
+          return block.children.map((child) => child.text).join("");
+        }
+        return "";
+      })
+      .join(" ")
+      .trim();
+  };
 
   useEffect(() => {
+    if (!slug) return;
+
     client
       .fetch(
         `*[_type == "post" && slug.current == $slug][0]{
@@ -107,10 +108,13 @@ const extractPlainText = (blocks) => {
       )
       .then((data) => {
         setPost(data);
-        setPrevPost(data.prev);
-        setNextPost(data.next);
+        setPrevPost(data?.prev || null);
+        setNextPost(data?.next || null);
       })
-      .catch(console.error);
+      .catch((error) => {
+        console.error("Sanity fetch error:", error);
+        setPost(null);
+      });
   }, [slug]);
 
   if (!post) {
@@ -124,20 +128,14 @@ const extractPlainText = (blocks) => {
   return (
     <>
       <Helmet>
-  <title>{post.title} | Blog</title>
-  <meta
-    name="description"
-    content={extractPlainText(post.body).slice(0, 150)}
-  />
-</Helmet>
+        <title>{post.title} | Blog</title>
+        <meta
+          name="description"
+          content={extractPlainText(post.body).slice(0, 150)}
+        />
+      </Helmet>
 
-
-      <div
-        // initial={{ opacity: 0, y: 20 }}
-        // animate={{ opacity: 1, y: 0 }}
-        // transition={{ duration: 0.5 }}
-        className="bg-slate-200 dark:bg-neutral-900 min-h-screen p-4 sm:p-6 md:p-10 text-gray-800 dark:text-gray-200 max-w-full mx-auto"
-      >
+      <div className="bg-slate-200 dark:bg-neutral-900 min-h-screen p-4 sm:p-6 md:p-10 text-gray-800 dark:text-gray-200 max-w-full mx-auto">
         <Link
           to="/blog"
           className="bg-blue-500 dark:bg-blue-600 hover:bg-blue-700 mb-6 px-4 py-2 rounded-lg inline-block text-white dark:text-gray-100 transition-colors duration-300 cursor-pointer"
@@ -145,9 +143,9 @@ const extractPlainText = (blocks) => {
           ← Back to Blog
         </Link>
 
-        {post.mainImage && (
+        {post.mainImage && post.mainImage.asset && (
           <img
-            src={urlFor(post.mainImage).url()}
+            src={urlFor(post.mainImage).width(1200).url()}
             alt={post.title}
             className="rounded-xl mb-8 w-full max-h-[500px] object-cover shadow-lg"
           />
@@ -159,25 +157,30 @@ const extractPlainText = (blocks) => {
 
         <div className="text-sm text-gray-600 dark:text-gray-400 mb-10 flex flex-wrap items-center gap-4">
           <span>
-            By <span className="font-semibold">{post.author?.name}</span>
+            By <span className="font-semibold">{post.author?.name || "Unknown"}</span>
           </span>
           <span>•</span>
           <span>{new Date(post.publishedAt).toDateString()}</span>
           <span>•</span>
-          <span>{Math.ceil(post.body.length / 200)} min read</span>
+          <span>
+            {post.body
+              ? Math.ceil(
+                  post.body
+                    .map((block) => block.children?.reduce((acc, c) => acc + c.text.length, 0) || 0)
+                    .reduce((a, b) => a + b, 0) / 200
+                )
+              : 1}{" "}
+            min read
+          </span>
         </div>
 
         {/* Blog Post Body */}
-        <PortableText
-          className="prose prose-neutral dark:prose-invert max-w-none"
-          value={post.body}
-          components={components}
-        />
+        <PortableText value={post.body} components={components} />
 
         {/* Author Bio Box */}
         {post.author?.bio && (
           <div className="mt-16 flex items-start gap-4 border-t pt-10">
-            {post.author?.image && (
+            {post.author?.image && post.author.image.asset && (
               <img
                 src={urlFor(post.author.image).width(80).height(80).url()}
                 alt={post.author.name}
@@ -186,8 +189,6 @@ const extractPlainText = (blocks) => {
             )}
             <div>
               <h3 className="text-lg font-semibold mb-1">{post.author.name}</h3>
-
-              {/* {post.author.bio} */}
               <PortableText
                 className="text-gray-600 dark:text-gray-400 text-sm"
                 value={post.author.bio}
