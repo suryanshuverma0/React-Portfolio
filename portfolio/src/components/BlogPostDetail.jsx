@@ -113,9 +113,9 @@ const BlogPostDetail = () => {
           <span>{Math.ceil(post.body.length / 200)} min read</span>
         </div>
 
-        <article className="prose prose-neutral dark:prose-invert max-w-none">
-          <PortableText value={post.body} components={components} />
-        </article>
+        {/* Blog Post Body */}
+          <PortableText  className="prose prose-neutral dark:prose-invert max-w-none" value={post.body} components={components} />
+        
 
         {/* Author Bio Box */}
         {post.author?.bio && (
@@ -129,10 +129,10 @@ const BlogPostDetail = () => {
             )}
             <div>
               <h3 className="text-lg font-semibold mb-1">{post.author.name}</h3>
-              <p className="text-gray-600 dark:text-gray-400 text-sm">
+              
                 {/* {post.author.bio} */}
-                <PortableText value={post.author.bio} components={components} />
-              </p>
+                <PortableText className="text-gray-600 dark:text-gray-400 text-sm" value={post.author.bio} components={components} />
+              
             </div>
           </div>
         )}
