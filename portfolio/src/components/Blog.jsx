@@ -26,7 +26,7 @@ const Blog = () => {
   }, []);
 
   return (
-    <div className="bg-white dark:bg-neutral-900 min-h-screen py-10 px-4 sm:px-8 lg:px-16 text-gray-900 dark:text-gray-100 transition-colors">
+    <div className="bg-white dark:bg-neutral-900 min-h-screen py-10 px-4 sm:px-8 lg:px-16 text-gray-900 dark:text-gray-100">
       <div className="flex items-center justify-between mb-10">
         <h1 className="text-4xl font-bold tracking-tight">My Blog</h1>
         <button onClick={handleToggle} className="text-2xl">

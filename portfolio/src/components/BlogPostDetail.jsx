@@ -86,7 +86,7 @@ const BlogPostDetail = () => {
       >
         <Link
           to="/blog"
-          className="text-blue-600 dark:text-blue-400 underline mb-6 inline-block"
+          className="bg-blue-500 dark:bg-blue-600 hover:bg-blue-700 mb-6 px-4 py-2 rounded-lg inline-block text-white dark:text-gray-100 transition-colors duration-300 cursor-pointer"
         >
           ← Back to Blog
         </Link>
@@ -130,7 +130,8 @@ const BlogPostDetail = () => {
             <div>
               <h3 className="text-lg font-semibold mb-1">{post.author.name}</h3>
               <p className="text-gray-600 dark:text-gray-400 text-sm">
-                {post.author.bio}
+                {/* {post.author.bio} */}
+                <PortableText value={post.author.bio} components={components} />
               </p>
             </div>
           </div>
