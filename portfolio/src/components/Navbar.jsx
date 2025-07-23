@@ -127,6 +127,7 @@ import { navList } from "../constants/constant";
 const Navbar = ({
   homeRef,
   aboutRef,
+  experienceRef,
   skillsRef,
   servicesRef,
   projectsRef,
@@ -143,6 +144,7 @@ const Navbar = ({
     const refMap = {
       Home: homeRef,
       About: aboutRef,
+      Experience: experienceRef,
       Skills: skillsRef,
       Services: servicesRef,
       Projects: projectsRef,
@@ -230,6 +232,7 @@ const Navbar = ({
 
 Navbar.propTypes = {
   homeRef: PropTypes.shape({ current: PropTypes.instanceOf(Element) }),
+  experienceRef: PropTypes.shape({ current: PropTypes.instanceOf(Element) }),
   aboutRef: PropTypes.shape({ current: PropTypes.instanceOf(Element) }),
   skillsRef: PropTypes.shape({ current: PropTypes.instanceOf(Element) }),
   servicesRef: PropTypes.shape({ current: PropTypes.instanceOf(Element) }),
