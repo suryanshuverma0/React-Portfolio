@@ -2,6 +2,7 @@ import { useRef, useState, useEffect } from "react";
 import Navbar from "./components/Navbar";
 import Home from "./components/Home";
 import About from "./components/About";
+import Experience from "./components/Experience";
 import Skills from "./components/Skills";
 import Services from "./components/Services";
 import Projects from "./components/Projects";
@@ -10,13 +11,13 @@ import Footer from "./components/Footer";
 import Certificate from "./components/Certificate";
 import TitleComponent from "./components/TitleComponent";
 import Loading from "./components/Loading";
-
 function App() {
   const [isLoading, setIsLoading] = useState(true);
 
 
   const homeRef = useRef(null);
   const aboutRef = useRef(null);
+  const experienceRef = useRef(null);
   const skillsRef = useRef(null);
   const servicesRef = useRef(null);
   const projectsRef = useRef(null);
@@ -46,6 +47,7 @@ function App() {
           projectsRef={projectsRef}
           contactRef={contactRef}
           certificateRef={certificateRef}
+          experienceRef={experienceRef}
         />
       </header>
       <section className="pt-12" ref={homeRef}>
@@ -56,6 +58,9 @@ function App() {
       </div>
       <section className="pt-2" ref={aboutRef}>
         <About />
+      </section>
+      <section className="pt-2" ref={experienceRef}>
+        <Experience />
       </section>
       <section className="pt-2" ref={skillsRef}>
         <Skills />

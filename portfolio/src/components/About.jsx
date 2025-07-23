@@ -35,7 +35,7 @@ const About = () => {
 "
           />
         </div>
-        <div>
+        <div className="w-3/4 md:w-1/2 lg:w-1/2 p-6">
           <BlogCard />
         </div>
       </div>

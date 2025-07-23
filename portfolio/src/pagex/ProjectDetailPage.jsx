@@ -4,6 +4,8 @@ import { projects_data } from "../constants/projects";
 import SocialMedia from "../components/SocialMedia";
 import Footer from "../components/Footer";
 import BlogCard from "../components/BlogCard";
+import { Link } from "react-router-dom";
+
 const ProjectDetailPage = () => {
   return (
     <>
@@ -13,10 +15,23 @@ const ProjectDetailPage = () => {
             <TitleComponent title="Project Detail" />
           </div>
           <div className="grid grid-cols-1 md:grid-cols-1 lg:grid-cols-1 gap-24 w-full md:w-1/2 lg:w-[60%] p-5">
+            {/* {projects_data &&
+              projects_data.map((data) => (
+                <div key={data.id}>
+                  <ProjectCard data={data} />
+                </div>
+              ))} */}
+
             {projects_data &&
               projects_data.map((data) => (
-                <div key={data.name}>
-                  <ProjectCard data={data} />
+                <div key={data.id}>
+                  {data.name.includes("Pneumonia") ? (
+                    <Link to="/projects/pneumonia">
+                      <ProjectCard data={data} />
+                    </Link>
+                  ) : (
+                    <ProjectCard data={data} />
+                  )}
                 </div>
               ))}
           </div>
