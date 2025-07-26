@@ -9,7 +9,6 @@ import Projects from "./components/Projects";
 import Contact from "./components/Contact";
 import Footer from "./components/Footer";
 import Certificate from "./components/Certificate";
-import TitleComponent from "./components/TitleComponent";
 import Loading from "./components/Loading";
 import './App.css';
 

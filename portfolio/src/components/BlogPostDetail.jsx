@@ -135,7 +135,7 @@ const BlogPostDetail = () => {
         />
       </Helmet>
 
-      <div className="bg-slate-200 dark:bg-neutral-900 min-h-screen p-4 sm:p-6 md:p-10 text-gray-800 dark:text-gray-200 max-w-full mx-auto">
+      <div className="bg-slate-200 dark:bg-neutral-900 min-h-screen p-4 sm:p-6 md:p-10 text-gray-800 dark:text-gray-200 max-w-3xl mx-auto">
         <Link
           to="/blog"
           className="bg-blue-500 dark:bg-blue-600 hover:bg-blue-700 mb-6 px-4 py-2 rounded-lg inline-block text-white dark:text-gray-100 transition-colors duration-300 cursor-pointer"
