@@ -73,13 +73,8 @@ function App() {
       <section className="pt-2" ref={projectsRef}>
         <Projects />
       </section>
-      <section className="flex justify-center items-center flex-col">
-        <div>
-          <TitleComponent title="Certificates" />
-        </div>
-        <div>
+      <section ref={certificateRef} className="pt-2">
           <Certificate />
-        </div>
       </section>
       <section className="pt-2" ref={contactRef}>
         <Contact />
