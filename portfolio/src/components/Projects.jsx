@@ -14,7 +14,7 @@ const Projects = () => {
         <div>
           <TitleContainer title="Projects" />
         </div>
-        <div className="grid grid-cols-1 md:grid-cols-1 lg:grid-cols-2 gap-16 w-9/10 md:w-1/2 lg:w-4/5 p-5">
+        <div className="grid grid-cols-1 md:grid-cols-1 lg:grid-cols-1 gap-16 w-9/10 md:w-1/2 lg:w-1/2 p-5">
           {displayedData &&
             displayedData.map((data) => (
               <div key={data.id}>

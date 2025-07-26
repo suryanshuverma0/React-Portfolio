@@ -48,8 +48,11 @@ const Navbar = ({
   };
 
   return (
-    <div className="bg-white dark:bg-neutral-900 text-gray-600 dark:text-gray-300 w-full py-2 md:rounded-full text-sm md:text-md lg:text-sm">
+    <div className="bg-white dark:bg-neutral-900 text-gray-600 dark:text-gray-300 w-full py-4 text-sm md:text-md lg:text-sm">
       <div className="flex justify-between items-center px-4 md:px-6">
+
+      
+
         {/* Mobile menu icon */}
         <button onClick={toggleMenu} className="md:hidden text-lg">
           {isOpen ? <FaTimes /> : <FaBars />}
@@ -121,4 +124,7 @@ Navbar.propTypes = {
 };
 
 export default Navbar;
+
+
+
 

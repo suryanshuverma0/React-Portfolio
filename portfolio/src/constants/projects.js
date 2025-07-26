@@ -11,7 +11,7 @@ export const projects_data = [
     project_image: pneumoniaImg,
 
     description:
-      "Developed an AI-powered Pneumonia Detection System using CNN and ResNet-101V2 to classify X-ray images as 'Pneumonia' or 'Normal' with probability scores. Implemented Grad-CAM visualization for explainability, enhancing medical diagnosis. Optimized model performance through data augmentation, regularization, and evaluation metrics to improve accuracy and prevent overfitting.",
+      "Developed an AI-powered Pneumonia Detection System using CNN and ResNet-101V2 to classify X-ray images as 'Pneumonia' or 'Normal' with probability scores.",
       technology_used: ["Python"],
     github_link: "https://github.com/suryanshuverma0/PneumoniaDetectionSystem",
     is_deployed: false,

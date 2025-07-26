@@ -6,13 +6,11 @@ export const experience_data = [
     role: "Reactjs Frontend Developer",
     company: "CyberArrow · Internship",
     description:
-      "Optimized ReactJS components to improve web app performance; findings were shared with senior developers and implemented in production.\n\nGained hands-on experience in ReactJS, JavaScript, and frontend performance optimization techniques.\n\nProfessional reference available upon request.",
+      "Optimized ReactJS components for better performance; solutions were reviewed and adopted by senior developers. Gained hands-on experience in React and frontend performance tuning.",
     duration: "Feb 2025 - Jul 2025 · 6 mos",
     location: "Dubai, United Arab Emirates · Remote",
     logo: cyberArrowLogo,
     company_url: "https://www.cyberarrow.io/", 
     certificate_url: null, 
   },
-
-  // other experiences can follow here
 ];

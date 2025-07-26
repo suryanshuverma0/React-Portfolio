@@ -51,11 +51,8 @@ const PneumoniaDetail = () => {
         <TitleContainer title="Pneumonia Detection Using Deep Learning Techniques" />
 
         <p className="mt-4 text-lg text-neutral-800 dark:text-gray-200 leading-relaxed">
-          A minor project by three team members. We used both ResNet‑101 and a
-          custom CNN to classify chest X‑ray images into{" "}
-          <strong>Pneumonia</strong> or <strong>Normal</strong>. The system
-          features interpretability via Grad‑CAM, comprehensive metric analysis,
-          and visualization of model outputs.
+            Developed an AI-powered Pneumonia Detection System as a team of three, using both a custom CNN and ResNet-101V2 to classify chest X-ray images as either <strong>Pneumonia</strong> or <strong>Normal</strong> with confidence scores. The system includes Grad-CAM-based visual explanations for model decisions, helping improve medical interpretability. To enhance accuracy and prevent overfitting, we applied data augmentation, regularization techniques, and thorough evaluation using multiple performance metrics. Visualizations and output analysis further support transparency and reliability in diagnosis.
+
         </p>
 
         {/* Team Members */}

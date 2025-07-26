@@ -1,0 +1,12 @@
+@keyframes gradient-x {
+  0% {
+    background-position: 0% center;
+  }
+  100% {
+    background-position: -200% center;
+  }
+}
+
+.animate-gradient-x {
+  animation: gradient-x 5s linear infinite;
+}

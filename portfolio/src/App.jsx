@@ -11,6 +11,8 @@ import Footer from "./components/Footer";
 import Certificate from "./components/Certificate";
 import TitleComponent from "./components/TitleComponent";
 import Loading from "./components/Loading";
+import './App.css';
+
 function App() {
   const [isLoading, setIsLoading] = useState(true);
 
@@ -38,7 +40,7 @@ function App() {
 
   return (
     <div className="bg-gray-200 dark:bg-neutral-950 w-full min-h-screen">
-      <header className="flex justify-center items-center pt-6 flex-grow sticky top-0 left-0 z-50">
+      <header className="flex justify-center items-center pt-0 flex-grow sticky top-0 left-0 z-50">
         <Navbar
           homeRef={homeRef}
           aboutRef={aboutRef}

@@ -22,10 +22,10 @@ const About = () => {
           </p>
         </div>
         <TitleComponent title="Education" />
-        <div className="grid grid-cols-1 md:grid-cols-2  gap-12 items-cneter w-[80%] p-6">
+        <div className="grid grid-cols-1 md:grid-cols-2  gap-12 items-stretch w-full md:w-[50%] lg:w-[50%] p-16">
           <EducationCard
             title="Khwopa Secondary School"
-            description="Graduated with an impressive A grade in Computer Science, highlighting a key academic accomplishment."
+            description="Graduated with an impressive A grade in Computer Science."
             status="Higher Secondary"
           />
           <EducationCard
