@@ -56,7 +56,7 @@ export const heroContent = {
   blockchain: {
     address: "0x25d11610B56A79F22877ddD8FF538609EB74C4D2",
 
-    verifyUrl: "http:/localhost:5174/verify?source=qr",
+    verifyUrl: "https://www.suryanshuverma.com.np/verify?source=qr",
 
     polygonScanUrl:
       "https://amoy.polygonscan.com/address/0x25d11610B56A79F22877ddD8FF538609EB74C4D2",
