@@ -1,0 +1,290 @@
+
+@import url("https://fonts.googleapis.com/css2?family=Inter:wght@100..900&display=swap");
+
+@import "tailwindcss";
+
+/* ========================================
+   LIGHT THEME
+======================================== */
+
+@theme {
+
+  /* BACKGROUNDS */
+
+  --color-background: #ffffff;
+
+  --color-surface: #f3f4f6;
+
+  --color-card: #f8fafc;
+
+  /* TEXT */
+
+  --color-primary: #0a0a0a;
+
+  --color-secondary: #525252;
+
+  --color-muted: #737373;
+
+  /* BORDER */
+
+  --color-border: #d4d4d8;
+
+  /* TYPOGRAPHY */
+
+  --font-sans: "Inter", sans-serif;
+}
+
+/* ========================================
+   DARK THEME
+======================================== */
+
+.dark {
+
+  --color-background: #0a0a0a;
+
+  --color-surface: #111111;
+
+  --color-card: #171717;
+
+  --color-primary: #fafafa;
+
+  --color-secondary: #a1a1aa;
+
+  --color-muted: #71717a;
+
+  --color-border: #262626;
+}
+
+/* ========================================
+   BASE
+======================================== */
+
+html {
+  scroll-behavior: smooth;
+}
+
+body {
+
+  background-color: var(--color-background);
+
+  color: var(--color-primary);
+
+  font-family: var(--font-sans);
+
+  min-height: 100vh;
+
+  -webkit-font-smoothing: antialiased;
+
+  text-rendering: optimizeLegibility;
+
+  transition:
+    background-color 0.3s ease,
+    color 0.3s ease;
+}
+
+/* ========================================
+   GLASS SYSTEM
+======================================== */
+
+@utility glass {
+
+  backdrop-filter: blur(24px);
+  -webkit-backdrop-filter: blur(24px);
+
+  background-color: color-mix(
+    in srgb,
+    var(--color-card) 88%,
+    transparent
+  );
+
+  border: 1px solid var(--color-border);
+
+  box-shadow:
+    0 4px 24px rgba(0,0,0,0.04);
+}
+
+@utility glass-hover {
+
+  transition:
+    background-color 0.3s ease,
+    border-color 0.3s ease,
+    transform 0.3s ease;
+
+  &:hover {
+
+    background-color: color-mix(
+      in srgb,
+      var(--color-card) 96%,
+      transparent
+    );
+  }
+}
+
+/* ========================================
+   TYPOGRAPHY SYSTEM
+======================================== */
+
+/* HERO */
+
+@utility text-hero {
+
+  @apply
+    text-4xl
+    sm:text-5xl
+    md:text-6xl
+
+    font-semibold
+
+    tracking-[-0.05em]
+
+    leading-[0.95];
+}
+
+/* HEADING */
+
+@utility text-heading {
+
+  @apply
+    text-3xl
+    md:text-4xl
+
+    font-semibold
+
+    tracking-tight
+
+    leading-[1];
+}
+
+/* TITLE */
+
+@utility text-title {
+
+  @apply
+    text-xl
+    md:text-2xl
+
+    font-semibold
+
+    tracking-tight;
+}
+
+/* LARGE */
+
+@utility text-large {
+
+  @apply
+    text-lg
+    md:text-xl
+
+    font-medium
+
+    leading-relaxed;
+
+  color: var(--color-secondary);
+}
+
+/* BODY */
+
+@utility text-body {
+
+  @apply
+    text-[15px]
+    md:text-base
+
+    leading-7;
+
+  color: var(--color-secondary);
+}
+
+/* LABEL */
+
+@utility text-label {
+
+  @apply
+    text-[15px]
+
+    font-medium
+
+    tracking-tight;
+}
+
+/* SMALL */
+
+@utility text-small {
+
+  @apply
+    text-sm
+
+    leading-6;
+
+  color: var(--color-secondary);
+}
+
+/* MUTED */
+
+@utility text-muted {
+
+  @apply text-sm;
+
+  color: var(--color-muted);
+}
+
+/* MONO */
+
+@utility text-mono {
+
+  @apply
+    text-sm
+
+    font-mono
+
+    tracking-tight;
+}
+
+/* ========================================
+   CONTROL SYSTEM
+======================================== */
+
+@utility h-control {
+
+  @apply h-11;
+}
+
+@utility px-control {
+
+  @apply px-5;
+}
+
+@utility rounded-control {
+
+  @apply rounded-[18px];
+}
+
+/* ========================================
+   CARD SYSTEM
+======================================== */
+
+@utility card {
+
+  @apply
+    rounded-3xl
+    p-6;
+
+  background-color: var(--color-card);
+
+  border: 1px solid var(--color-border);
+
+  box-shadow:
+    0 4px 24px rgba(0,0,0,0.04);
+}
+
+/* ========================================
+   SECTION SYSTEM
+======================================== */
+
+@utility section {
+
+  @apply
+    py-20
+    md:py-28;
+}
