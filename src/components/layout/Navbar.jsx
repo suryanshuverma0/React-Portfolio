@@ -1,62 +1,152 @@
-import { useEffect, useState } from "react";
+import {
+  useEffect,
+  useState,
+} from "react";
 
-import { Menu, X } from "lucide-react";
+import {
+  Menu,
+  X,
+} from "lucide-react";
 
-import { motion, AnimatePresence } from "framer-motion";
+import {
+  motion,
+  AnimatePresence,
+} from "framer-motion";
 
-import Container from "../ui/Container";
+import Container
+from "../ui/Container";
 
-import ThemeToggle from "../ui/ThemeToggle";
+import ThemeToggle
+from "../ui/ThemeToggle";
 
-import NavItem from "./NavItem";
+import NavItem
+from "./NavItem";
 
-import { navbarContent } from "../content/navbarContent";
+import {
+  navbarContent,
+} from "../content/navbarContent";
 
 function Navbar() {
-  const navItems = navbarContent;
 
-  const [mobileOpen, setMobileOpen] = useState(false);
+  const navItems =
+    navbarContent;
 
-  const [scrolled, setScrolled] = useState(false);
+  const [
+    mobileOpen,
+    setMobileOpen,
+  ] = useState(false);
 
-  const [activeSection, setActiveSection] = useState("Home")
+  const [
+    scrolled,
+    setScrolled,
+  ] = useState(false);
 
-  /* SCROLL EFFECT */
+  const [
+    activeSection,
+    setActiveSection,
+  ] = useState("Home");
+
+  /* ========================================
+     SCROLL DETECTION
+  ========================================= */
 
   useEffect(() => {
-const handleScroll = () => {
 
-  setScrolled(window.scrollY > 16);
+    const handleScroll =
+      () => {
 
-  navItems.forEach((item) => {
+        setScrolled(
+          window.scrollY > 12
+        );
 
-    const sectionId =
-      item.href.replace("#", "");
+        let current =
+          "Home";
 
-    const section =
-      document.getElementById(sectionId);
+        navItems.forEach(
+          (item) => {
 
-    if (!section) return;
+            const sectionId =
+              item.href.replace(
+                "#",
+                ""
+              );
 
-    const rect =
-      section.getBoundingClientRect();
+            const section =
+              document.getElementById(
+                sectionId
+              );
 
-    if (
-      rect.top <= 140 &&
-      rect.bottom >= 140
-    ) {
-      setActiveSection(item.label);
-    }
-  });
-};
+            if (!section)
+              return;
 
+            const rect =
+              section.getBoundingClientRect();
 
-    window.addEventListener("scroll", handleScroll);
+            if (
+              rect.top <= 140 &&
+              rect.bottom >= 140
+            ) {
 
-    return () => window.removeEventListener("scroll", handleScroll);
+              current =
+                item.label;
+            }
+          }
+        );
+
+        setActiveSection(
+          current
+        );
+      };
+
+    handleScroll();
+
+    window.addEventListener(
+      "scroll",
+      handleScroll
+    );
+
+    return () =>
+      window.removeEventListener(
+        "scroll",
+        handleScroll
+      );
+
   }, [navItems]);
 
+  /* ========================================
+     CLOSE MOBILE ON RESIZE
+  ========================================= */
+
+  useEffect(() => {
+
+    const handleResize =
+      () => {
+
+        if (
+          window.innerWidth >= 1024
+        ) {
+
+          setMobileOpen(
+            false
+          );
+        }
+      };
+
+    window.addEventListener(
+      "resize",
+      handleResize
+    );
+
+    return () =>
+      window.removeEventListener(
+        "resize",
+        handleResize
+      );
+
+  }, []);
+
   return (
+
     <header
       className="
         fixed
@@ -67,23 +157,34 @@ const handleScroll = () => {
 
         z-50
 
-        px-4
-        pt-4
+        px-3
+        sm:px-4
+
+        pt-3
+        sm:pt-4
       "
     >
+
       <Container>
+
+        {/* NAVBAR */}
+
         <motion.div
+
           initial={{
-            y: -40,
+            y: -24,
             opacity: 0,
           }}
+
           animate={{
             y: 0,
             opacity: 1,
           }}
+
           transition={{
-            duration: 0.5,
+            duration: 0.45,
           }}
+
           className={`
             glass
 
@@ -91,9 +192,11 @@ const handleScroll = () => {
             items-center
             justify-between
 
-            h-[68px]
+            h-[62px]
+            md:h-[68px]
 
-            px-4
+            px-3
+            sm:px-4
             md:px-5
 
             rounded-2xl
@@ -110,23 +213,34 @@ const handleScroll = () => {
             }
           `}
         >
+
           {/* LOGO */}
 
           <a
+
             href="#home"
+
             className="
               flex
               items-center
 
               gap-3
 
+              min-w-0
+
               shrink-0
             "
           >
+
+            {/* ICON */}
+
             <div
               className="
-                h-10
-                w-10
+                h-9
+                w-9
+
+                md:h-10
+                md:w-10
 
                 rounded-xl
 
@@ -140,10 +254,16 @@ const handleScroll = () => {
 
                 text-sm
                 font-semibold
+
+                shrink-0
               "
             >
+
               SV
+
             </div>
+
+            {/* TEXT */}
 
             <div
               className="
@@ -151,28 +271,43 @@ const handleScroll = () => {
                 sm:flex
 
                 flex-col
+
+                min-w-0
               "
             >
+
               <span
                 className="
                   text-sm
+
                   font-semibold
+
                   tracking-tight
+
+                  truncate
                 "
               >
+
                 Suryanshu Verma
+
               </span>
 
               <span
                 className="
-                  text-[12px]
+                  text-[11px]
 
                   text-muted
+
+                  truncate
                 "
               >
-                Computer Engineer
+
+                Blockchain Engineer
+
               </span>
+
             </div>
+
           </a>
 
           {/* DESKTOP NAV */}
@@ -187,13 +322,24 @@ const handleScroll = () => {
               gap-1
             "
           >
-            {navItems.map((item) => (
-              <NavItem
-                key={item.label}
-                item={item}
-                active={activeSection === item.label}
-              />
-            ))}
+
+            {navItems.map(
+              (item) => (
+
+                <NavItem
+                  key={item.label}
+
+                  item={item}
+
+                  active={
+                    activeSection ===
+                    item.label
+                  }
+                />
+
+              )
+            )}
+
           </nav>
 
           {/* ACTIONS */}
@@ -204,14 +350,25 @@ const handleScroll = () => {
               items-center
 
               gap-2
+
+              shrink-0
             "
           >
+
             <ThemeToggle />
 
-            {/* MOBILE BUTTON */}
+            {/* MOBILE TOGGLE */}
 
             <button
-              onClick={() => setMobileOpen(!mobileOpen)}
+
+              onClick={() =>
+                setMobileOpen(
+                  !mobileOpen
+                )
+              }
+
+              aria-label="Toggle menu"
+
               className="
                 lg:hidden
 
@@ -225,6 +382,7 @@ const handleScroll = () => {
                 justify-center
 
                 text-secondary
+
                 hover:text-primary
 
                 hover:bg-black/[0.04]
@@ -233,37 +391,57 @@ const handleScroll = () => {
                 transition-all
               "
             >
-              {mobileOpen ? <X size={18} /> : <Menu size={18} />}
+
+              {mobileOpen ? (
+
+                <X size={18} />
+
+              ) : (
+
+                <Menu size={18} />
+
+              )}
+
             </button>
+
           </div>
+
         </motion.div>
 
         {/* MOBILE MENU */}
 
         <AnimatePresence>
+
           {mobileOpen && (
+
             <motion.div
+
               initial={{
                 opacity: 0,
-                y: -12,
+                y: -10,
               }}
+
               animate={{
                 opacity: 1,
                 y: 0,
               }}
+
               exit={{
                 opacity: 0,
-                y: -12,
+                y: -10,
               }}
+
               transition={{
                 duration: 0.2,
               }}
+
               className="
                 lg:hidden
 
-                mt-3
+                mt-2
               "
             >
+
               <div
                 className="
                   glass
@@ -273,6 +451,7 @@ const handleScroll = () => {
                   p-2
                 "
               >
+
                 <nav
                   className="
                     flex
@@ -281,21 +460,44 @@ const handleScroll = () => {
                     gap-1
                   "
                 >
-                  {navItems.map((item) => (
-                    <NavItem
-                      key={item.label}
-                      item={item}
-                      mobile
-                      active={activeSection === item.label}
-                      onClick={() => setMobileOpen(false)}
-                    />
-                  ))}
+
+                  {navItems.map(
+                    (item) => (
+
+                      <NavItem
+                        key={item.label}
+
+                        item={item}
+
+                        mobile
+
+                        active={
+                          activeSection ===
+                          item.label
+                        }
+
+                        onClick={() =>
+                          setMobileOpen(
+                            false
+                          )
+                        }
+                      />
+
+                    )
+                  )}
+
                 </nav>
+
               </div>
+
             </motion.div>
+
           )}
+
         </AnimatePresence>
+
       </Container>
+
     </header>
   );
 }
