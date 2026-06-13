@@ -17,6 +17,10 @@ import { useLocation } from "react-router-dom";
 import PageTransition from "./components/common/PageTransition";
 
 import VerifyPage from "./pages/VerifyPage";
+
+import ScrollToHash
+from "./components/common/ScrollToHash";
+
 function App() {
   const [loading, setLoading] = useState(true);
 
@@ -45,6 +49,7 @@ function App() {
           "
         >
           <AnimatePresence mode="wait">
+            <ScrollToHash />
             <Routes location={location} key={location.pathname}>
               <Route
                 path="/"

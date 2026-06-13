@@ -3,6 +3,11 @@ import {
   Link,
 } from "react-router-dom";
 
+
+import {
+  useEffect,
+} from "react";
+
 import {
   ArrowLeft,
   ArrowUpRight,
@@ -35,6 +40,20 @@ function ProjectDetails() {
       (item) =>
         item.slug === slug
     );
+
+/* ========================================
+   SCROLL TO TOP
+======================================== */
+
+useEffect(() => {
+
+  window.scrollTo({
+    top: 0,
+    behavior: "instant",
+  });
+
+}, []);
+
 
   /* ========================================
      NOT FOUND
@@ -90,7 +109,7 @@ if (!project) {
 
         <Link
 
-          to="/"
+          to="/#projects"
 
           className="
             inline-flex
