@@ -25,6 +25,7 @@ function Hero() {
       id="home"
       className="
         section
+        pt-32 md:p-28
 
         relative
 
@@ -56,7 +57,7 @@ function Hero() {
 
             dark:bg-[linear-gradient(to_right,#fff_1px,transparent_1px),linear-gradient(to_bottom,#fff_1px,transparent_1px)]
 
-            bg-[size:72px_72px]
+            bg-size:[72px_72px]
           "
         />
 

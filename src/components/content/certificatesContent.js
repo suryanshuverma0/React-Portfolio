@@ -8,44 +8,44 @@ export const certificatesContent = [
 
   {
     title:
-      "Blockchain Fundamentals",
+      "Introduction to Web Development with HTML, CSS, JavaScript",
 
     issuer:
-      "Coursera",
+      "IBM",
 
     year:
-      "2024",
+      "2023",
 
     image:
       c1,
 
     verifyUrl:
-      "https://www.coursera.org/account/accomplishments",
+      "https://www.coursera.org/account/accomplishments/verify/68KUHN49HHBC",
   },
 
   {
     title:
-      "MERN Stack Development",
+      "JavaScipt Basics",
 
     issuer:
-      "Udemy",
+      "Coursera",
 
     year:
-      "2024",
+      "2023",
 
     image:
       c2,
 
     verifyUrl:
-      "https://www.udemy.com/certificate/",
+      "https://www.coursera.org/account/accomplishments/verify/6NLRHLXS996J",
   },
 
   {
     title:
-      "Backend Engineering",
+      "Programming With JavaScript",
 
     issuer:
-      "freeCodeCamp",
+      "Meta",
 
     year:
       "2023",
@@ -54,29 +54,29 @@ export const certificatesContent = [
       c3,
 
     verifyUrl:
-      "https://www.freecodecamp.org/certification/",
+      "https://www.coursera.org/account/accomplishments/verify/QX3FRKGHR4E5",
   },
 
   {
     title:
-      "Smart Contract Development",
+      "C++ for C Programmers Part A",
 
     issuer:
       "Coursera",
 
     year:
-      "2024",
+      "2023",
 
     image:
       c4,
 
     verifyUrl:
-      "https://www.coursera.org/account/accomplishments",
+      "https://www.coursera.org/account/accomplishments/verify/2LTMW9BERWZG",
   },
 
   {
     title:
-      "JavaScript Algorithms & Data Structures",
+      "Responsive Web Design",
 
     issuer:
       "freeCodeCamp",
@@ -88,6 +88,6 @@ export const certificatesContent = [
       c5,
 
     verifyUrl:
-      "https://www.freecodecamp.org/certification/",
+      "https://freecodecamp.org/certification/suryanshuverma/responsive-web-design",
   },
 ];

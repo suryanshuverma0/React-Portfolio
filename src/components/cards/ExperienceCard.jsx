@@ -26,15 +26,18 @@ function ExperienceCard({
       "
     >
 
-      {/* TOP */}
+      {/* HEADER */}
 
       <div
         className="
           flex
-          items-start
-          justify-between
+          flex-col
 
-          gap-4
+          sm:flex-row
+          sm:items-start
+          sm:justify-between
+
+          gap-5
 
           mb-5
         "
@@ -42,7 +45,11 @@ function ExperienceCard({
 
         {/* LEFT */}
 
-        <div>
+        <div
+          className="
+            min-w-0
+          "
+        >
 
           {/* DATE */}
 
@@ -50,7 +57,7 @@ function ExperienceCard({
             className="
               text-muted
 
-              mb-3
+              mb-2
             "
           >
 
@@ -67,6 +74,8 @@ function ExperienceCard({
               text-title
 
               mb-2
+
+              leading-tight
             "
           >
 
@@ -83,7 +92,8 @@ function ExperienceCard({
 
               items-center
 
-              gap-2
+              gap-x-2
+              gap-y-1
             "
           >
 
@@ -133,14 +143,16 @@ function ExperienceCard({
             rel="noreferrer"
 
             className="
-              h-control
+              h-10
 
-              px-control
+              px-4
 
               rounded-control
 
               border
               border-border
+
+              bg-primary
 
               inline-flex
               items-center
@@ -148,22 +160,22 @@ function ExperienceCard({
 
               gap-2
 
-              text-label
+              text-small
+              text-background
 
               shrink-0
 
               transition-all
               duration-300
 
-              hover:bg-black/[0.03]
-              dark:hover:bg-white/[0.04]
+              hover:bg-background
             "
           >
 
             Visit
 
             <ArrowUpRight
-              size={16}
+              size={15}
             />
 
           </a>
@@ -172,15 +184,24 @@ function ExperienceCard({
 
       </div>
 
-      {/* EMPLOYMENT TYPE */}
+      {/* META */}
 
-      {experience.employmentType && (
+      <div
+        className="
+          flex
+          flex-wrap
 
-        <div
-          className="
-            mb-5
-          "
-        >
+          items-center
+
+          gap-2
+
+          mb-5
+        "
+      >
+
+        {/* EMPLOYMENT TYPE */}
+
+        {experience.employmentType && (
 
           <div
             className="
@@ -205,9 +226,41 @@ function ExperienceCard({
 
           </div>
 
-        </div>
+        )}
 
-      )}
+        {/* FEATURED */}
+
+        {/* {experience.featured && (
+
+          <div
+            className="
+              inline-flex
+              items-center
+
+              px-3
+              py-1.5
+
+              rounded-full
+
+              bg-blue-500/10
+
+              border
+              border-blue-500/20
+
+              text-blue-600
+              dark:text-blue-400
+
+              text-small
+            "
+          >
+
+            Featured
+
+          </div>
+
+        )} */}
+
+      </div>
 
       {/* DESCRIPTION */}
 
@@ -215,7 +268,7 @@ function ExperienceCard({
         className="
           text-body
 
-          mb-6
+          mb-5
         "
       >
 
@@ -230,7 +283,7 @@ function ExperienceCard({
           flex
           flex-wrap
 
-          gap-3
+          gap-2
 
           mt-auto
         "
@@ -246,10 +299,10 @@ function ExperienceCard({
               key={index}
 
               className="
-                px-4
-                py-2
+                px-3
+                py-1.5
 
-                rounded-2xl
+                rounded-xl
 
                 bg-surface
 

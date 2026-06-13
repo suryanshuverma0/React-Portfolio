@@ -6,9 +6,11 @@ import {
   Send,
 } from "lucide-react";
 
-import Container from "../../ui/Container";
+import Container
+from "../../ui/Container";
 
-import SectionTitle from "../../ui/SectionTitle";
+import SectionTitle
+from "../../ui/SectionTitle";
 
 import {
   iconMap,
@@ -38,9 +40,13 @@ function Contact() {
 
           eyebrow="Contact"
 
-          title={contactContent.title}
+          title={
+            contactContent.title
+          }
 
-          description={contactContent.description}
+          description={
+            contactContent.description
+          }
         />
 
         {/* GRID */}
@@ -50,9 +56,10 @@ function Contact() {
             grid
 
             grid-cols-1
-            lg:grid-cols-[0.9fr_1.1fr]
+            xl:grid-cols-[0.92fr_1.08fr]
 
-            gap-5
+            gap-4
+            md:gap-5
           "
         >
 
@@ -81,17 +88,17 @@ function Contact() {
             className="
               card
 
-              h-full
-
               flex
               flex-col
               justify-between
+
+              h-full
             "
           >
 
             <div>
 
-              {/* TOP */}
+              {/* HEADER */}
 
               <div
                 className="
@@ -100,7 +107,7 @@ function Contact() {
 
                   gap-2
 
-                  mb-6
+                  mb-5
                 "
               >
 
@@ -133,11 +140,14 @@ function Contact() {
                 className="
                   text-body
 
-                  mb-8
+                  mb-7
                 "
               >
 
-                Open to backend engineering, blockchain development, freelance collaborations, and product-focused opportunities.
+                Open to backend engineering,
+                blockchain development,
+                freelance collaborations,
+                and product-focused opportunities.
 
               </p>
 
@@ -148,7 +158,7 @@ function Contact() {
                   flex
                   flex-col
 
-                  gap-5
+                  gap-4
                 "
               >
 
@@ -170,7 +180,7 @@ function Contact() {
                           flex
                           items-start
 
-                          gap-4
+                          gap-3
                         "
                       >
 
@@ -178,10 +188,10 @@ function Contact() {
 
                         <div
                           className="
-                            h-11
-                            w-11
+                            h-10
+                            w-10
 
-                            rounded-2xl
+                            rounded-xl
 
                             bg-surface
 
@@ -197,14 +207,18 @@ function Contact() {
                         >
 
                           <Icon
-                            size={18}
+                            size={16}
                           />
 
                         </div>
 
                         {/* CONTENT */}
 
-                        <div>
+                        <div
+                          className="
+                            min-w-0
+                          "
+                        >
 
                           <p
                             className="
@@ -221,10 +235,13 @@ function Contact() {
                           {item.href ? (
 
                             <a
+
                               href={item.href}
 
                               className="
                                 text-label
+
+                                break-all
 
                                 hover:opacity-70
 
@@ -241,6 +258,8 @@ function Contact() {
                             <p
                               className="
                                 text-label
+
+                                break-all
                               "
                             >
 
@@ -264,9 +283,9 @@ function Contact() {
 
               <div
                 className="
-                  mt-10
+                  mt-8
 
-                  pt-6
+                  pt-5
 
                   border-t
                   border-border
@@ -290,7 +309,7 @@ function Contact() {
                     flex
                     flex-wrap
 
-                    gap-3
+                    gap-2
                   "
                 >
 
@@ -315,10 +334,10 @@ function Contact() {
                           rel="noreferrer"
 
                           className="
-                            h-11
-                            w-11
+                            h-10
+                            w-10
 
-                            rounded-2xl
+                            rounded-xl
 
                             bg-surface
 
@@ -335,11 +354,12 @@ function Contact() {
                             duration-300
 
                             hover:text-primary
+                            hover:bg-background
                           "
                         >
 
                           <Icon
-                            size={18}
+                            size={16}
                           />
 
                         </a>
@@ -358,9 +378,9 @@ function Contact() {
 
             <div
               className="
-                mt-10
+                mt-7
 
-                pt-6
+                pt-5
 
                 border-t
                 border-border
@@ -414,162 +434,33 @@ function Contact() {
                 flex
                 flex-col
 
-                gap-5
+                gap-4
               "
             >
 
               {/* NAME */}
 
-              <div>
-
-                <label
-                  className="
-                    text-muted
-
-                    block
-
-                    mb-2
-                  "
-                >
-
-                  Full Name
-
-                </label>
-
-                <input
-
-                  type="text"
-
-                  placeholder="John Doe"
-
-                  className="
-                    w-full
-
-                    h-control
-
-                    px-control
-
-                    rounded-control
-
-                    bg-surface
-
-                    border
-                    border-border
-
-                    outline-none
-
-                    text-label
-
-                    transition-all
-                    duration-300
-
-                    focus:border-primary
-                  "
-                />
-
-              </div>
+              <FormField
+                label="Full Name"
+                type="text"
+                placeholder="John Doe"
+              />
 
               {/* EMAIL */}
 
-              <div>
-
-                <label
-                  className="
-                    text-muted
-
-                    block
-
-                    mb-2
-                  "
-                >
-
-                  Email Address
-
-                </label>
-
-                <input
-
-                  type="email"
-
-                  placeholder="john@example.com"
-
-                  className="
-                    w-full
-
-                    h-control
-
-                    px-control
-
-                    rounded-control
-
-                    bg-surface
-
-                    border
-                    border-border
-
-                    outline-none
-
-                    text-label
-
-                    transition-all
-                    duration-300
-
-                    focus:border-primary
-                  "
-                />
-
-              </div>
+              <FormField
+                label="Email Address"
+                type="email"
+                placeholder="john@example.com"
+              />
 
               {/* SUBJECT */}
 
-              <div>
-
-                <label
-                  className="
-                    text-muted
-
-                    block
-
-                    mb-2
-                  "
-                >
-
-                  Subject
-
-                </label>
-
-                <input
-
-                  type="text"
-
-                  placeholder="Project Collaboration"
-
-                  className="
-                    w-full
-
-                    h-control
-
-                    px-control
-
-                    rounded-control
-
-                    bg-surface
-
-                    border
-                    border-border
-
-                    outline-none
-
-                    text-label
-
-                    transition-all
-                    duration-300
-
-                    focus:border-primary
-                  "
-                />
-
-              </div>
+              <FormField
+                label="Subject"
+                type="text"
+                placeholder="Project Collaboration"
+              />
 
               {/* MESSAGE */}
 
@@ -591,17 +482,20 @@ function Contact() {
 
                 <textarea
 
-                  rows={6}
+                  rows={5}
 
-                  placeholder="Tell me about your project or opportunity..."
+                  placeholder="
+                    Tell me about your project
+                    or opportunity...
+                  "
 
                   className="
                     w-full
 
-                    px-control
-                    py-4
+                    px-4
+                    py-3
 
-                    rounded-[24px]
+                    rounded-[22px]
 
                     bg-surface
 
@@ -630,7 +524,8 @@ function Contact() {
                 type="submit"
 
                 className="
-                  h-control
+                  h-10
+                  md:h-11
 
                   px-control
 
@@ -672,6 +567,71 @@ function Contact() {
       </Container>
 
     </section>
+  );
+}
+
+/* ========================================
+   FORM FIELD
+======================================== */
+
+function FormField({
+  label,
+  type,
+  placeholder,
+}) {
+
+  return (
+
+    <div>
+
+      <label
+        className="
+          text-muted
+
+          block
+
+          mb-2
+        "
+      >
+
+        {label}
+
+      </label>
+
+      <input
+
+        type={type}
+
+        placeholder={placeholder}
+
+        className="
+          w-full
+
+          h-10
+          md:h-11
+
+          px-4
+
+          rounded-control
+
+          bg-surface
+
+          border
+          border-border
+
+          outline-none
+
+          text-label
+
+          transition-all
+          duration-300
+
+          focus:border-primary
+        "
+      />
+
+    </div>
+
   );
 }
 
