@@ -33,27 +33,27 @@ export const aboutContent = {
 
   stats: [
     {
-      value: "3+",
+      value: "7+",
 
-      label: "Major Projects",
+      label: "Projects",
     },
 
     {
-      value: "MERN",
+      value: "15+",
 
-      label: "Full Stack Development",
+      label: "Skills",
     },
 
     {
-      value: "REST API",
+      value: "5+",
 
-      label: "Backend Engineering",
+      label: "Certificates",
     },
 
     {
-      value: "Web3",
+      value: "1",
 
-      label: "Blockchain Systems",
+      label: "Internship",
     },
   ],
 };

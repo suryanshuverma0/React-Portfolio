@@ -88,12 +88,12 @@ body {
 
 @utility glass {
 
-  backdrop-filter: blur(24px);
-  -webkit-backdrop-filter: blur(24px);
+  backdrop-filter: blur(144px);
+  -webkit-backdrop-filter: blur(144px);
 
   background-color: color-mix(
     in srgb,
-    var(--color-card) 88%,
+    var(--color-card) 70%,
     transparent
   );
 
@@ -268,7 +268,7 @@ body {
 
   @apply
     rounded-3xl
-    p-2;
+    p-5;
 
   background-color: var(--color-card);
 

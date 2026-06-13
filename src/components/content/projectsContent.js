@@ -57,9 +57,6 @@ export const projectsContent = [
 
     title: "Detection of Counterfeit Pharmaceutical Products Using Blockchain",
 
-    shortDescription:
-      "Ethereum-based pharmaceutical traceability system for counterfeit medicine detection and secure supply chain tracking.",
-
     description:
       "Developed a blockchain-powered pharmaceutical supply chain platform to improve transparency, traceability, and counterfeit medicine prevention using Ethereum smart contracts. The system enables secure batch registration, shipment tracking, QR-based product verification, and role-based access control across manufacturers, distributors, pharmacists, admins, and consumers. A hybrid on-chain/off-chain architecture was implemented to balance scalability, transparency, and transaction cost efficiency.",
 
@@ -216,9 +213,6 @@ export const projectsContent = [
 
     title: "Deep Learning Pneumonia Detection System",
 
-    shortDescription:
-      "AI-powered pneumonia detection using chest X-ray analysis and deep learning.",
-
     description:
       "Developed an AI-powered pneumonia detection system as part of a team of three using Custom CNN and ResNet-101V2 models to classify chest X-ray images as Pneumonia or Normal with probability-based predictions. The system also included Grad-CAM visualizations for interpretability and performance evaluation workflows for reliable medical analysis.",
 
@@ -333,9 +327,6 @@ export const projectsContent = [
 
     title: "Multi Election Voting System",
 
-    shortDescription:
-      "Ethereum-based decentralized voting platform with multi-election management and smart contract security.",
-
     description:
       "Developed a decentralized multi-election voting platform using Ethereum smart contracts to provide transparent, tamper-resistant, and secure digital voting. The system supports election management, candidate management, wallet-based voting, role-based access control, and real-time blockchain transaction feedback through a React-based frontend integrated with the Ethereum Sepolia testnet.",
 
@@ -445,9 +436,6 @@ export const projectsContent = [
 
     title: "Pixel Studio",
 
-    shortDescription:
-      "Interactive pixel art and freehand drawing web application.",
-
     description:
       "Built a creative drawing platform featuring pixel art tools, freehand canvas drawing, authentication, and color-based editing workflows.",
 
@@ -478,9 +466,6 @@ export const projectsContent = [
     category: "Full Stack",
 
     title: "NoteMania",
-
-    shortDescription:
-      "Cloud-based note management platform with authentication and PDF export.",
 
     description:
       "Developed a note-taking platform with Firebase integration allowing users to create, manage, and export notes efficiently.",
@@ -513,9 +498,6 @@ export const projectsContent = [
 
     title: "AI Interview Mocker",
 
-    shortDescription:
-      "AI-powered interview preparation platform with feedback generation.",
-
     description:
       "Built an interview preparation system that generates role-specific interview questions and provides AI-assisted feedback for answers.",
 
@@ -546,9 +528,6 @@ export const projectsContent = [
 
     title: "Library Management System",
 
-    shortDescription:
-      "CLI-based library management system developed using C++ and OOP concepts.",
-
     description:
       "Developed a command-line library management system with separate workflows for students and teachers, focused on learning Object-Oriented Programming fundamentals.",
 
@@ -577,9 +556,6 @@ export const projectsContent = [
     category: "Full Stack",
 
     title: "Instant Domain Checker",
-
-    shortDescription:
-      "Real-time domain availability checker built with the MERN stack.",
 
     description:
       "Built a fast domain availability checking platform designed for developers, startups, and entrepreneurs searching for domain names.",

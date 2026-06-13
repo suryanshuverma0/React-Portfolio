@@ -1,43 +1,27 @@
-import {
-  motion,
-} from "framer-motion";
+import { motion } from "framer-motion";
 
-import {
-  ArrowUpRight,
-} from "lucide-react";
+import { ArrowUpRight } from "lucide-react";
 
-import {
-  Link,
-} from "react-router-dom";
+import { Link } from "react-router-dom";
 
-function ProjectCard({
-  project,
-  index,
-}) {
-
+function ProjectCard({ project, index }) {
   return (
-
     <motion.article
-
       initial={{
         opacity: 0,
         y: 20,
       }}
-
       whileInView={{
         opacity: 1,
         y: 0,
       }}
-
       viewport={{
         once: true,
       }}
-
       transition={{
         duration: 0.4,
         delay: index * 0.06,
       }}
-
       className="
         card
         glass-hover
@@ -50,7 +34,6 @@ function ProjectCard({
         flex-col
       "
     >
-
       {/* THUMBNAIL */}
 
       <div
@@ -69,12 +52,9 @@ function ProjectCard({
           mb-5
         "
       >
-
         <img
           src={project.thumbnail}
-
           alt={project.title}
-
           className="
             w-full
 
@@ -98,7 +78,6 @@ function ProjectCard({
             left-3
           "
         >
-
           <div
             className="
               px-3
@@ -120,13 +99,9 @@ function ProjectCard({
               tracking-tight
             "
           >
-
             {project.category}
-
           </div>
-
         </div>
-
       </div>
 
       {/* CONTENT */}
@@ -139,7 +114,6 @@ function ProjectCard({
           flex-col
         "
       >
-
         {/* TITLE */}
 
         <h3
@@ -149,24 +123,8 @@ function ProjectCard({
             mb-3
           "
         >
-
           {project.title}
-
         </h3>
-
-        {/* DESCRIPTION */}
-
-        <p
-          className="
-            text-body
-
-            mb-5
-          "
-        >
-
-          {project.shortDescription}
-
-        </p>
 
         {/* TECH STACK */}
 
@@ -180,15 +138,10 @@ function ProjectCard({
             mb-6
           "
         >
-
-          {project.technologies
-            .slice(0, 4)
-            .map((tech) => (
-
-              <div
-                key={tech}
-
-                className="
+          {project.technologies.slice(0, 4).map((tech) => (
+            <div
+              key={tech}
+              className="
                   px-3
                   py-1.5
 
@@ -203,14 +156,10 @@ function ProjectCard({
 
                   leading-none
                 "
-              >
-
-                {tech}
-
-              </div>
-
-            ))}
-
+            >
+              {tech}
+            </div>
+          ))}
         </div>
 
         {/* CTA */}
@@ -226,13 +175,10 @@ function ProjectCard({
             gap-3
           "
         >
-
           {/* DETAILS */}
 
           <Link
-
             to={`/projects/${project.slug}`}
-
             className="
               h-control
 
@@ -258,13 +204,8 @@ function ProjectCard({
               hover:opacity-90
             "
           >
-
             Detail
-
-            <ArrowUpRight
-              size={16}
-            />
-
+            <ArrowUpRight size={16} />
           </Link>
 
           {/* LINKS */}
@@ -277,14 +218,10 @@ function ProjectCard({
               gap-2
             "
           >
-
             <a
               href={project.githubUrl}
-
               target="_blank"
-
               rel="noreferrer"
-
               className="
                 h-11
                 px-4
@@ -308,18 +245,13 @@ function ProjectCard({
                 hover:bg-background
               "
             >
-
               GitHub
-
             </a>
 
             <a
               href={project.liveUrl}
-
               target="_blank"
-
               rel="noreferrer"
-
               className="
                 h-11
                 px-4
@@ -343,19 +275,12 @@ function ProjectCard({
                 hover:bg-background
               "
             >
-
               Live
-
             </a>
-
           </div>
-
         </div>
-
       </div>
-
     </motion.article>
-
   );
 }
 

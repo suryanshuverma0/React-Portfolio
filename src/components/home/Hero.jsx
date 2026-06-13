@@ -1,16 +1,12 @@
-import { useState } from "react";
 
 import { motion } from "framer-motion";
 
 import Typewriter from "typewriter-effect";
 
-import { ArrowUpRight } from "lucide-react";
 
-import { FaShieldAlt } from "react-icons/fa";
 
 import Container from "../ui/Container";
 
-import BlockchainModal from "../modals/BlockchainModal";
 
 import { heroContent } from "../content/heroContent";
 
@@ -18,7 +14,6 @@ import { iconMap } from "../constants/iconMap";
 
 function Hero() {
   const heroData = heroContent;
-  const [isBlockchainOpen, setIsBlockchainOpen] = useState(false);
 
   return (
     <section
@@ -286,133 +281,13 @@ function Hero() {
             })}
           </div>
           {/* ON CHAIN */}
-          <div
-            className="
-              card
-
-              max-w-2xl
-              mx-auto
-            "
-          >
-            <div
-              className="
-                flex
-                flex-col
-                sm:flex-row
-
-                gap-6
-
-                sm:items-center
-                sm:justify-between
-              "
-            >
-              {/* LEFT */}
-
-              <div
-                className="
-                  flex
-                  items-start
-
-                  gap-4
-
-                  text-left
-                "
-              >
-                <div
-                  className="
-                    h-12
-                    w-12
-
-                    rounded-2xl
-
-                    bg-emerald-500/10
-
-                    flex
-                    items-center
-                    justify-center
-
-                    text-emerald-500
-
-                    shrink-0
-                  "
-                >
-                  <FaShieldAlt size={20} />
-                </div>
-
-                <div>
-                  <p
-                    className="
-                      text-muted
-
-                      uppercase
-
-                      tracking-[0.18em]
-
-                      mb-2
-                    "
-                  >
-                    Verified On-Chain
-                  </p>
-
-                  <p
-                    className="
-                      text-mono
-
-                      text-secondary
-
-                      break-all
-                    "
-                  >
-                    {heroData.blockchain.address}
-                  </p>
-                </div>
-              </div>
-
-              {/* BUTTON */}
-
-              <button
-                onClick={() => setIsBlockchainOpen(true)}
-                className="
-                  h-control
-
-                  px-control
-
-                  rounded-control
-
-                  bg-primary
-
-                  text-background
-
-                  inline-flex
-                  items-center
-                  justify-center
-
-                  gap-2
-
-                  text-label
-
-                  hover:opacity-90
-
-                  transition-all
-
-                  shrink-0
-                "
-              >
-                Verify
-                <ArrowUpRight size={16} />
-              </button>
-            </div>
-          </div>
+         
         </motion.div>
       </Container>
 
       {/* MODAL */}
 
-      <BlockchainModal
-        isOpen={isBlockchainOpen}
-        onClose={() => setIsBlockchainOpen(false)}
-        blockchain={heroData.blockchain}
-      />
+    
     </section>
   );
 }
