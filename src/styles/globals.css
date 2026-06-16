@@ -1,4 +1,3 @@
-
 @import url("https://fonts.googleapis.com/css2?family=Inter:wght@100..900&display=swap");
 
 @import "tailwindcss";
@@ -8,7 +7,6 @@
 ======================================== */
 
 @theme {
-
   /* BACKGROUNDS */
 
   --color-background: #ffffff;
@@ -39,7 +37,6 @@
 ======================================== */
 
 .dark {
-
   --color-background: #0a0a0a;
 
   --color-surface: #111111;
@@ -64,7 +61,6 @@ html {
 }
 
 body {
-
   background-color: var(--color-background);
 
   color: var(--color-primary);
@@ -87,36 +83,24 @@ body {
 ======================================== */
 
 @utility glass {
+  backdrop-filter: blur(18px);
+  -webkit-backdrop-filter: blur(18px);
 
-  backdrop-filter: blur(144px);
-  -webkit-backdrop-filter: blur(144px);
+  background-color: color-mix(in srgb, var(--color-card) 92%, transparent);
 
-  background-color: color-mix(
-    in srgb,
-    var(--color-card) 70%,
-    transparent
-  );
+  border: 1px solid color-mix(in srgb, var(--color-border) 70%, transparent);
 
-  border: 1px solid var(--color-border);
-
-  box-shadow:
-    0 4px 24px rgba(0,0,0,0.04);
+  box-shadow: 0 10px 40px rgba(0, 0, 0, 0.06);
 }
 
 @utility glass-hover {
-
   transition:
     background-color 0.3s ease,
     border-color 0.3s ease,
     transform 0.3s ease;
 
   &:hover {
-
-    background-color: color-mix(
-      in srgb,
-      var(--color-card) 96%,
-      transparent
-    );
+    background-color: color-mix(in srgb, var(--color-card) 96%, transparent);
   }
 }
 
@@ -127,9 +111,7 @@ body {
 /* HERO */
 
 @utility text-hero {
-
-  @apply
-    text-4xl
+  @apply text-4xl
     sm:text-5xl
     md:text-6xl
 
@@ -143,9 +125,7 @@ body {
 /* HEADING */
 
 @utility text-heading {
-
-  @apply
-    text-3xl
+  @apply text-3xl
     md:text-4xl
 
     font-semibold
@@ -158,9 +138,7 @@ body {
 /* TITLE */
 
 @utility text-title {
-
-  @apply
-    text-xl
+  @apply text-xl
     md:text-2xl
 
     font-semibold
@@ -171,9 +149,7 @@ body {
 /* LARGE */
 
 @utility text-large {
-
-  @apply
-    text-lg
+  @apply text-lg
     md:text-xl
 
     font-medium
@@ -186,9 +162,7 @@ body {
 /* BODY */
 
 @utility text-body {
-
-  @apply
-    text-[15px]
+  @apply text-[15px]
     md:text-base
 
     leading-7;
@@ -199,9 +173,7 @@ body {
 /* LABEL */
 
 @utility text-label {
-
-  @apply
-    text-[15px]
+  @apply text-[15px]
 
     font-medium
 
@@ -211,9 +183,7 @@ body {
 /* SMALL */
 
 @utility text-small {
-
-  @apply
-    text-sm
+  @apply text-sm
 
     leading-6;
 
@@ -223,7 +193,6 @@ body {
 /* MUTED */
 
 @utility text-muted {
-
   @apply text-sm;
 
   color: var(--color-muted);
@@ -232,9 +201,7 @@ body {
 /* MONO */
 
 @utility text-mono {
-
-  @apply
-    text-sm
+  @apply text-sm
 
     font-mono
 
@@ -246,17 +213,14 @@ body {
 ======================================== */
 
 @utility h-control {
-
   @apply h-11;
 }
 
 @utility px-control {
-
   @apply px-5;
 }
 
 @utility rounded-control {
-
   @apply rounded-[18px];
 }
 
@@ -265,17 +229,15 @@ body {
 ======================================== */
 
 @utility card {
-
-  @apply
-    rounded-3xl
-    p-5;
+  @apply rounded-3xl
+  sm:p-4
+    p-6;
 
   background-color: var(--color-card);
 
   border: 1px solid var(--color-border);
 
-  box-shadow:
-    0 4px 24px rgba(0,0,0,0.04);
+  box-shadow: 0 4px 24px rgba(0, 0, 0, 0.04);
 }
 
 /* ========================================
@@ -283,8 +245,19 @@ body {
 ======================================== */
 
 @utility section {
-
-  @apply
-    py-20
+  @apply py-20
     md:py-28;
+}
+
+
+input:-webkit-autofill {
+
+  -webkit-box-shadow:
+    0 0 0 1000px var(--color-surface) inset;
+
+  -webkit-text-fill-color:
+    var(--color-primary);
+
+  transition:
+    background-color 9999s ease-in-out 0s;
 }

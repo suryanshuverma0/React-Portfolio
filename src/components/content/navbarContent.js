@@ -14,7 +14,7 @@ export const navbarContent = [
   },
 
   {
-    label: "Professional Experience",
+    label: "Experience",
 
     mobileLabel: "Experience",
 

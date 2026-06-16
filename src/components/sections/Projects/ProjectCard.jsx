@@ -58,7 +58,7 @@ function ProjectCard({ project, index }) {
           className="
             w-full
 
-            aspect-[16/9]
+            aspect-[16/6]
 
             object-cover
 

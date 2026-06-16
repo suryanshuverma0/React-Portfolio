@@ -18,13 +18,26 @@ import PageTransition from "./components/common/PageTransition";
 
 import VerifyPage from "./pages/VerifyPage";
 
-import ScrollToHash
-from "./components/common/ScrollToHash";
+import ScrollToHash from "./components/common/ScrollToHash";
+
+import Login from "./pages/Login";
+
+import Register from "./pages/Register";
+
+import ForgotPassword from "./pages/ForgotPassword";
+
+import { useAuth } from "./contexts/AuthContext";
+
+import Dashboard from "./pages/Dashboard";
+
+import ProtectedRoute from "./components/routes/ProtectedRoute";
 
 function App() {
   const [loading, setLoading] = useState(true);
 
   const location = useLocation();
+
+  const { authLoading } = useAuth();
 
   useEffect(() => {
     const timer = setTimeout(() => {
@@ -38,7 +51,7 @@ function App() {
     <>
       <InitialLoader loading={loading} />
 
-      {!loading && (
+      {!loading && !authLoading && (
         <div
           className="
             min-h-screen
@@ -59,7 +72,6 @@ function App() {
                   </PageTransition>
                 }
               />
-
               <Route
                 path="/projects/:slug"
                 element={
@@ -68,7 +80,6 @@ function App() {
                   </PageTransition>
                 }
               />
-
               <Route
                 path="*"
                 element={
@@ -77,7 +88,6 @@ function App() {
                   </PageTransition>
                 }
               />
-
               <Route
                 path="/verify"
                 element={
@@ -86,9 +96,43 @@ function App() {
                   </PageTransition>
                 }
               />
+              <Route
+                path="/login"
+                element={
+                  <PageTransition>
+                    <Login />
+                  </PageTransition>
+                }
+              />
+              <Route
+                path="/register"
+                element={
+                  <PageTransition>
+                    <Register />
+                  </PageTransition>
+                }
+              />
+              <Route
+                path="/forgot-password"
+                element={
+                  <PageTransition>
+                    <ForgotPassword />
+                  </PageTransition>
+                }
+              />
+
+              <Route
+                path="/dashboard"
+                element={
+                  <ProtectedRoute>
+                    <PageTransition>
+                      <Dashboard />
+                    </PageTransition>
+                  </ProtectedRoute>
+                }
+              />
             </Routes>
           </AnimatePresence>
-        
         </div>
       )}
     </>
