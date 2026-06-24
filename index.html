@@ -2,13 +2,44 @@
 <html lang="en">
   <head>
     <meta charset="UTF-8" />
-        <link rel="icon" href="./src//assets//suryanshu2.jpg" />
+
+    <script>
+      const theme = localStorage.getItem("theme");
+
+      const isDark =
+        theme === "dark" ||
+        (!theme &&
+          window.matchMedia("(prefers-color-scheme: dark)").matches);
+
+      if (isDark) {
+        document.documentElement.classList.add("dark");
+      }
+
+      document.documentElement.style.backgroundColor = isDark
+        ? "#0a0a0a"
+        : "#ffffff";
+    </script>
+
+    <style>
+      html,
+      body,
+      #root {
+        margin: 0;
+        min-height: 100%;
+        background: inherit;
+      }
+    </style>
+
+    <link rel="icon" href="./src/assets/suryanshu2.jpg" />
 
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Suryanshu VErma</title>
+
+    <title>Suryanshu Verma</title>
   </head>
+
   <body>
     <div id="root"></div>
+
     <script type="module" src="/src/main.jsx"></script>
   </body>
 </html>

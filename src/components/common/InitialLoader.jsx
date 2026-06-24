@@ -20,7 +20,7 @@ function InitialLoader({
           }}
 
           exit={{
-            opacity: 0,
+            opacity: 1,
           }}
 
           transition={{
@@ -93,7 +93,7 @@ function InitialLoader({
               "
             >
 
-              Building scalable systems
+              Building Portfolio
 
             </p>
 

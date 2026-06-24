@@ -40,13 +40,14 @@ export const skillsContent = [
       "Computer Networks",
       "Operating Systems",
       "Distributed Systems Basics",
+      "LaTeX"
     ],
   },
 
   {
     category: "Tools & Platforms",
 
-    primary: ["Git", "GitHub", "Postman"],
+    primary: ["Git", "GitHub", "Postman", "Docker" ],
 
     secondary: ["Linux", "VS Code", "Vercel", "Render"],
   },

@@ -16,7 +16,6 @@ import { ToastContainer } from "react-toastify";
 
 import "react-toastify/dist/ReactToastify.css";
 
-document.documentElement.classList.add("dark");
 
 createRoot(document.getElementById("root")).render(
   <StrictMode>

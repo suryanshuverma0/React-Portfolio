@@ -1,19 +1,28 @@
-
+import { useState, useEffect } from "react";
 import { motion } from "framer-motion";
-
 import Typewriter from "typewriter-effect";
-
-
-
 import Container from "../ui/Container";
-
-
 import { heroContent } from "../content/heroContent";
-
 import { iconMap } from "../constants/iconMap";
-
+import { getPublicProfile } from "../../services/public.profile.service";
 function Hero() {
   const heroData = heroContent;
+  const [profile, setProfile] = useState(null);
+
+  useEffect(() => {
+    const loadProfile = async () => {
+      try {
+        const data = await getPublicProfile();
+
+        setProfile(data);
+      } catch (error) {
+        console.error("Failed to load profile", error);
+      }
+    };
+
+    loadProfile();
+  }, []);
+  const displayData = profile || heroContent;
 
   return (
     <section
@@ -131,7 +140,7 @@ function Hero() {
             {/* IMAGE */}
 
             <img
-              src={heroData.image}
+              src={displayData.image?.url || displayData.image}
               alt={heroData.name}
               className="
                 relative
@@ -159,7 +168,7 @@ function Hero() {
               mb-4
             "
           >
-            {heroData.name}
+            {displayData.name}
           </h1>
 
           {/* STATUS */}
@@ -205,7 +214,7 @@ function Hero() {
         text-small
       "
               >
-                {heroData.availability}
+                {displayData.availability}
               </span>
             </div>
           </div>
@@ -222,7 +231,7 @@ function Hero() {
           >
             <Typewriter
               options={{
-                strings: heroData.roles,
+                strings: displayData.roles || [],
 
                 autoStart: true,
 
@@ -281,13 +290,10 @@ function Hero() {
             })}
           </div>
           {/* ON CHAIN */}
-         
         </motion.div>
       </Container>
 
       {/* MODAL */}
-
-    
     </section>
   );
 }

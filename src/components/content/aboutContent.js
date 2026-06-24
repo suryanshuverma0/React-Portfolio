@@ -17,7 +17,7 @@ export const aboutContent = {
       endYear: "2020",
     },
 
-    {
+     {
       degree: "Bachelor in Computer Engineering",
 
       institution: "Advanced College of Engineering and Management",
