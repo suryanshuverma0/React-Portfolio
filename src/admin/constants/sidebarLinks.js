@@ -8,6 +8,8 @@ import {
   School,
   Activity,
   Briefcase,
+  Layers3,
+
 } from "lucide-react";
 
 export const sidebarLinks = [
@@ -39,6 +41,11 @@ export const sidebarLinks = [
         path: "/dashboard/experience",
         icon: Briefcase,
       },
+       {
+        label: "Services",
+        path: "/dashboard/services",
+        icon: Layers3,
+      },
       {
         label: "Projects",
         path: "/dashboard/projects",
@@ -51,7 +58,7 @@ export const sidebarLinks = [
       },
       {
         label: "Skills",
-        path: "/dashboard/skills",
+        path: "/dashboard/skill",
         icon: Brain,
       },
     ],

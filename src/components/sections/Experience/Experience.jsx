@@ -59,9 +59,9 @@ function Experience() {
             gap-5
           "
         >
-          {displayExperiences.map((item, index) => (
+          {displayExperiences?.map((item, index) => (
             <motion.div
-              key={index}
+              key={item._id || index}
               initial={{
                 opacity: 0,
                 y: 20,

@@ -17,9 +17,10 @@ function Header({ setSidebarOpen }) {
     if (path.includes("/education")) return "Education";
     if (path.includes("/stats")) return "Stats";
     if (path.includes("/experience")) return "Experience";
+    if (path.includes("/services")) return "Services";
     if (path.includes("/projects")) return "Projects";
     if (path.includes("/certificates")) return "Certificates";
-    if (path.includes("/skills")) return "Skills";
+    if (path.includes("/skill")) return "Skills";
     if (path.includes("/settings")) return "Settings";
 
     return "Admin";

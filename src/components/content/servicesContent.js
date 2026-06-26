@@ -1,19 +1,13 @@
 export const servicesContent = [
   {
-    category: "Full Stack",
+    category: "Full     technologies",
 
-    title: "Full Stack Web Applications",
+    title: "Full     technologies Web Applications",
 
     description:
-      "Building scalable full-stack applications with modern frontend systems, backend APIs, authentication, and database integration.",
+      "Building scalable full-    technologies applications with modern frontend systems, backend APIs, authentication, and database integration.",
 
-    stack: [
-      "React.js",
-      "Next.js",
-      "Node.js",
-      "Express.js",
-      "MongoDB",
-    ],
+        technologies: ["React.js", "Next.js", "Node.js", "Express.js", "MongoDB"],
   },
 
   {
@@ -24,13 +18,7 @@ export const servicesContent = [
     description:
       "Developing secure and maintainable backend systems with clean architecture, REST APIs, authentication, and database management.",
 
-    stack: [
-      "Node.js",
-      "Express.js",
-      "REST APIs",
-      "JWT",
-      "MySQL",
-    ],
+        technologies: ["Node.js", "Express.js", "REST APIs", "JWT", "MySQL"],
   },
 
   {
@@ -41,13 +29,7 @@ export const servicesContent = [
     description:
       "Creating responsive and performance-focused user interfaces with reusable components and modern frontend technologies.",
 
-    stack: [
-      "React.js",
-      "Next.js",
-      "Tailwind CSS",
-      "React Native",
-      "Bootstrap",
-    ],
+        technologies: ["React.js", "Next.js", "Tailwind CSS", "React Native", "Bootstrap"],
   },
 
   {
@@ -58,12 +40,6 @@ export const servicesContent = [
     description:
       "Building practical blockchain applications, smart contracts, and Web3 integrations using Ethereum development tools.",
 
-    stack: [
-      "Solidity",
-      "Ethereum",
-      "Hardhat",
-      "Ethers.js",
-      "Web3",
-    ],
+        technologies: ["Solidity", "Ethereum", "Hardhat", "Ethers.js", "Web3"],
   },
 ];

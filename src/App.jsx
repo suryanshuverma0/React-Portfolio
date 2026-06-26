@@ -22,6 +22,7 @@ import Profile from "./admin/pages/Profile";
 import Education from "./admin/pages/Education"
 import Stats from "./admin/pages/Stats"
 import Experience from "./admin/pages/Experience"
+import Services from "./admin/pages/Services"
 import Projects from "./admin/pages/Projects";
 import Certificates from "./admin/pages/Certificates";
 import Skills from "./admin/pages/Skills";
@@ -128,9 +129,10 @@ function App() {
                 <Route path="education" element={<Education />} />
                 <Route path="stats" element={<Stats />} />
                 <Route path="experience" element={<Experience />} />
+                <Route path="services" element={<Services />} />
                 <Route path="projects" element={<Projects />} />
                 <Route path="certificates" element={<Certificates />} />
-                <Route path="skills" element={<Skills />} />
+                <Route path="skill" element={<Skills />} />
                 <Route path="settings" element={<Settings />} />
               </Route>
             </Routes>
