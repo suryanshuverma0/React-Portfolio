@@ -1,30 +1,26 @@
 import CarouselModule from "react-multi-carousel";
 
-const Carousel =
-  CarouselModule.default;
+const Carousel = CarouselModule.default;
 
 import "react-multi-carousel/lib/styles.css";
 
-import {
-  motion,
-} from "framer-motion";
+import { motion } from "framer-motion";
 
-import Container
-from "../../ui/Container";
+import Container from "../../ui/Container";
 
-import SectionTitle
-from "../../ui/SectionTitle";
+import SectionTitle from "../../ui/SectionTitle";
 
-import {
-  certificatesContent,
-} from "../../content/certificatesContent";
+import { useEffect, useState } from "react";
+
+import { certificatesContent } from "../../content/certificatesContent";
+
+import { getPublicCertificates } from "../../../services/public.certificate.service";
 
 /* ========================================
    RESPONSIVE
 ======================================== */
 
 const responsive = {
-
   desktop: {
     breakpoint: {
       max: 3000,
@@ -58,32 +54,43 @@ const responsive = {
 ======================================== */
 
 function Certificates() {
+  const [certificates, setCertificates] = useState([]);
 
+  useEffect(() => {
+    const loadCertificates = async () => {
+      try {
+        const data = await getPublicCertificates();
+
+        setCertificates(data);
+        console.log("certificate",data)
+      } catch (error) {
+        console.error("Failed to load certificates", error);
+      }
+    };
+
+    loadCertificates();
+  }, []);
+
+  const displayCertificates =
+    certificates.length > 0 ? certificates : certificatesContent;
   return (
-
     <section
       id="certificates"
-
       className="
         section
 
         overflow-hidden
       "
     >
-
       <Container>
-
         {/* TITLE */}
 
         <SectionTitle
-
           eyebrow="Certificates"
-
           title="
             Technical certifications
             and learning milestones.
           "
-
           description="
             Selected certifications
             across backend engineering,
@@ -99,7 +106,6 @@ function Certificates() {
             relative
           "
         >
-
           {/* GLOW */}
 
           <div
@@ -118,68 +124,43 @@ function Certificates() {
           />
 
           <Carousel
-
             responsive={responsive}
-
             arrows
-
             showDots
-
             infinite
-
             autoPlay
-
             autoPlaySpeed={4500}
-
             swipeable
-
             draggable
-
             keyBoardControl
-
             renderDotsOutside={false}
-
             containerClass="
               w-full
             "
-
             itemClass="
               px-0
               sm:px-2
             "
           >
-
-            {certificatesContent.map(
-              (
-                item,
-                index
-              ) => (
-
-                <motion.div
-
-                  key={index}
-
-                  initial={{
-                    opacity: 0,
-                    y: 20,
-                  }}
-
-                  whileInView={{
-                    opacity: 1,
-                    y: 0,
-                  }}
-
-                  viewport={{
-                    once: true,
-                  }}
-
-                  transition={{
-                    duration: 0.4,
-                    delay:
-                      index * 0.05,
-                  }}
-
-                  className="
+            {displayCertificates.map((item, index) => (
+              <motion.div
+                key={index}
+                initial={{
+                  opacity: 0,
+                  y: 20,
+                }}
+                whileInView={{
+                  opacity: 1,
+                  y: 0,
+                }}
+                viewport={{
+                  once: true,
+                }}
+                transition={{
+                  duration: 0.4,
+                  delay: index * 0.05,
+                }}
+                className="
                     card
 
                     overflow-hidden
@@ -190,12 +171,11 @@ function Certificates() {
 
                     max-w-[920px]
                   "
-                >
+              >
+                {/* TOP */}
 
-                  {/* TOP */}
-
-                  <div
-                    className="
+                <div
+                  className="
                       flex
                       items-center
                       justify-between
@@ -205,21 +185,19 @@ function Certificates() {
                       border-b
                       border-border
                     "
-                  >
+                >
+                  {/* DOTS */}
 
-                    {/* DOTS */}
-
-                    <div
-                      className="
+                  <div
+                    className="
                         flex
                         items-center
 
                         gap-2
                       "
-                    >
-
-                      <div
-                        className="
+                  >
+                    <div
+                      className="
                           h-2
                           w-2
 
@@ -227,10 +205,10 @@ function Certificates() {
 
                           bg-red-400
                         "
-                      />
+                    />
 
-                      <div
-                        className="
+                    <div
+                      className="
                           h-2
                           w-2
 
@@ -238,10 +216,10 @@ function Certificates() {
 
                           bg-yellow-400
                         "
-                      />
+                    />
 
-                      <div
-                        className="
+                    <div
+                      className="
                           h-2
                           w-2
 
@@ -249,30 +227,26 @@ function Certificates() {
 
                           bg-green-400
                         "
-                      />
+                    />
+                  </div>
 
-                    </div>
-
-                    <p
-                      className="
+                  <p
+                    className="
                         text-muted
 
                         uppercase
 
                         tracking-[0.18em]
                       "
-                    >
+                  >
+                    Certificate
+                  </p>
+                </div>
 
-                      Certificate
+                {/* IMAGE */}
 
-                    </p>
-
-                  </div>
-
-                  {/* IMAGE */}
-
-                  <div
-                    className="
+                <div
+                  className="
                       mt-4
 
                       overflow-hidden
@@ -284,31 +258,25 @@ function Certificates() {
 
                       bg-surface
                     "
-                  >
-
-                    <img
-
-                      src={item.image}
-
-                      alt={item.title}
-
-                      loading="lazy"
-
-                      className="
+                >
+                  <img
+                    src={ item.image?.url || item.image}
+                    alt={item.title}
+                    loading="lazy"
+                    className="
                         w-full
 
                         aspect-video
 
                         object-cover
                       "
-                    />
+                  />
+                </div>
 
-                  </div>
+                {/* FOOTER */}
 
-                  {/* FOOTER */}
-
-                  <div
-                    className="
+                <div
+                  className="
                       pt-4
 
                       flex
@@ -320,52 +288,43 @@ function Certificates() {
 
                       gap-4
                     "
-                  >
+                >
+                  {/* INFO */}
 
-                    {/* INFO */}
-
-                    <div>
-
-                      <p
-                        className="
+                  <div>
+                    <p
+                      className="
                           text-muted
 
                           mb-1
                         "
-                      >
+                    >
+                      {item.issuer}
+                      {" · "}
+                      {item.year}
+                    </p>
 
-                        {item.issuer}
-                        {" · "}
-                        {item.year}
-
-                      </p>
-
-                      <h3
-                        className="
+                    <h3
+                      className="
                           text-label
                         "
-                      >
+                    >
+                      {item.title}
+                    </h3>
+                  </div>
 
-                        {item.title}
+                  {/* CTA */}
 
-                      </h3>
-
-                    </div>
-
-                    {/* CTA */}
-
-                    <button
-                      type="button"
-
-                      onClick={() =>
-                        window.open(
-                          item.verifyUrl,
-                          "_blank",
-                          "noopener,noreferrer"
-                        )
-                      }
-
-                      className="
+                  <button
+                    type="button"
+                    onClick={() =>
+                      window.open(
+                        item.verifyUrl,
+                        "_blank",
+                        "noopener,noreferrer",
+                      )
+                    }
+                    className="
                         h-control
 
                         px-control
@@ -385,25 +344,15 @@ function Certificates() {
 
                         hover:opacity-90
                       "
-                    >
-
-                      Verify
-
-                    </button>
-
-                  </div>
-
-                </motion.div>
-
-              )
-            )}
-
+                  >
+                    Verify
+                  </button>
+                </div>
+              </motion.div>
+            ))}
           </Carousel>
-
         </div>
-
       </Container>
-
     </section>
   );
 }

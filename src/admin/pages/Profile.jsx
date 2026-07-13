@@ -11,6 +11,8 @@ import {
   updateProfile,
 } from "../services/profile.service";
 import { uploadImage } from "../services/upload.service";
+import SkeketonCard from "../../components/common/SkeletonCard";
+
 
 function Profile() {
   const [loading, setLoading] = useState(true);
@@ -113,7 +115,7 @@ function Profile() {
   };
 
   if (loading) {
-    return <div className="card">Loading profile...</div>;
+    return <SkeketonCard/>;
   }
 
   return (

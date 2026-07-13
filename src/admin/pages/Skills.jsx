@@ -12,6 +12,8 @@ import {
   updateSkill,
   deleteSkill,
 } from "../services/skills.service";
+import SkeketonCard from "../../components/common/SkeletonCard"
+import SkeletonCard from "../../components/common/SkeletonCard";
 
 const categoryOptions = [
   { value: "Programming Languages", label: "Programming Languages" },
@@ -261,7 +263,7 @@ function Skills() {
   };
 
   if (loading) {
-    return <div className="card">Loading skills...</div>;
+    return <SkeletonCard/>;
   }
 
   return (

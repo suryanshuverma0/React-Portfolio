@@ -13,6 +13,8 @@ import {
   deleteEducation,
 } from "../services/education.service";
 
+import SkeketonCard from "../../components/common/SkeletonCard"
+
 function Education() {
   const [educations, setEducations] = useState([]);
 
@@ -167,7 +169,7 @@ function Education() {
   };
 
   if (loading) {
-    return <div className="card">Loading...</div>;
+    return <SkeketonCard/>;
   }
 
   return (

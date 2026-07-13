@@ -15,6 +15,9 @@ import {
   updateService,
   deleteService,
 } from "../services/service.service";
+import SkeketonCard from "../../components/common/SkeletonCard"
+import SkeletonCard from "../../components/common/SkeletonCard";
+
 function Services() {
   const [services, setServices] = useState([]);
 
@@ -219,7 +222,7 @@ function Services() {
   };
 
   if (loading) {
-    return <div className="card">Loading services...</div>;
+    return <SkeletonCard/>;
   }
 
   return (

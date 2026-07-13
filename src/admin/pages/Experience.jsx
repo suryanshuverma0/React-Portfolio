@@ -14,6 +14,8 @@ import {
   updateExperience,
   deleteExperience,
 } from "../services/experience.service";
+import SkeketonCard from "../../components/common/SkeletonCard"
+
 function Experience() {
   const [experiences, setExperiences] = useState([]);
   const [loading, setLoading] = useState(true);
@@ -195,7 +197,6 @@ function Experience() {
       setDeleting(true);
       await deleteExperience(deleteId);
       toast.success("Experience deleted successfully");
-      loadExperiences()
       closeDeleteModal();
       await loadExperiences();
     } catch {
@@ -205,7 +206,7 @@ function Experience() {
     }
   };
   if (loading) {
-    return <div className="card">Loading...</div>;
+    return <SkeketonCard/>;
   }
 
   return (

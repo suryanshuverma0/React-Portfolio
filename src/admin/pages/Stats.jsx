@@ -11,6 +11,9 @@ import {
   updateStat,
   deleteStat,
 } from "../services/stats.service";
+import SkeketonCard from "../../components/common/SkeletonCard"
+import SkeletonCard from "../../components/common/SkeletonCard";
+
 
 function Stats() {
   const [stats, setStats] = useState([]);
@@ -141,7 +144,7 @@ function Stats() {
   };
 
   if (loading) {
-    return <div className="card">Loading stats... </div>;
+    return <SkeletonCard/>;
   }
 
   return (
