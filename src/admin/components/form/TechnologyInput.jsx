@@ -4,6 +4,8 @@ import { X } from "lucide-react";
 function TechnologyInput({
   technologies,
   setTechnologies,
+  label = "Technologies",
+  placeholder = "React",
 }) {
   const [value, setValue] =
     useState("");
@@ -39,7 +41,7 @@ function TechnologyInput({
   return (
     <div className="space-y-4">
       <label className="text-label">
-        Technologies
+        {label}
       </label>
 
       <div className="flex gap-2">
@@ -50,7 +52,7 @@ function TechnologyInput({
               e.target.value,
             )
           }
-          placeholder="React"
+          placeholder={placeholder}
           className="
             flex-1
 

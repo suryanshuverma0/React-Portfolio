@@ -6,6 +6,7 @@ import {
 
 import {
   useEffect,
+  useState,
 } from "react";
 
 import {
@@ -23,11 +24,13 @@ import {
   projectsContent,
 } from "../components/content/projectsContent";
 
+import { getPublicProjectBySlug } from "../services/public.projects.service";
+
 import SEO
 from "../components/common/SEO";
 
 import {
-  
+
   Navigate,
 } from "react-router-dom";
 function ProjectDetails() {
@@ -35,11 +38,12 @@ function ProjectDetails() {
   const { slug } =
     useParams();
 
-  const project =
+  const [project, setProject] = useState(() =>
     projectsContent.find(
       (item) =>
         item.slug === slug
-    );
+    )
+  );
 
 /* ========================================
    SCROLL TO TOP
@@ -53,6 +57,19 @@ useEffect(() => {
   });
 
 }, []);
+
+useEffect(() => {
+  const loadProject = async () => {
+    try {
+      const data = await getPublicProjectBySlug(slug);
+      setProject(data);
+    } catch (error) {
+      console.error("Failed to load project", error);
+    }
+  };
+
+  loadProject();
+}, [slug]);
 
 
   /* ========================================
