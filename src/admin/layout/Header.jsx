@@ -21,6 +21,7 @@ function Header({ setSidebarOpen }) {
     if (path.includes("/projects")) return "Projects";
     if (path.includes("/certificates")) return "Certificates";
     if (path.includes("/skill")) return "Skills";
+    if (path.includes("/analytics")) return "Analytics";
     if (path.includes("/settings")) return "Settings";
 
     return "Admin";

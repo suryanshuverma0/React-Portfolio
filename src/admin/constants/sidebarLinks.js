@@ -9,6 +9,7 @@ import {
   Activity,
   Briefcase,
   Layers3,
+  BarChart3,
 
 } from "lucide-react";
 
@@ -60,6 +61,11 @@ export const sidebarLinks = [
         label: "Skills",
         path: "/dashboard/skill",
         icon: Brain,
+      },
+      {
+        label: "Analytics",
+        path: "/dashboard/analytics",
+        icon: BarChart3,
       },
     ],
   },

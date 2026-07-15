@@ -25,25 +25,23 @@ import {
 } from "../components/content/projectsContent";
 
 import { getPublicProjectBySlug } from "../services/public.projects.service";
+import { trackPageView } from "../services/public.analytics.service";
 
 import SEO
 from "../components/common/SEO";
 
-import {
-
-  Navigate,
-} from "react-router-dom";
+import NotFound from "./NotFound";
 function ProjectDetails() {
 
   const { slug } =
     useParams();
 
-  const [project, setProject] = useState(() =>
-    projectsContent.find(
-      (item) =>
-        item.slug === slug
-    )
+  const staticProject = projectsContent.find(
+    (item) => item.slug === slug
   );
+
+  const [project, setProject] = useState(staticProject);
+  const [checked, setChecked] = useState(Boolean(staticProject));
 
 /* ========================================
    SCROLL TO TOP
@@ -59,16 +57,28 @@ useEffect(() => {
 }, []);
 
 useEffect(() => {
+  let cancelled = false;
+
   const loadProject = async () => {
     try {
       const data = await getPublicProjectBySlug(slug);
-      setProject(data);
+      if (!cancelled) setProject(data);
     } catch (error) {
       console.error("Failed to load project", error);
+    } finally {
+      if (!cancelled) setChecked(true);
     }
   };
 
   loadProject();
+
+  return () => {
+    cancelled = true;
+  };
+}, [slug]);
+
+useEffect(() => {
+  trackPageView(`/projects/${slug}`);
 }, [slug]);
 
 
@@ -78,12 +88,11 @@ useEffect(() => {
 
 if (!project) {
 
-  return (
-    <Navigate
-      to="*"
-      replace
-    />
-  );
+  if (!checked) {
+    return null;
+  }
+
+  return <NotFound />;
 }
 
 

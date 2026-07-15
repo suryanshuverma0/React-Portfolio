@@ -6,6 +6,11 @@ import {
   Send,
 } from "lucide-react";
 
+import {
+  useState,
+  useEffect,
+} from "react";
+
 import Container
 from "../../ui/Container";
 
@@ -20,7 +25,53 @@ import {
   contactContent,
 } from "../../content/contactContent";
 
+import { getPublicSettings } from "../../../services/public.settings.service";
+import { socialsObjectToArray } from "../../../lib/socials";
+
 function Contact() {
+
+  const [settings, setSettings] = useState(null);
+
+  useEffect(() => {
+    const loadSettings = async () => {
+      try {
+        const data = await getPublicSettings();
+
+        setSettings(data);
+      } catch (error) {
+        console.error("Failed to load settings", error);
+      }
+    };
+
+    loadSettings();
+  }, []);
+
+  const settingsContacts = [];
+
+  if (settings?.contactEmail) {
+    settingsContacts.push({
+      type: "email",
+      label: "Email",
+      value: settings.contactEmail,
+      href: `mailto:${settings.contactEmail}`,
+    });
+  }
+
+  if (settings?.contactPhone) {
+    settingsContacts.push({
+      type: "phone",
+      label: "Phone",
+      value: settings.contactPhone,
+      href: `tel:${settings.contactPhone.replace(/\s+/g, "")}`,
+    });
+  }
+
+  const contacts = settingsContacts.length
+    ? settingsContacts
+    : contactContent.contacts;
+
+  const settingsSocials = socialsObjectToArray(settings?.socials);
+  const socials = settingsSocials.length ? settingsSocials : contactContent.socials;
 
   return (
 
@@ -162,7 +213,7 @@ function Contact() {
                 "
               >
 
-                {contactContent.contacts.map(
+                {contacts.map(
                   (
                     item,
                     index
@@ -313,7 +364,7 @@ function Contact() {
                   "
                 >
 
-                  {contactContent.socials.map(
+                  {socials.map(
                     (
                       item,
                       index
@@ -321,6 +372,8 @@ function Contact() {
 
                       const Icon =
                         iconMap[item.icon];
+
+                      if (!Icon) return null;
 
                       return (
 

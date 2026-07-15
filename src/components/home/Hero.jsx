@@ -5,9 +5,12 @@ import Container from "../ui/Container";
 import { heroContent } from "../content/heroContent";
 import { iconMap } from "../constants/iconMap";
 import { getPublicProfile } from "../../services/public.profile.service";
+import { getPublicSettings } from "../../services/public.settings.service";
+import { socialsObjectToArray } from "../../lib/socials";
 function Hero() {
   const heroData = heroContent;
   const [profile, setProfile] = useState(null);
+  const [settings, setSettings] = useState(null);
 
   useEffect(() => {
     const loadProfile = async () => {
@@ -22,7 +25,23 @@ function Hero() {
 
     loadProfile();
   }, []);
+
+  useEffect(() => {
+    const loadSettings = async () => {
+      try {
+        const data = await getPublicSettings();
+
+        setSettings(data);
+      } catch (error) {
+        console.error("Failed to load settings", error);
+      }
+    };
+
+    loadSettings();
+  }, []);
   const displayData = profile || heroContent;
+  const settingsSocials = socialsObjectToArray(settings?.socials);
+  const displaySocials = settingsSocials.length ? settingsSocials : heroData.socials;
 
   return (
     <section
@@ -256,8 +275,10 @@ function Hero() {
               mb-14
             "
           >
-            {heroData.socials.map((item, index) => {
+            {displaySocials.map((item, index) => {
               const Icon = iconMap[item.icon];
+
+              if (!Icon) return null;
 
               return (
                 <a

@@ -26,6 +26,7 @@ import Services from "./admin/pages/Services"
 import Projects from "./admin/pages/Projects";
 import Certificates from "./admin/pages/Certificates";
 import Skills from "./admin/pages/Skills";
+import Analytics from "./admin/pages/Analytics";
 import Settings from "./admin/pages/Settings";
 function App() {
   const [loading, setLoading] = useState(true);
@@ -133,6 +134,7 @@ function App() {
                 <Route path="projects" element={<Projects />} />
                 <Route path="certificates" element={<Certificates />} />
                 <Route path="skill" element={<Skills />} />
+                <Route path="analytics" element={<Analytics />} />
                 <Route path="settings" element={<Settings />} />
               </Route>
             </Routes>
