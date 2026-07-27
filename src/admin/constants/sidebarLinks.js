@@ -10,6 +10,7 @@ import {
   Briefcase,
   Layers3,
   BarChart3,
+  Users as UsersIcon,
 
 } from "lucide-react";
 
@@ -73,6 +74,11 @@ export const sidebarLinks = [
   {
     section: "SYSTEM",
     items: [
+      {
+        label: "Users",
+        path: "/dashboard/users",
+        icon: UsersIcon,
+      },
       {
         label: "Settings",
         path: "/dashboard/settings",

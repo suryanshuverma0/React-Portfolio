@@ -22,6 +22,7 @@ function Settings() {
 
   const [siteKeywords, setSiteKeywords] = useState([]);
   const [maintenanceMode, setMaintenanceMode] = useState(false);
+  const [publicAccessEnabled, setPublicAccessEnabled] = useState(true);
 
   const [ogImage, setOgImage] = useState(null);
   const [ogImagePreview, setOgImagePreview] = useState(null);
@@ -61,6 +62,7 @@ function Settings() {
 
       setSiteKeywords(settings.siteKeywords || []);
       setMaintenanceMode(settings.maintenanceMode ?? false);
+      setPublicAccessEnabled(settings.publicAccessEnabled ?? true);
 
       setSocials({
         github: settings.socials?.github || "",
@@ -138,6 +140,7 @@ function Settings() {
         siteKeywords,
         socials,
         maintenanceMode,
+        publicAccessEnabled,
         ...(ogImage !== null ? { ogImage } : {}),
       };
 
@@ -313,6 +316,25 @@ function Settings() {
         </div>
 
         <AdminSwitch checked={maintenanceMode} onChange={setMaintenanceMode} />
+      </div>
+
+      <div className="card flex items-center justify-between gap-4">
+        <div>
+          <h3 className="text-label">Public Registration &amp; Login</h3>
+
+          <p className="text-small mt-1">
+            When on, anyone can register or log in (email/password or
+            Google) &mdash; new sign-ups are created as regular users with no
+            dashboard access. When off, only suryanshuverma42@gmail.com can
+            register or log in; everyone else is blocked, including accounts
+            that already exist. Never affects already-signed-in sessions.
+          </p>
+        </div>
+
+        <AdminSwitch
+          checked={publicAccessEnabled}
+          onChange={setPublicAccessEnabled}
+        />
       </div>
 
       <div className="flex justify-end">

@@ -10,6 +10,8 @@ import { toast } from "react-toastify";
 
 import { forgotPasswordSchema } from "../validations/authValidation";
 
+import api from "../lib/axios";
+
 import AuthLayout from "../components/auth/AuthLayout";
 
 import AuthInput from "../components/auth/AuthInput";
@@ -59,22 +61,25 @@ function ForgotPassword() {
 
   const onSubmit = async (data) => {
     try {
-      /*
-          API CALL LATER
-
-          await api.post(
-            "/auth/forgot-password",
-            data
-          );
-        */
+      await api.post("/auth/forgot-password", data);
 
       setSuccess(true);
-
-      toast.success("Reset link sent");
     } catch (error) {
       console.error(error);
 
-      toast.error("Failed to send reset link");
+      if (error.response?.status === 429) {
+        const retryAfter = error.response.data?.retryAfter;
+
+        toast.error(
+          `Too many attempts. Try again in ${retryAfter} seconds.`,
+        );
+
+        return;
+      }
+
+      toast.error(
+        error.response?.data?.message || "Failed to send reset link",
+      );
     }
   };
 

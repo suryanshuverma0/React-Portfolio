@@ -23,6 +23,30 @@ export function AuthProvider({ children }) {
       const response = await api.post("/auth/login", data);
 
       setUser(response.data.data);
+
+      return response.data.data;
+    } catch (error) {
+      console.error(error);
+
+      throw error;
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  /* ========================================
+     GOOGLE LOGIN
+  ========================================= */
+
+  const loginWithGoogle = async (credential) => {
+    try {
+      setLoading(true);
+
+      const response = await api.post("/google-auth/login", { credential });
+
+      setUser(response.data.data);
+
+      return response.data.data;
     } catch (error) {
       console.error(error);
 
@@ -59,6 +83,8 @@ export function AuthProvider({ children }) {
       const response = await api.post("/auth/register", data);
 
       setUser(response.data.data);
+
+      return response.data.data;
     } catch (error) {
       setUser(null);
       if (error.response?.status !== 401) {
@@ -97,6 +123,8 @@ export function AuthProvider({ children }) {
         loading,
 
         login,
+
+        loginWithGoogle,
 
         logout,
 

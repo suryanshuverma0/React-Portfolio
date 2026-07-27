@@ -12,6 +12,8 @@ import ScrollToHash from "./components/common/ScrollToHash";
 import Login from "./pages/Login";
 import Register from "./pages/Register";
 import ForgotPassword from "./pages/ForgotPassword";
+import ResetPassword from "./pages/ResetPassword";
+import UserAccess from "./pages/UserAccess";
 import { useAuth } from "./contexts/AuthContext";
 // import Dashboard from "./pages/Dashboard";
 import ProtectedRoute from "./components/routes/ProtectedRoute";
@@ -28,6 +30,7 @@ import Certificates from "./admin/pages/Certificates";
 import Skills from "./admin/pages/Skills";
 import Analytics from "./admin/pages/Analytics";
 import Settings from "./admin/pages/Settings";
+import Users from "./admin/pages/Users";
 function App() {
   const [loading, setLoading] = useState(true);
 
@@ -118,6 +121,24 @@ function App() {
               />
 
               <Route
+                path="/reset-password/:token"
+                element={
+                  <PageTransition>
+                    <ResetPassword />
+                  </PageTransition>
+                }
+              />
+
+              <Route
+                path="/account"
+                element={
+                  <PageTransition>
+                    <UserAccess />
+                  </PageTransition>
+                }
+              />
+
+              <Route
                 path="/dashboard"
                 element={
                   <ProtectedRoute>
@@ -135,6 +156,7 @@ function App() {
                 <Route path="certificates" element={<Certificates />} />
                 <Route path="skill" element={<Skills />} />
                 <Route path="analytics" element={<Analytics />} />
+                <Route path="users" element={<Users />} />
                 <Route path="settings" element={<Settings />} />
               </Route>
             </Routes>

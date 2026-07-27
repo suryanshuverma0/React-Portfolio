@@ -21,6 +21,7 @@ import Contact from "../components/sections/Contact/Contact";
 import Footer from "../components/layout/Footer";
 
 import SEO from "../components/common/SEO";
+import MaintenanceScreen from "../components/common/MaintenanceScreen";
 
 import { getPublicSettings } from "../services/public.settings.service";
 import { trackPageView } from "../services/public.analytics.service";
@@ -53,36 +54,31 @@ function HomePage() {
     trackPageView("/");
   }, []);
 
+  const seo = (
+    <SEO
+      title={settings?.siteTitle || DEFAULT_TITLE}
+      description={settings?.siteDescription || DEFAULT_DESCRIPTION}
+      keywords={
+        settings?.siteKeywords?.length
+          ? settings.siteKeywords.join(", ")
+          : DEFAULT_KEYWORDS
+      }
+      image={settings?.ogImage || "/og-image.png"}
+    />
+  );
+
+  if (settings?.maintenanceMode) {
+    return (
+      <>
+        {seo}
+        <MaintenanceScreen />
+      </>
+    );
+  }
+
   return (
     <>
-      <SEO
-        title={settings?.siteTitle || DEFAULT_TITLE}
-        description={settings?.siteDescription || DEFAULT_DESCRIPTION}
-        keywords={
-          settings?.siteKeywords?.length
-            ? settings.siteKeywords.join(", ")
-            : DEFAULT_KEYWORDS
-        }
-        image={settings?.ogImage || "/og-image.png"}
-      />
-
-      {settings?.maintenanceMode && (
-        <div
-          className="
-            bg-primary
-            text-background
-
-            text-small
-            text-center
-
-            py-2
-            px-4
-          "
-        >
-          This site is currently undergoing maintenance. Some content may be
-          out of date.
-        </div>
-      )}
+      {seo}
 
       <Navbar />
 

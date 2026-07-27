@@ -16,25 +16,29 @@ import { ToastContainer } from "react-toastify";
 
 import "react-toastify/dist/ReactToastify.css";
 
+import { GoogleOAuthProvider } from "@react-oauth/google";
+
 
 createRoot(document.getElementById("root")).render(
   <StrictMode>
-    <HelmetProvider>
-      <BrowserRouter>
-        <AuthProvider>
-          <App />
-          <ToastContainer
-            position="top-right"
-            autoClose={3500}
-            hideProgressBar={true}
-            newestOnTop={true}
-            closeOnClick
-            pauseOnHover
-            draggable
-            theme="dark"
-          />
-        </AuthProvider>
-      </BrowserRouter>
-    </HelmetProvider>
+    <GoogleOAuthProvider clientId={import.meta.env.VITE_GOOGLE_CLIENT_ID}>
+      <HelmetProvider>
+        <BrowserRouter>
+          <AuthProvider>
+            <App />
+            <ToastContainer
+              position="top-right"
+              autoClose={3500}
+              hideProgressBar={true}
+              newestOnTop={true}
+              closeOnClick
+              pauseOnHover
+              draggable
+              theme="dark"
+            />
+          </AuthProvider>
+        </BrowserRouter>
+      </HelmetProvider>
+    </GoogleOAuthProvider>
   </StrictMode>,
 );
