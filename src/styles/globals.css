@@ -27,6 +27,14 @@
 
   --color-border: #d4d4d8;
 
+  /* CHART (admin analytics only — categorical identity, fixed order,
+     validated for CVD-safety against this theme's card surface) */
+
+  --color-chart-1: #2a78d6; /* blue */
+  --color-chart-2: #eb6834; /* orange */
+  --color-chart-3: #1baf7a; /* aqua */
+  --color-chart-4: #eda100; /* yellow */
+
   /* TYPOGRAPHY */
 
   --font-sans: "Inter", sans-serif;
@@ -50,6 +58,11 @@
   --color-muted: #71717a;
 
   --color-border: #262626;
+
+  --color-chart-1: #3987e5;
+  --color-chart-2: #d95926;
+  --color-chart-3: #199e70;
+  --color-chart-4: #c98500;
 }
 
 /* ========================================
