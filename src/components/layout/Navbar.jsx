@@ -3,6 +3,8 @@ import {
   useState,
 } from "react";
 
+import { useLocation } from "react-router-dom";
+
 import {
   Menu,
   X,
@@ -31,6 +33,10 @@ function Navbar() {
   const navItems =
     navbarContent;
 
+  const location = useLocation();
+
+  const onRoutedPage = location.pathname !== "/";
+
   const [
     mobileOpen,
     setMobileOpen,
@@ -47,10 +53,31 @@ function Navbar() {
   ] = useState("Home");
 
   /* ========================================
+     ROUTED PAGE (e.g. /blog) — active nav
+     item comes from the URL, not scroll
+     position, since there are no in-page
+     sections to detect here.
+  ========================================= */
+
+  useEffect(() => {
+    if (!onRoutedPage) return;
+
+    const matched = navItems.find(
+      (item) =>
+        !item.href.startsWith("#") &&
+        location.pathname.startsWith(item.href),
+    );
+
+    setActiveSection(matched ? matched.label : "");
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [onRoutedPage, location.pathname]);
+
+  /* ========================================
      SCROLL DETECTION
   ========================================= */
 
   useEffect(() => {
+    if (onRoutedPage) return;
 
     const handleScroll =
       () => {
@@ -111,7 +138,7 @@ function Navbar() {
         handleScroll
       );
 
-  }, [navItems]);
+  }, [navItems, onRoutedPage]);
 
   /* ========================================
      CLOSE MOBILE ON RESIZE

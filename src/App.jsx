@@ -2,6 +2,8 @@ import { useEffect, useState } from "react";
 import { Routes, Route } from "react-router-dom";
 import HomePage from "./pages/HomePage";
 import ProjectDetails from "./pages/ProjectDetails";
+import Blog from "./pages/Blog";
+import BlogPost from "./pages/BlogPost";
 import InitialLoader from "./components/common/InitialLoader";
 import NotFound from "./pages/NotFound";
 import { AnimatePresence } from "framer-motion";
@@ -31,6 +33,9 @@ import Skills from "./admin/pages/Skills";
 import Analytics from "./admin/pages/Analytics";
 import Settings from "./admin/pages/Settings";
 import Users from "./admin/pages/Users";
+import AdminBlog from "./admin/pages/Blog";
+import BlogEditor from "./admin/pages/BlogEditor";
+import BlogComments from "./admin/pages/BlogComments";
 function App() {
   const [loading, setLoading] = useState(true);
 
@@ -76,6 +81,22 @@ function App() {
                 element={
                   <PageTransition>
                     <ProjectDetails />
+                  </PageTransition>
+                }
+              />
+              <Route
+                path="/blog"
+                element={
+                  <PageTransition>
+                    <Blog />
+                  </PageTransition>
+                }
+              />
+              <Route
+                path="/blog/:slug"
+                element={
+                  <PageTransition>
+                    <BlogPost />
                   </PageTransition>
                 }
               />
@@ -157,6 +178,10 @@ function App() {
                 <Route path="skill" element={<Skills />} />
                 <Route path="analytics" element={<Analytics />} />
                 <Route path="users" element={<Users />} />
+                <Route path="blog" element={<AdminBlog />} />
+                <Route path="blog/new" element={<BlogEditor />} />
+                <Route path="blog/:id/edit" element={<BlogEditor />} />
+                <Route path="blog/comments" element={<BlogComments />} />
                 <Route path="settings" element={<Settings />} />
               </Route>
             </Routes>

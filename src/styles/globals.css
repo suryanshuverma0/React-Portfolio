@@ -263,6 +263,181 @@ body {
 }
 
 
+/* ========================================
+   BLOG PROSE
+   Hand-written against this app's own
+   tokens (not a typography plugin) so it
+   stays exactly consistent in both themes.
+======================================== */
+
+.prose-blog {
+  color: var(--color-secondary);
+  font-size: 17px;
+  line-height: 1.8;
+}
+
+.prose-blog > *:first-child {
+  margin-top: 0;
+}
+
+.prose-blog h1,
+.prose-blog h2,
+.prose-blog h3,
+.prose-blog h4 {
+  color: var(--color-primary);
+  font-weight: 600;
+  letter-spacing: -0.02em;
+  line-height: 1.25;
+  margin-top: 2.2em;
+  margin-bottom: 0.7em;
+}
+
+.prose-blog h1 {
+  font-size: 1.9em;
+}
+.prose-blog h2 {
+  font-size: 1.5em;
+}
+.prose-blog h3 {
+  font-size: 1.25em;
+}
+.prose-blog h4 {
+  font-size: 1.1em;
+}
+
+.prose-blog p {
+  margin-top: 1.3em;
+  margin-bottom: 1.3em;
+}
+
+.prose-blog a {
+  color: var(--color-primary);
+  text-decoration: underline;
+  text-decoration-color: var(--color-border);
+  text-underline-offset: 3px;
+  transition: text-decoration-color 0.2s ease;
+}
+.prose-blog a:hover {
+  text-decoration-color: var(--color-primary);
+}
+
+.prose-blog strong {
+  color: var(--color-primary);
+  font-weight: 600;
+}
+
+.prose-blog ul,
+.prose-blog ol {
+  margin-top: 1.3em;
+  margin-bottom: 1.3em;
+  padding-left: 1.4em;
+}
+.prose-blog ul {
+  list-style: disc;
+}
+.prose-blog ol {
+  list-style: decimal;
+}
+.prose-blog li {
+  margin-top: 0.5em;
+}
+.prose-blog li::marker {
+  color: var(--color-muted);
+}
+
+.prose-blog blockquote {
+  border-left: 3px solid var(--color-border);
+  padding-left: 1.2em;
+  margin: 1.6em 0;
+  color: var(--color-muted);
+  font-style: italic;
+}
+
+.prose-blog hr {
+  border: none;
+  border-top: 1px solid var(--color-border);
+  margin: 2.5em 0;
+}
+
+.prose-blog img {
+  border-radius: 20px;
+  border: 1px solid var(--color-border);
+  margin: 1.8em 0;
+  max-width: 100%;
+  height: auto;
+}
+
+.prose-blog code {
+  background-color: var(--color-surface);
+  border: 1px solid var(--color-border);
+  border-radius: 6px;
+  padding: 0.15em 0.4em;
+  font-size: 0.87em;
+  font-family: ui-monospace, "SF Mono", Menlo, monospace;
+}
+
+.prose-blog pre {
+  background-color: var(--color-surface);
+  border: 1px solid var(--color-border);
+  border-radius: 16px;
+  padding: 1.2em 1.4em;
+  overflow-x: auto;
+  margin: 1.8em 0;
+}
+.prose-blog pre code {
+  background: none;
+  border: none;
+  padding: 0;
+  font-size: 0.87em;
+  color: var(--color-secondary);
+}
+
+.prose-blog table {
+  width: 100%;
+  border-collapse: collapse;
+  margin: 1.8em 0;
+  font-size: 0.92em;
+}
+.prose-blog th,
+.prose-blog td {
+  border: 1px solid var(--color-border);
+  padding: 0.6em 0.9em;
+  text-align: left;
+}
+.prose-blog th {
+  color: var(--color-primary);
+  background-color: var(--color-surface);
+  font-weight: 600;
+}
+
+/* Minimal syntax highlighting — reuses the same validated chart tokens
+   from the analytics palette instead of inventing a new one. */
+.prose-blog .hljs-keyword,
+.prose-blog .hljs-selector-tag,
+.prose-blog .hljs-tag {
+  color: var(--color-chart-1);
+}
+.prose-blog .hljs-string,
+.prose-blog .hljs-attr,
+.prose-blog .hljs-regexp {
+  color: var(--color-chart-3);
+}
+.prose-blog .hljs-title,
+.prose-blog .hljs-function,
+.prose-blog .hljs-built_in {
+  color: var(--color-chart-2);
+}
+.prose-blog .hljs-number,
+.prose-blog .hljs-literal,
+.prose-blog .hljs-symbol {
+  color: var(--color-chart-4);
+}
+.prose-blog .hljs-comment,
+.prose-blog .hljs-quote {
+  color: var(--color-muted);
+  font-style: italic;
+}
+
 input:-webkit-autofill {
 
   -webkit-box-shadow:

@@ -54,6 +54,14 @@ export const navbarContent = [
   },
 
   {
+    label: "Blog",
+
+    mobileLabel: "Blog",
+
+    href: "/blog",
+  },
+
+  {
     label: "Contact",
 
     mobileLabel: "Contact",
