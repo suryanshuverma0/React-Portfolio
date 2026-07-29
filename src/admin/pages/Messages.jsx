@@ -1,8 +1,13 @@
 import { useEffect, useMemo, useState } from "react";
 import { toast } from "react-toastify";
-import { Mail, Check, Trash2 } from "lucide-react";
+import { Reply, Check, Trash2 } from "lucide-react";
 
-import { getMessages, markMessageRead, deleteMessage } from "../services/contact.service";
+import {
+  getMessages,
+  markMessageRead,
+  deleteMessage,
+  replyToMessage,
+} from "../services/contact.service";
 import SkeletonCard from "../../components/common/SkeletonCard";
 import ConfirmModal from "../components/ui/ConfirmModal";
 
@@ -20,6 +25,77 @@ const filters = [
   { label: "All", value: "all" },
 ];
 
+/* ========================================
+   REPLY MODAL
+========================================= */
+
+function ReplyModal({ target, onSend, onCancel, sending }) {
+  const [text, setText] = useState("");
+
+  if (!target) return null;
+
+  const handleSend = () => {
+    if (!text.trim()) {
+      toast.error("Write a reply before sending");
+      return;
+    }
+
+    onSend(text);
+  };
+
+  return (
+    <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50 p-4">
+      <div className="card w-full max-w-lg space-y-5">
+        <div>
+          <h3 className="text-title">Reply to {target.name}</h3>
+
+          <p className="text-small mt-1">
+            Sends a real email to <span className="text-primary">{target.email}</span> via
+            Resend — not your local mail app.
+          </p>
+        </div>
+
+        <div className="rounded-2xl border border-border bg-surface p-4">
+          <p className="text-muted text-xs mb-2">Their message</p>
+
+          <p className="text-small whitespace-pre-wrap break-words">
+            {target.message}
+          </p>
+        </div>
+
+        <textarea
+          autoFocus
+          value={text}
+          onChange={(e) => setText(e.target.value)}
+          placeholder="Write your reply..."
+          rows={6}
+          className="w-full p-5 rounded-3xl bg-surface border border-border outline-none resize-none transition focus:border-primary"
+        />
+
+        <div className="flex justify-end gap-3">
+          <button
+            type="button"
+            onClick={onCancel}
+            disabled={sending}
+            className="h-control px-5 rounded-control border border-border disabled:opacity-50"
+          >
+            Cancel
+          </button>
+
+          <button
+            type="button"
+            onClick={handleSend}
+            disabled={sending}
+            className="h-control px-5 rounded-control bg-primary text-background disabled:opacity-50"
+          >
+            {sending ? "Sending..." : "Send Reply"}
+          </button>
+        </div>
+      </div>
+    </div>
+  );
+}
+
 function Messages() {
   const [messages, setMessages] = useState([]);
   const [loading, setLoading] = useState(true);
@@ -27,6 +103,8 @@ function Messages() {
   const [busyId, setBusyId] = useState(null);
   const [deleteId, setDeleteId] = useState(null);
   const [deleting, setDeleting] = useState(false);
+  const [replyTarget, setReplyTarget] = useState(null);
+  const [sendingReply, setSendingReply] = useState(false);
 
   const loadMessages = async () => {
     try {
@@ -64,6 +142,27 @@ function Messages() {
       toast.error("Failed to mark as read");
     } finally {
       setBusyId(null);
+    }
+  };
+
+  const handleSendReply = async (text) => {
+    try {
+      setSendingReply(true);
+
+      const updated = await replyToMessage(replyTarget._id, text);
+
+      setMessages((prev) =>
+        prev.map((m) => (m._id === updated._id ? updated : m)),
+      );
+
+      toast.success("Reply sent");
+      setReplyTarget(null);
+    } catch (error) {
+      toast.error(
+        error.response?.data?.message || "Failed to send reply",
+      );
+    } finally {
+      setSendingReply(false);
     }
   };
 
@@ -130,12 +229,7 @@ function Messages() {
                 <div className="flex items-center gap-3 flex-wrap min-w-0">
                   <span className="text-label">{item.name}</span>
 
-                  <a
-                    href={`mailto:${item.email}`}
-                    className="text-muted text-xs hover:text-primary transition-colors"
-                  >
-                    {item.email}
-                  </a>
+                  <span className="text-muted text-xs">{item.email}</span>
 
                   <span className="text-muted text-xs">
                     {formatDate(item.createdAt)}
@@ -147,6 +241,12 @@ function Messages() {
                     </span>
                   )}
 
+                  {item.repliedAt && (
+                    <span className="rounded-full bg-surface border border-border px-3 py-1 text-xs">
+                      Replied {formatDate(item.repliedAt)}
+                    </span>
+                  )}
+
                   {!item.autoResponseSent && (
                     <span className="rounded-full bg-surface border border-border px-3 py-1 text-xs">
                       Auto-reply not sent
@@ -155,13 +255,14 @@ function Messages() {
                 </div>
 
                 <div className="flex gap-2 shrink-0">
-                  <a
-                    href={`mailto:${item.email}${item.subject ? `?subject=Re: ${encodeURIComponent(item.subject)}` : ""}`}
+                  <button
+                    type="button"
+                    onClick={() => setReplyTarget(item)}
                     className="h-9 px-3 rounded-control border border-border text-small inline-flex items-center gap-1.5 transition hover:border-primary"
                   >
-                    <Mail size={14} />
+                    <Reply size={14} />
                     Reply
-                  </a>
+                  </button>
 
                   {!item.isRead && (
                     <button
@@ -193,10 +294,27 @@ function Messages() {
               <p className="text-small whitespace-pre-wrap break-words">
                 {item.message}
               </p>
+
+              {item.adminReply && (
+                <div className="rounded-2xl border border-border bg-surface p-4">
+                  <p className="text-muted text-xs mb-2">Your reply</p>
+
+                  <p className="text-small whitespace-pre-wrap break-words">
+                    {item.adminReply}
+                  </p>
+                </div>
+              )}
             </div>
           ))
         )}
       </div>
+
+      <ReplyModal
+        target={replyTarget}
+        sending={sendingReply}
+        onSend={handleSendReply}
+        onCancel={() => setReplyTarget(null)}
+      />
 
       <ConfirmModal
         isOpen={Boolean(deleteId)}
