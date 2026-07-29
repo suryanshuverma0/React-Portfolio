@@ -36,6 +36,7 @@ import Users from "./admin/pages/Users";
 import AdminBlog from "./admin/pages/Blog";
 import BlogEditor from "./admin/pages/BlogEditor";
 import BlogComments from "./admin/pages/BlogComments";
+import Messages from "./admin/pages/Messages";
 function App() {
   const [loading, setLoading] = useState(true);
 
@@ -182,6 +183,7 @@ function App() {
                 <Route path="blog/new" element={<BlogEditor />} />
                 <Route path="blog/:id/edit" element={<BlogEditor />} />
                 <Route path="blog/comments" element={<BlogComments />} />
+                <Route path="messages" element={<Messages />} />
                 <Route path="settings" element={<Settings />} />
               </Route>
             </Routes>

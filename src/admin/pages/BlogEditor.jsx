@@ -121,6 +121,15 @@ function BlogEditor() {
       return;
     }
 
+    const slug = slugify(formData.slug);
+
+    if (slug.length < 2) {
+      toast.error(
+        "Slug must be at least 2 characters (letters, numbers, hyphens only)",
+      );
+      return;
+    }
+
     if (!formData.content.trim()) {
       toast.error("Content is required");
       return;
@@ -131,7 +140,7 @@ function BlogEditor() {
 
       const payload = {
         ...formData,
-        slug: slugify(formData.slug),
+        slug,
         tags,
         isVisible,
         ...(coverImage ? { coverImage } : {}),
@@ -147,7 +156,11 @@ function BlogEditor() {
 
       navigate("/dashboard/blog");
     } catch (error) {
-      toast.error(error?.response?.data?.message || "Failed to save post");
+      const firstError = error.response?.data?.errors?.[0]?.message;
+
+      toast.error(
+        firstError || error?.response?.data?.message || "Failed to save post",
+      );
     } finally {
       setSaving(false);
     }

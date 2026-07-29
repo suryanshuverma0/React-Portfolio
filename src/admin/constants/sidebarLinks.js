@@ -12,6 +12,7 @@ import {
   BarChart3,
   Users as UsersIcon,
   Newspaper,
+  Mail,
 
 } from "lucide-react";
 
@@ -68,6 +69,11 @@ export const sidebarLinks = [
         label: "Blog",
         path: "/dashboard/blog",
         icon: Newspaper,
+      },
+      {
+        label: "Messages",
+        path: "/dashboard/messages",
+        icon: Mail,
       },
       {
         label: "Analytics",

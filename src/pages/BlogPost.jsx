@@ -2,7 +2,6 @@ import { useEffect, useState } from "react";
 import { Link, useParams } from "react-router-dom";
 import { ArrowLeft, Clock } from "lucide-react";
 
-import Navbar from "../components/layout/Navbar";
 import Footer from "../components/layout/Footer";
 import Container from "../components/ui/Container";
 import SEO from "../components/common/SEO";
@@ -81,9 +80,7 @@ function BlogPost() {
         image={post.coverImage || "/og-image.png"}
       />
 
-      <Navbar />
-
-      <Container className="pt-32 pb-24 md:pt-40 max-w-3xl">
+      <Container className="section max-w-3xl">
         <Link
           to="/blog"
           className="inline-flex items-center gap-2 text-small text-secondary hover:text-primary transition-all mb-8"

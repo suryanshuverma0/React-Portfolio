@@ -11,6 +11,8 @@ import {
   useEffect,
 } from "react";
 
+import { toast } from "react-toastify";
+
 import Container
 from "../../ui/Container";
 
@@ -27,10 +29,64 @@ import {
 
 import { getPublicSettings } from "../../../services/public.settings.service";
 import { socialsObjectToArray } from "../../../lib/socials";
+import { sendMessage } from "../../../services/public.contact.service";
 
 function Contact() {
 
   const [settings, setSettings] = useState(null);
+
+  const [formData, setFormData] = useState({
+    name: "",
+    email: "",
+    subject: "",
+    message: "",
+  });
+
+  const [sending, setSending] = useState(false);
+  const [sent, setSent] = useState(false);
+
+  const handleChange = (e) => {
+    const { name, value } = e.target;
+
+    setFormData((prev) => ({ ...prev, [name]: value }));
+  };
+
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+
+    if (!formData.name.trim() || !formData.email.trim() || !formData.message.trim()) {
+      toast.error("Please fill in your name, email, and message");
+      return;
+    }
+
+    try {
+      setSending(true);
+
+      await sendMessage(formData);
+
+      setSent(true);
+      setFormData({ name: "", email: "", subject: "", message: "" });
+      toast.success("Message sent — thanks for reaching out!");
+    } catch (error) {
+      if (error.response?.status === 429) {
+        const retryAfter = error.response.data?.retryAfter;
+
+        toast.error(
+          `Too many messages sent. Try again in ${retryAfter} seconds.`,
+        );
+
+        return;
+      }
+
+      const firstError = error.response?.data?.errors?.[0]?.message;
+
+      toast.error(
+        firstError || error.response?.data?.message || "Failed to send message",
+      );
+    } finally {
+      setSending(false);
+    }
+  };
 
   useEffect(() => {
     const loadSettings = async () => {
@@ -482,136 +538,223 @@ function Contact() {
             "
           >
 
-            <form
-              className="
-                flex
-                flex-col
+            {sent ? (
+              <div
+                className="
+                  h-full
 
-                gap-4
-              "
-            >
+                  flex
+                  flex-col
+                  items-center
+                  justify-center
 
-              {/* NAME */}
+                  text-center
 
-              <FormField
-                label="Full Name"
-                type="text"
-                placeholder="John Doe"
-              />
+                  gap-3
 
-              {/* EMAIL */}
-
-              <FormField
-                label="Email Address"
-                type="email"
-                placeholder="john@example.com"
-              />
-
-              {/* SUBJECT */}
-
-              <FormField
-                label="Subject"
-                type="text"
-                placeholder="Project Collaboration"
-              />
-
-              {/* MESSAGE */}
-
-              <div>
-
-                <label
+                  py-10
+                "
+              >
+                <div
                   className="
-                    text-muted
+                    h-11
+                    w-11
 
-                    block
+                    rounded-2xl
 
-                    mb-2
+                    bg-primary
+
+                    text-background
+
+                    flex
+                    items-center
+                    justify-center
+
+                    text-sm
+                    font-semibold
                   "
                 >
+                  ✓
+                </div>
 
-                  Message
+                <p className="text-label">Message sent</p>
 
-                </label>
+                <p className="text-small max-w-xs">
+                  Thanks for reaching out — I've received your message and
+                  will get back to you soon.
+                </p>
 
-                <textarea
+                <button
+                  type="button"
+                  onClick={() => setSent(false)}
+                  className="
+                    mt-2
 
-                  rows={5}
+                    text-small
 
-                  placeholder="
-                    Tell me about your project
-                    or opportunity...
+                    text-primary
+
+                    hover:opacity-70
+
+                    transition-opacity
                   "
+                >
+                  Send another message
+                </button>
+              </div>
+            ) : (
+              <form
+                onSubmit={handleSubmit}
+                className="
+                  flex
+                  flex-col
+
+                  gap-4
+                "
+              >
+
+                {/* NAME */}
+
+                <FormField
+                  label="Full Name"
+                  type="text"
+                  name="name"
+                  value={formData.name}
+                  onChange={handleChange}
+                  placeholder="John Doe"
+                />
+
+                {/* EMAIL */}
+
+                <FormField
+                  label="Email Address"
+                  type="email"
+                  name="email"
+                  value={formData.email}
+                  onChange={handleChange}
+                  placeholder="john@example.com"
+                />
+
+                {/* SUBJECT */}
+
+                <FormField
+                  label="Subject"
+                  type="text"
+                  name="subject"
+                  value={formData.subject}
+                  onChange={handleChange}
+                  placeholder="Project Collaboration"
+                />
+
+                {/* MESSAGE */}
+
+                <div>
+
+                  <label
+                    className="
+                      text-muted
+
+                      block
+
+                      mb-2
+                    "
+                  >
+
+                    Message
+
+                  </label>
+
+                  <textarea
+
+                    name="message"
+
+                    value={formData.message}
+
+                    onChange={handleChange}
+
+                    rows={5}
+
+                    placeholder="
+                      Tell me about your project
+                      or opportunity...
+                    "
+
+                    className="
+                      w-full
+
+                      px-4
+                      py-3
+
+                      rounded-[22px]
+
+                      bg-surface
+
+                      border
+                      border-border
+
+                      outline-none
+
+                      resize-none
+
+                      text-label
+
+                      transition-all
+                      duration-300
+
+                      focus:border-primary
+                    "
+                  />
+
+                </div>
+
+                {/* BUTTON */}
+
+                <button
+
+                  type="submit"
+
+                  disabled={sending}
 
                   className="
-                    w-full
+                    h-10
+                    md:h-11
 
-                    px-4
-                    py-3
+                    px-control
 
-                    rounded-[22px]
+                    rounded-control
 
-                    bg-surface
+                    bg-primary
 
-                    border
-                    border-border
+                    text-background
 
-                    outline-none
+                    inline-flex
+                    items-center
+                    justify-center
 
-                    resize-none
+                    gap-2
 
                     text-label
 
                     transition-all
                     duration-300
 
-                    focus:border-primary
+                    hover:opacity-90
+
+                    disabled:opacity-50
+                    disabled:cursor-not-allowed
                   "
-                />
+                >
 
-              </div>
+                  {sending ? "Sending..." : "Send Message"}
 
-              {/* BUTTON */}
+                  <Send
+                    size={16}
+                  />
 
-              <button
+                </button>
 
-                type="submit"
-
-                className="
-                  h-10
-                  md:h-11
-
-                  px-control
-
-                  rounded-control
-
-                  bg-primary
-
-                  text-background
-
-                  inline-flex
-                  items-center
-                  justify-center
-
-                  gap-2
-
-                  text-label
-
-                  transition-all
-                  duration-300
-
-                  hover:opacity-90
-                "
-              >
-
-                Send Message
-
-                <Send
-                  size={16}
-                />
-
-              </button>
-
-            </form>
+              </form>
+            )}
 
           </motion.div>
 
@@ -630,6 +773,9 @@ function Contact() {
 function FormField({
   label,
   type,
+  name,
+  value,
+  onChange,
   placeholder,
 }) {
 
@@ -654,6 +800,12 @@ function FormField({
       <input
 
         type={type}
+
+        name={name}
+
+        value={value}
+
+        onChange={onChange}
 
         placeholder={placeholder}
 
