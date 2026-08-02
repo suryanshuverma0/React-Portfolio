@@ -28,3 +28,24 @@ export const verifySignup = async (email, credentialResponse) => {
 
   return response.data.data;
 };
+
+export const requestPasskeyLink = async (email) => {
+  const response = await api.post("/passkey/link/request", { email });
+
+  return response.data;
+};
+
+export const getLinkOptions = async (token) => {
+  const response = await api.post("/passkey/link/options", { token });
+
+  return response.data.data;
+};
+
+export const verifyLink = async (token, credentialResponse) => {
+  const response = await api.post("/passkey/link/verify", {
+    token,
+    response: credentialResponse,
+  });
+
+  return response.data.data;
+};

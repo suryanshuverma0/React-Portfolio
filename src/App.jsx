@@ -16,6 +16,7 @@ import Register from "./pages/Register";
 import ForgotPassword from "./pages/ForgotPassword";
 import ResetPassword from "./pages/ResetPassword";
 import UserAccess from "./pages/UserAccess";
+import LinkPasskey from "./pages/LinkPasskey";
 import { useAuth } from "./contexts/AuthContext";
 // import Dashboard from "./pages/Dashboard";
 import ProtectedRoute from "./components/routes/ProtectedRoute";
@@ -157,6 +158,15 @@ function App() {
                 element={
                   <PageTransition>
                     <UserAccess />
+                  </PageTransition>
+                }
+              />
+
+              <Route
+                path="/link-passkey/:token"
+                element={
+                  <PageTransition>
+                    <LinkPasskey />
                   </PageTransition>
                 }
               />

@@ -33,11 +33,16 @@ function Login() {
      AUTH
   ========================================= */
 
-  const { login, loginWithGoogle, loginWithPasskey } = useAuth();
+  const { login, loginWithGoogle, loginWithPasskey, requestPasskeyLink } = useAuth();
 
   const navigate = useNavigate();
 
   const [passkeyLoading, setPasskeyLoading] = useState(false);
+
+  const [showLinkForm, setShowLinkForm] = useState(false);
+  const [linkEmail, setLinkEmail] = useState("");
+  const [linkSending, setLinkSending] = useState(false);
+  const [linkSent, setLinkSent] = useState(false);
 
   /* ========================================
      FORM
@@ -184,6 +189,41 @@ function Login() {
     }
   };
 
+  /* ========================================
+     LINK THIS DEVICE (existing account, no
+     session here — email a one-time link)
+  ========================================= */
+
+  const handleSendLink = async () => {
+    if (!linkEmail.trim()) {
+      toast.error("Enter your email first");
+
+      return;
+    }
+
+    try {
+      setLinkSending(true);
+
+      await requestPasskeyLink(linkEmail.trim());
+
+      setLinkSent(true);
+    } catch (error) {
+      console.error(error);
+
+      if (error.response?.status === 429) {
+        const retryAfter = error.response.data?.retryAfter;
+
+        toast.error(`Too many attempts. Try again in ${retryAfter} seconds.`);
+
+        return;
+      }
+
+      toast.error(error.response?.data?.message || "Failed to send link");
+    } finally {
+      setLinkSending(false);
+    }
+  };
+
   return (
     <AuthLayout
       title="Welcome back"
@@ -282,12 +322,44 @@ function Login() {
           loading={passkeyLoading}
         />
 
-        <p className="text-center text-small text-muted">
-          No passkey on this device yet?{" "}
-          <Link to="/register" className="text-primary hover:opacity-70 transition-opacity">
-            Set one up
-          </Link>
-        </p>
+        {/* LINK EXISTING ACCOUNT TO THIS DEVICE */}
+
+        {linkSent ? (
+          <p className="text-center text-small text-muted">
+            If an account exists for {linkEmail}, check your inbox for a link
+            to add this device.
+          </p>
+        ) : showLinkForm ? (
+          <div className="space-y-3">
+            <AuthInput
+              label="Email"
+              type="email"
+              placeholder="Enter the email on your existing account"
+              value={linkEmail}
+              onChange={(e) => setLinkEmail(e.target.value)}
+            />
+
+            <AuthButton
+              type="button"
+              onClick={handleSendLink}
+              loading={linkSending}
+              className="bg-surface text-primary border border-border hover:opacity-80"
+            >
+              Email me a link
+            </AuthButton>
+          </div>
+        ) : (
+          <p className="text-center text-small text-muted">
+            Already have an account on another device?{" "}
+            <button
+              type="button"
+              onClick={() => setShowLinkForm(true)}
+              className="text-primary hover:opacity-70 transition-opacity"
+            >
+              Add this device to it
+            </button>
+          </p>
+        )}
 
         {/* REGISTER */}
 

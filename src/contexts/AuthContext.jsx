@@ -9,6 +9,9 @@ import {
   verifyAuthentication,
   getSignupOptions,
   verifySignup,
+  requestPasskeyLink,
+  getLinkOptions,
+  verifyLink,
 } from "../services/public.passkey.service";
 
 export function AuthProvider({ children }) {
@@ -129,6 +132,38 @@ export function AuthProvider({ children }) {
   };
 
   /* ========================================
+     PASSKEY LINK
+
+     Adds a passkey to an EXISTING account
+     from a device with no session there, via
+     a one-time emailed link — see
+     requestPasskeyLinkEmail (Login page) for
+     how the link gets sent.
+  ========================================= */
+
+  const completePasskeyLink = async (token) => {
+    try {
+      setLoading(true);
+
+      const optionsJSON = await getLinkOptions(token);
+
+      const credentialResponse = await startRegistration({ optionsJSON });
+
+      const loggedInUser = await verifyLink(token, credentialResponse);
+
+      setUser(loggedInUser);
+
+      return loggedInUser;
+    } catch (error) {
+      console.error(error);
+
+      throw error;
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  /* ========================================
      LOGOUT
   ========================================= */
 
@@ -201,6 +236,10 @@ export function AuthProvider({ children }) {
         loginWithPasskey,
 
         registerWithPasskey,
+
+        requestPasskeyLink,
+
+        completePasskeyLink,
 
         logout,
 
