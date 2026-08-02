@@ -37,6 +37,7 @@ import AdminBlog from "./admin/pages/Blog";
 import BlogEditor from "./admin/pages/BlogEditor";
 import BlogComments from "./admin/pages/BlogComments";
 import Messages from "./admin/pages/Messages";
+import Security from "./admin/pages/Security";
 function App() {
   const [loading, setLoading] = useState(true);
 
@@ -184,6 +185,7 @@ function App() {
                 <Route path="blog/:id/edit" element={<BlogEditor />} />
                 <Route path="blog/comments" element={<BlogComments />} />
                 <Route path="messages" element={<Messages />} />
+                <Route path="security" element={<Security />} />
                 <Route path="settings" element={<Settings />} />
               </Route>
             </Routes>

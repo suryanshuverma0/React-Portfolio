@@ -13,6 +13,7 @@ import {
   Users as UsersIcon,
   Newspaper,
   Mail,
+  ShieldCheck,
 
 } from "lucide-react";
 
@@ -90,6 +91,11 @@ export const sidebarLinks = [
         label: "Users",
         path: "/dashboard/users",
         icon: UsersIcon,
+      },
+      {
+        label: "Security",
+        path: "/dashboard/security",
+        icon: ShieldCheck,
       },
       {
         label: "Settings",

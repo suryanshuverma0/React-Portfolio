@@ -1,8 +1,13 @@
 import { createContext, useContext, useState, useEffect } from "react";
+import { startAuthentication } from "@simplewebauthn/browser";
 
 const AuthContext = createContext();
 
 import api from "../lib/axios";
+import {
+  getAuthenticationOptions,
+  verifyAuthentication,
+} from "../services/public.passkey.service";
 
 export function AuthProvider({ children }) {
   const [user, setUser] = useState(null);
@@ -47,6 +52,37 @@ export function AuthProvider({ children }) {
       setUser(response.data.data);
 
       return response.data.data;
+    } catch (error) {
+      console.error(error);
+
+      throw error;
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  /* ========================================
+     PASSKEY LOGIN
+
+     Usernameless: the options request needs
+     no identifier, the browser's own
+     credential picker decides which passkey
+     (and therefore which account) is used.
+  ========================================= */
+
+  const loginWithPasskey = async () => {
+    try {
+      setLoading(true);
+
+      const optionsJSON = await getAuthenticationOptions();
+
+      const credentialResponse = await startAuthentication({ optionsJSON });
+
+      const loggedInUser = await verifyAuthentication(credentialResponse);
+
+      setUser(loggedInUser);
+
+      return loggedInUser;
     } catch (error) {
       console.error(error);
 
@@ -125,6 +161,8 @@ export function AuthProvider({ children }) {
         login,
 
         loginWithGoogle,
+
+        loginWithPasskey,
 
         logout,
 
