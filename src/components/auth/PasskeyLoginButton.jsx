@@ -4,7 +4,7 @@ import { browserSupportsWebAuthn } from "@simplewebauthn/browser";
 
 import AuthButton from "./AuthButton";
 
-function PasskeyLoginButton({ onClick, loading = false }) {
+function PasskeyLoginButton({ onClick, loading = false, label = "Continue with Passkey" }) {
   const [supported, setSupported] = useState(false);
 
   useEffect(() => {
@@ -23,7 +23,7 @@ function PasskeyLoginButton({ onClick, loading = false }) {
       className="bg-surface text-primary border border-border hover:opacity-80"
     >
       <KeyRound size={18} />
-      Continue with Passkey
+      {label}
     </AuthButton>
   );
 }

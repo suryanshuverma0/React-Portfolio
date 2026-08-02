@@ -1,5 +1,5 @@
 import { createContext, useContext, useState, useEffect } from "react";
-import { startAuthentication } from "@simplewebauthn/browser";
+import { startAuthentication, startRegistration } from "@simplewebauthn/browser";
 
 const AuthContext = createContext();
 
@@ -7,6 +7,8 @@ import api from "../lib/axios";
 import {
   getAuthenticationOptions,
   verifyAuthentication,
+  getSignupOptions,
+  verifySignup,
 } from "../services/public.passkey.service";
 
 export function AuthProvider({ children }) {
@@ -93,6 +95,40 @@ export function AuthProvider({ children }) {
   };
 
   /* ========================================
+     PASSKEY SIGNUP
+
+     Creates a brand-new account bound to a
+     first passkey (same admin/public-access
+     gate as password & Google signup). Only
+     succeeds for emails with no existing
+     account — adding a passkey to an account
+     you already have happens from Security
+     Settings while logged in instead.
+  ========================================= */
+
+  const registerWithPasskey = async (email) => {
+    try {
+      setLoading(true);
+
+      const optionsJSON = await getSignupOptions(email);
+
+      const credentialResponse = await startRegistration({ optionsJSON });
+
+      const newUser = await verifySignup(email, credentialResponse);
+
+      setUser(newUser);
+
+      return newUser;
+    } catch (error) {
+      console.error(error);
+
+      throw error;
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  /* ========================================
      LOGOUT
   ========================================= */
 
@@ -163,6 +199,8 @@ export function AuthProvider({ children }) {
         loginWithGoogle,
 
         loginWithPasskey,
+
+        registerWithPasskey,
 
         logout,
 

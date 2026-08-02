@@ -282,6 +282,13 @@ function Login() {
           loading={passkeyLoading}
         />
 
+        <p className="text-center text-small text-muted">
+          No passkey on this device yet?{" "}
+          <Link to="/register" className="text-primary hover:opacity-70 transition-opacity">
+            Set one up
+          </Link>
+        </p>
+
         {/* REGISTER */}
 
         <p
