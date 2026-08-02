@@ -39,8 +39,25 @@ import BlogEditor from "./admin/pages/BlogEditor";
 import BlogComments from "./admin/pages/BlogComments";
 import Messages from "./admin/pages/Messages";
 import Security from "./admin/pages/Security";
+import MaintenanceScreen from "./components/common/MaintenanceScreen";
+import { getPublicSettings } from "./services/public.settings.service";
+
+/*
+  Gates the public-facing portfolio pages only — login/register/dashboard
+  etc. stay reachable so the admin can always get in and flip
+  maintenanceMode back off, even while it's on.
+*/
+function PublicGate({ maintenanceMode, children }) {
+  if (maintenanceMode) {
+    return <MaintenanceScreen />;
+  }
+
+  return children;
+}
+
 function App() {
   const [loading, setLoading] = useState(true);
+  const [maintenanceMode, setMaintenanceMode] = useState(false);
 
   const location = useLocation();
 
@@ -52,6 +69,20 @@ function App() {
     }, 1200);
 
     return () => clearTimeout(timer);
+  }, []);
+
+  useEffect(() => {
+    const loadMaintenanceStatus = async () => {
+      try {
+        const settings = await getPublicSettings();
+
+        setMaintenanceMode(Boolean(settings?.maintenanceMode));
+      } catch (error) {
+        console.error("Failed to load site settings", error);
+      }
+    };
+
+    loadMaintenanceStatus();
   }, []);
 
   return (
@@ -74,33 +105,41 @@ function App() {
               <Route
                 path="/"
                 element={
-                  <PageTransition>
-                    <HomePage />
-                  </PageTransition>
+                  <PublicGate maintenanceMode={maintenanceMode}>
+                    <PageTransition>
+                      <HomePage />
+                    </PageTransition>
+                  </PublicGate>
                 }
               />
               <Route
                 path="/projects/:slug"
                 element={
-                  <PageTransition>
-                    <ProjectDetails />
-                  </PageTransition>
+                  <PublicGate maintenanceMode={maintenanceMode}>
+                    <PageTransition>
+                      <ProjectDetails />
+                    </PageTransition>
+                  </PublicGate>
                 }
               />
               <Route
                 path="/blog"
                 element={
-                  <PageTransition>
-                    <Blog />
-                  </PageTransition>
+                  <PublicGate maintenanceMode={maintenanceMode}>
+                    <PageTransition>
+                      <Blog />
+                    </PageTransition>
+                  </PublicGate>
                 }
               />
               <Route
                 path="/blog/:slug"
                 element={
-                  <PageTransition>
-                    <BlogPost />
-                  </PageTransition>
+                  <PublicGate maintenanceMode={maintenanceMode}>
+                    <PageTransition>
+                      <BlogPost />
+                    </PageTransition>
+                  </PublicGate>
                 }
               />
               <Route

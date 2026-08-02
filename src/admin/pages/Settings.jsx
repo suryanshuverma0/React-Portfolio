@@ -40,6 +40,7 @@ function Settings() {
 
   const [socials, setSocials] = useState({
     github: "",
+    leetcode: "",
     linkedin: "",
     twitter: "",
     instagram: "",
@@ -66,6 +67,7 @@ function Settings() {
 
       setSocials({
         github: settings.socials?.github || "",
+        leetcode: settings.socials?.leetcode || "",
         linkedin: settings.socials?.linkedin || "",
         twitter: settings.socials?.twitter || "",
         instagram: settings.socials?.instagram || "",
@@ -248,6 +250,14 @@ function Settings() {
             value={socials.github}
             onChange={handleSocialChange}
             placeholder="https://github.com/..."
+          />
+
+          <AdminInput
+            label="LeetCode"
+            name="leetcode"
+            value={socials.leetcode}
+            onChange={handleSocialChange}
+            placeholder="https://leetcode.com/u/..."
           />
 
           <AdminInput

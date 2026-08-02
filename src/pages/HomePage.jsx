@@ -16,12 +16,13 @@ import Projects from "../components/sections/Projects/Projects";
 
 import Certificates from "../components/sections/Certificates/Certificates";
 
+import CodingActivity from "../components/sections/CodingActivity/CodingActivity";
+
 import Contact from "../components/sections/Contact/Contact";
 
 import Footer from "../components/layout/Footer";
 
 import SEO from "../components/common/SEO";
-import MaintenanceScreen from "../components/common/MaintenanceScreen";
 
 import { getPublicSettings } from "../services/public.settings.service";
 import { trackPageView } from "../services/public.analytics.service";
@@ -67,15 +68,6 @@ function HomePage() {
     />
   );
 
-  if (settings?.maintenanceMode) {
-    return (
-      <>
-        {seo}
-        <MaintenanceScreen />
-      </>
-    );
-  }
-
   return (
     <>
       {seo}
@@ -96,6 +88,8 @@ function HomePage() {
         <Projects />
 
         <Certificates />
+
+        <CodingActivity />
 
         <Contact />
 
