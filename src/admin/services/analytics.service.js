@@ -13,3 +13,11 @@ export const getAnalyticsOverview = async (rangeDays) => {
 
   return response.data.data;
 };
+
+export const getRecentActivity = async (limit = 12) => {
+  const response = await api.get("/analytics/recent-activity", {
+    params: { limit },
+  });
+
+  return response.data.data;
+};
