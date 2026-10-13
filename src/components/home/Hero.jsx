@@ -7,6 +7,7 @@ import { iconMap } from "../constants/iconMap";
 import { getPublicProfile } from "../../services/public.profile.service";
 import { getPublicSettings } from "../../services/public.settings.service";
 import { socialsObjectToArray } from "../../lib/socials";
+import HeroNetwork from "./hero3d/HeroNetwork";
 function Hero() {
   const heroData = heroContent;
   const [profile, setProfile] = useState(null);
@@ -48,7 +49,7 @@ function Hero() {
       id="home"
       className="
         section
-        pt-32 md:p-28
+        pt-36 md:p-28 md:pt-36
 
         relative
 
@@ -121,6 +122,8 @@ function Hero() {
             duration: 0.5,
           }}
           className="
+            isolate
+
             max-w-4xl
             mx-auto
 
@@ -136,9 +139,14 @@ function Hero() {
 
               mx-auto
 
-              mb-8
+              mb-10
+              md:mb-12
             "
           >
+            {/* 3D NETWORK — sits behind the portrait and the text below it */}
+
+            <HeroNetwork />
+
             {/* SOFT GLOW */}
 
             <div

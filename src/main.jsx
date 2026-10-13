@@ -18,6 +18,8 @@ import "react-toastify/dist/ReactToastify.css";
 
 import { GoogleOAuthProvider } from "@react-oauth/google";
 
+import { MotionConfig } from "framer-motion";
+
 
 createRoot(document.getElementById("root")).render(
   <StrictMode>
@@ -25,7 +27,10 @@ createRoot(document.getElementById("root")).render(
       <HelmetProvider>
         <BrowserRouter>
           <AuthProvider>
-            <App />
+            {/* Honour the OS "reduce motion" setting for every Framer animation */}
+            <MotionConfig reducedMotion="user">
+              <App />
+            </MotionConfig>
             <ToastContainer
               position="top-right"
               autoClose={3500}

@@ -22,6 +22,9 @@ function Projects() {
 
   const displayProjects = projects.length > 0 ? projects : projectsContent;
 
+  // First featured project (in the admin-defined order) gets the wide card.
+  const leadIndex = displayProjects.findIndex((project) => project.featured);
+
   return (
     <section id="projects" className="section">
       <Container>
@@ -33,7 +36,12 @@ function Projects() {
 
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
           {displayProjects.map((project, index) => (
-            <ProjectCard key={project.slug} project={project} index={index} />
+            <ProjectCard
+              key={project.slug}
+              project={project}
+              index={index}
+              lead={index === leadIndex}
+            />
           ))}
         </div>
       </Container>

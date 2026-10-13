@@ -4,7 +4,38 @@ import { ArrowUpRight } from "lucide-react";
 
 import { Link } from "react-router-dom";
 
-function ProjectCard({ project, index }) {
+const secondaryLinkClass = `
+  h-11
+  px-4
+
+  rounded-2xl
+
+  border
+  border-border
+
+  bg-surface
+
+  text-small
+
+  inline-flex
+  items-center
+  justify-center
+
+  transition-all
+  duration-300
+
+  hover:bg-background
+  hover:text-primary
+`;
+
+/*
+  `lead` renders the first featured project full-width with its summary,
+  so the most substantial work is easy to find without shrinking the rest
+  of the grid.
+*/
+function ProjectCard({ project, index, lead = false }) {
+  const technologies = project.technologies || [];
+
   return (
     <motion.article
       initial={{
@@ -22,9 +53,11 @@ function ProjectCard({ project, index }) {
         duration: 0.4,
         delay: index * 0.06,
       }}
-      className="
+      className={`
         card
         glass-hover
+
+        group
 
         h-full
 
@@ -32,12 +65,20 @@ function ProjectCard({ project, index }) {
 
         flex
         flex-col
-      "
+
+        transition-[border-color,box-shadow]
+        duration-300
+
+        hover:border-secondary/40
+        hover:shadow-[0_12px_40px_rgba(0,0,0,0.07)]
+
+        ${lead ? "lg:col-span-2 lg:flex-row lg:gap-8" : ""}
+      `}
     >
       {/* THUMBNAIL */}
 
       <div
-        className="
+        className={`
           relative
 
           overflow-hidden
@@ -50,12 +91,16 @@ function ProjectCard({ project, index }) {
           bg-surface
 
           mb-5
-        "
+
+          ${lead ? "lg:mb-0 lg:w-[55%] lg:shrink-0" : ""}
+        `}
       >
         <img
           src={project.thumbnail}
           alt={project.title}
-          className="
+          loading="lazy"
+          decoding="async"
+          className={`
             w-full
 
             aspect-[16/6]
@@ -65,8 +110,10 @@ function ProjectCard({ project, index }) {
             transition-transform
             duration-500
 
-            hover:scale-[1.02]
-          "
+            group-hover:scale-[1.02]
+
+            ${lead ? "lg:h-full lg:aspect-[16/10]" : ""}
+          `}
         />
 
         {/* CATEGORY */}
@@ -107,13 +154,27 @@ function ProjectCard({ project, index }) {
       {/* CONTENT */}
 
       <div
-        className="
+        className={`
           flex-1
 
           flex
           flex-col
-        "
+
+          ${lead ? "lg:py-2" : ""}
+        `}
       >
+        {lead && (
+          <p
+            className="
+              text-muted
+
+              mb-3
+            "
+          >
+            Featured project
+          </p>
+        )}
+
         {/* TITLE */}
 
         <h3
@@ -125,6 +186,20 @@ function ProjectCard({ project, index }) {
         >
           {project.title}
         </h3>
+
+        {lead && project.description && (
+          <p
+            className="
+              text-body
+
+              line-clamp-4
+
+              mb-5
+            "
+          >
+            {project.description}
+          </p>
+        )}
 
         {/* TECH STACK */}
 
@@ -138,7 +213,7 @@ function ProjectCard({ project, index }) {
             mb-6
           "
         >
-          {project.technologies.slice(0, 4).map((tech) => (
+          {technologies.slice(0, lead ? 6 : 4).map((tech) => (
             <div
               key={tech}
               className="
@@ -179,6 +254,7 @@ function ProjectCard({ project, index }) {
 
           <Link
             to={`/projects/${project.slug}`}
+            aria-label={`Detail: ${project.title}`}
             className="
               h-control
 
@@ -205,10 +281,19 @@ function ProjectCard({ project, index }) {
             "
           >
             Detail
-            <ArrowUpRight size={16} />
+            <ArrowUpRight
+              size={16}
+              className="
+                transition-transform
+                duration-300
+
+                group-hover:translate-x-0.5
+                group-hover:-translate-y-0.5
+              "
+            />
           </Link>
 
-          {/* LINKS */}
+          {/* LINKS — only rendered when the project actually has them */}
 
           <div
             className="
@@ -218,65 +303,29 @@ function ProjectCard({ project, index }) {
               gap-2
             "
           >
-            <a
-              href={project.githubUrl}
-              target="_blank"
-              rel="noreferrer"
-              className="
-                h-11
-                px-4
+            {project.githubUrl && (
+              <a
+                href={project.githubUrl}
+                target="_blank"
+                rel="noreferrer"
+                aria-label={`GitHub: ${project.title}`}
+                className={secondaryLinkClass}
+              >
+                GitHub
+              </a>
+            )}
 
-                rounded-2xl
-
-                border
-                border-border
-
-                bg-surface
-
-                text-small
-
-                inline-flex
-                items-center
-                justify-center
-
-                transition-all
-                duration-300
-
-                hover:bg-background
-              "
-            >
-              GitHub
-            </a>
-
-            <a
-              href={project.liveUrl}
-              target="_blank"
-              rel="noreferrer"
-              className="
-                h-11
-                px-4
-
-                rounded-2xl
-
-                border
-                border-border
-
-                bg-surface
-
-                text-small
-
-                inline-flex
-                items-center
-                justify-center
-
-                transition-all
-                duration-300
-
-                hover:bg-background
-              "
-            >
-              Live
-            </a>
+            {project.liveUrl && (
+              <a
+                href={project.liveUrl}
+                target="_blank"
+                rel="noreferrer"
+                aria-label={`Live: ${project.title}`}
+                className={secondaryLinkClass}
+              >
+                Live
+              </a>
+            )}
           </div>
         </div>
       </div>
