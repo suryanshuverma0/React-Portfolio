@@ -34,7 +34,9 @@ function NavItem({ item, mobile = false, active = false, onClick }) {
             `
             : `
               h-10
-              px-4
+              px-2.5
+              xl:px-3
+              2xl:px-4
 
               inline-flex
               items-center
