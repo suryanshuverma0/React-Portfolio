@@ -46,6 +46,14 @@ export const navbarContent = [
   },
 
   {
+    label: "Research",
+
+    mobileLabel: "Research",
+
+    href: "#research",
+  },
+
+  {
     label: "Certificates",
 
     mobileLabel: "Certificates",

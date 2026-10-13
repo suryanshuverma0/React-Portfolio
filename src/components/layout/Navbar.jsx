@@ -342,7 +342,7 @@ function Navbar() {
           <nav
             className="
               hidden
-              lg:flex
+              xl:flex
 
               items-center
 
@@ -397,7 +397,7 @@ function Navbar() {
               aria-label="Toggle menu"
 
               className="
-                lg:hidden
+                xl:hidden
 
                 h-10
                 w-10
@@ -463,7 +463,7 @@ function Navbar() {
               }}
 
               className="
-                lg:hidden
+                xl:hidden
 
                 mt-2
               "

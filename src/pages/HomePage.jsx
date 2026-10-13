@@ -14,6 +14,8 @@ import Services from "../components/sections/Services/Services";
 
 import Projects from "../components/sections/Projects/Projects";
 
+import Research from "../components/sections/Research/Research";
+
 import Certificates from "../components/sections/Certificates/Certificates";
 
 import CodingActivity from "../components/sections/CodingActivity/CodingActivity";
@@ -86,6 +88,8 @@ function HomePage() {
         <Services />
 
         <Projects />
+
+        <Research />
 
         <Certificates />
 
