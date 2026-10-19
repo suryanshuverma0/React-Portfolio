@@ -66,8 +66,12 @@ const safeStorage = {
   },
 };
 
+// The admin card editor embeds /card?preview=1 — never track that.
+const isPreview = () =>
+  typeof window !== "undefined" && new URLSearchParams(window.location.search).has("preview");
+
 const isIgnoredPath = (path = window.location.pathname) =>
-  IGNORED_PATH_PREFIXES.some((prefix) => path.startsWith(prefix));
+  isPreview() || IGNORED_PATH_PREFIXES.some((prefix) => path.startsWith(prefix));
 
 const isVisible = () => document.visibilityState === "visible";
 
@@ -104,6 +108,13 @@ const buildContext = () => {
     const value = params.get(`utm_${key}`);
     if (value) utm[key] = value.slice(0, 100);
   });
+
+  // NFC card links: /card?src=nfc (written to the chip) or ?src=qr.
+  const cardSource = params.get("src");
+  if (cardSource && !utm.source) {
+    utm.source = cardSource.slice(0, 100);
+    utm.medium = "card";
+  }
 
   return {
     screen: `${window.screen.width}x${window.screen.height}`,

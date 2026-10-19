@@ -1,17 +1,21 @@
 import { useEffect, useState } from "react";
+import { Link } from "react-router-dom";
 import { toast } from "react-toastify";
-import {
-  ResponsiveContainer,
-  LineChart,
-  Line,
-  XAxis,
-  YAxis,
-  CartesianGrid,
-  Tooltip,
-} from "recharts";
-import { getAnalyticsOverview } from "../services/analytics.service";
+import { Footprints } from "lucide-react";
+import { getAnalyticsOverview, getAdvancedInsights } from "../services/analytics.service";
 import SkeletonCard from "../../components/common/SkeletonCard";
 import TrendDelta from "../components/ui/TrendDelta";
+import {
+  TrafficTrendChart,
+  NewVsReturningChart,
+  EngagementTrendChart,
+  HourlyChart,
+  JourneyStages,
+  ConversionTiles,
+  PageTable,
+  TimeOnPageList,
+  DeviceEngagementTable,
+} from "../components/analytics/InsightCharts";
 
 const rangeOptions = [
   { label: "7 Days", value: 7 },
@@ -70,6 +74,30 @@ const countryName = (code) => {
   } catch {
     return code;
   }
+};
+
+const LANGUAGE_NAMES =
+  typeof Intl !== "undefined" && Intl.DisplayNames
+    ? new Intl.DisplayNames(["en"], { type: "language" })
+    : null;
+
+const languageName = (code) => {
+  try {
+    return LANGUAGE_NAMES?.of(code) || code;
+  } catch {
+    return code;
+  }
+};
+
+const slugTitle = (slug) =>
+  slug.replace(/[-_]+/g, " ").replace(/\b\w/g, (c) => c.toUpperCase());
+
+const pageName = (path) => {
+  if (!path || path === "/") return "Home";
+  if (path === "/blog") return "Blog";
+  if (path.startsWith("/projects/")) return `Project · ${slugTitle(path.slice(10))}`;
+  if (path.startsWith("/blog/")) return `Post · ${slugTitle(path.slice(6))}`;
+  return path;
 };
 
 /* ========================================
@@ -161,6 +189,7 @@ function CategoryBreakdown({ items, colorFor, emptyLabel }) {
 function Analytics() {
   const [range, setRange] = useState(30);
   const [overview, setOverview] = useState(null);
+  const [insights, setInsights] = useState(null);
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
@@ -168,9 +197,14 @@ function Analytics() {
       try {
         setLoading(true);
 
-        const data = await getAnalyticsOverview(range);
+        const [data, deeper] = await Promise.all([
+          getAnalyticsOverview(range),
+          // Deeper insights are additive — the page still works without them.
+          getAdvancedInsights(range).catch(() => null),
+        ]);
 
         setOverview(data);
+        setInsights(deeper);
       } catch {
         toast.error("Failed to load analytics");
       } finally {
@@ -226,7 +260,13 @@ function Analytics() {
           <h1 className="text-heading">Analytics</h1>
 
           <p className="text-body mt-3">
-            Real traffic on your public portfolio.
+            Real traffic on your public portfolio.{" "}
+            <Link
+              to="/dashboard/visitors"
+              className="inline-flex items-center gap-1 underline underline-offset-2"
+            >
+              <Footprints size={14} /> See individual visitor journeys
+            </Link>
           </p>
         </div>
 
@@ -279,35 +319,45 @@ function Analytics() {
         </div>
       </section>
 
-      <section className="card">
-        <h2 className="text-title mb-6">Views Over Time</h2>
+      {insights && <ConversionTiles conversions={insights.conversions} />}
 
-        <div className="h-72">
-          <ResponsiveContainer width="100%" height="100%">
-            <LineChart data={overview?.viewsByDay || []}>
-              <CartesianGrid strokeDasharray="3 3" stroke="var(--color-border)" />
+      <TrafficTrendChart
+        daily={
+          insights?.daily ||
+          (overview?.viewsByDay || []).map((d) => ({ date: d.date, views: d.count, visitors: 0 }))
+        }
+      />
 
-              <XAxis
-                dataKey="date"
-                tick={{ fontSize: 12 }}
-                tickFormatter={(value) => value.slice(5)}
-              />
+      {insights && (
+        <>
+          <section className="grid gap-6 lg:grid-cols-2">
+            <NewVsReturningChart daily={insights.daily} />
+            <EngagementTrendChart daily={insights.daily} />
+          </section>
 
-              <YAxis allowDecimals={false} tick={{ fontSize: 12 }} />
+          <section className="grid gap-6 lg:grid-cols-2">
+            <JourneyStages stages={insights.stages} />
+            <HourlyChart hourly={insights.hourly} timezone={insights.timezone} />
+          </section>
 
-              <Tooltip />
-
-              <Line
-                type="monotone"
-                dataKey="count"
-                stroke="var(--color-primary, #3b82f6)"
-                strokeWidth={2}
-                dot={false}
-              />
-            </LineChart>
-          </ResponsiveContainer>
-        </div>
-      </section>
+          <section className="grid gap-6 lg:grid-cols-2">
+            <PageTable
+              title="Top projects"
+              subtitle="Project detail pages by views, time spent and scroll depth"
+              rows={insights.topProjects}
+              labelFor={(row) => slugTitle(row.slug)}
+              emptyLabel="No project pages viewed yet."
+            />
+            <PageTable
+              title="Top blog posts"
+              subtitle="Posts by views, read time and scroll depth"
+              rows={insights.topPosts}
+              labelFor={(row) => slugTitle(row.slug)}
+              emptyLabel="No blog posts read yet."
+            />
+          </section>
+        </>
+      )}
 
       <section className="grid gap-6 lg:grid-cols-2">
         <div className="card">
@@ -331,6 +381,25 @@ function Analytics() {
           />
         </div>
       </section>
+
+      {insights && (
+        <section className="grid gap-6 lg:grid-cols-2">
+          <TimeOnPageList rows={insights.timeOnPage} labelFor={(row) => pageName(row.path)} />
+
+          <div className="card">
+            <h2 className="text-title mb-1">Where visitors go next</h2>
+            <p className="text-muted text-xs mb-5">Outbound link clicks by destination site</p>
+
+            <RankedList
+              items={insights.outboundDestinations.map((d) => ({
+                label: d.label,
+                count: d.count,
+              }))}
+              emptyLabel="No outbound clicks yet."
+            />
+          </div>
+        </section>
+      )}
 
       <section className="grid gap-6 lg:grid-cols-2">
         <div className="card">
@@ -385,6 +454,36 @@ function Analytics() {
           <RankedList items={topCountryItems} emptyLabel="No location data yet." />
         </div>
       </section>
+
+      {insights && (
+        <>
+          <DeviceEngagementTable rows={insights.deviceEngagement} />
+
+          <section className="grid gap-6 lg:grid-cols-3">
+            <div className="card">
+              <h2 className="text-title mb-5">Operating Systems</h2>
+              <CategoryBreakdown
+                items={insights.operatingSystems}
+                colorFor={(item, index) => RANK_COLORS[index] || OTHER_COLOR}
+                emptyLabel="No OS data yet."
+              />
+            </div>
+
+            <div className="card">
+              <h2 className="text-title mb-5">Screen Sizes</h2>
+              <RankedList items={insights.screens} emptyLabel="No screen data yet." />
+            </div>
+
+            <div className="card">
+              <h2 className="text-title mb-5">Languages</h2>
+              <RankedList
+                items={insights.languages.map((l) => ({ ...l, label: languageName(l.label) }))}
+                emptyLabel="No language data yet."
+              />
+            </div>
+          </section>
+        </>
+      )}
     </div>
   );
 }

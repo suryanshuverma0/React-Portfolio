@@ -15,6 +15,8 @@ import {
   Mail,
   ShieldCheck,
   Footprints,
+  Database,
+  Nfc,
 } from "lucide-react";
 
 export const sidebarLinks = [
@@ -86,6 +88,11 @@ export const sidebarLinks = [
         path: "/dashboard/visitors",
         icon: Footprints,
       },
+      {
+        label: "NFC Card",
+        path: "/dashboard/card",
+        icon: Nfc,
+      },
     ],
   },
 
@@ -101,6 +108,11 @@ export const sidebarLinks = [
         label: "Security",
         path: "/dashboard/security",
         icon: ShieldCheck,
+      },
+      {
+        label: "Storage",
+        path: "/dashboard/storage",
+        icon: Database,
       },
       {
         label: "Settings",

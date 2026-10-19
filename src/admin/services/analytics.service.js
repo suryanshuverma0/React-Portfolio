@@ -14,6 +14,17 @@ export const getAnalyticsOverview = async (rangeDays) => {
   return response.data.data;
 };
 
+export const getAdvancedInsights = async (rangeDays) => {
+  const response = await api.get("/analytics/insights", {
+    params: {
+      range: rangeDays,
+      tz: Intl.DateTimeFormat().resolvedOptions().timeZone,
+    },
+  });
+
+  return response.data.data;
+};
+
 /* ---------- visitor journeys ---------- */
 
 export const getVisitorSessions = async (params) => {

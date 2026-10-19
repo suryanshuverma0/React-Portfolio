@@ -44,6 +44,9 @@ import { getPublicSettings } from "./services/public.settings.service";
 import usePageTracking from "./hooks/usePageTracking";
 import Visitors from "./admin/pages/Visitors";
 import VisitorSession from "./admin/pages/VisitorSession";
+import Storage from "./admin/pages/Storage";
+import CardPage from "./pages/Card";
+import CardAdmin from "./admin/pages/CardAdmin";
 
 /*
   Gates the public-facing portfolio pages only — login/register/dashboard
@@ -147,6 +150,9 @@ function App() {
                   </PublicGate>
                 }
               />
+              {/* NFC business card — deliberately outside PublicGate so a
+                  tap still works while the portfolio is in maintenance. */}
+              <Route path="/card" element={<CardPage />} />
               <Route
                 path="*"
                 element={
@@ -242,6 +248,8 @@ function App() {
                 <Route path="blog/comments" element={<BlogComments />} />
                 <Route path="messages" element={<Messages />} />
                 <Route path="security" element={<Security />} />
+                <Route path="storage" element={<Storage />} />
+                <Route path="card" element={<CardAdmin />} />
                 <Route path="settings" element={<Settings />} />
               </Route>
             </Routes>
