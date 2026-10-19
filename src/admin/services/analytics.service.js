@@ -6,6 +6,14 @@ export const getDashboardSummary = async () => {
   return response.data.data;
 };
 
+export const getDashboardInsights = async () => {
+  const response = await api.get("/analytics/dashboard/insights", {
+    params: { tz: Intl.DateTimeFormat().resolvedOptions().timeZone },
+  });
+
+  return response.data.data;
+};
+
 export const getAnalyticsOverview = async (rangeDays) => {
   const response = await api.get("/analytics/overview", {
     params: { range: rangeDays },

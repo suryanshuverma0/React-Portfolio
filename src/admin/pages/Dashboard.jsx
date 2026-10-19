@@ -2,13 +2,6 @@ import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { toast } from "react-toastify";
 import {
-  ResponsiveContainer,
-  AreaChart,
-  Area,
-  XAxis,
-  Tooltip,
-} from "recharts";
-import {
   Eye,
   Users,
   Activity,
@@ -20,10 +13,23 @@ import {
   MessageSquare,
   User,
   PenSquare,
-  ArrowRight,
+  Timer,
+  LogOut,
+  Nfc,
+  NotebookPen,
 } from "lucide-react";
 
-import { getDashboardSummary, getRecentActivity } from "../services/analytics.service";
+import { getDashboardSummary, getRecentActivity, getDashboardInsights } from "../services/analytics.service";
+import {
+  Sparkline,
+  TrafficChart,
+  SourcesCard,
+  AudienceCard,
+  LiveCard,
+  NotesPanel,
+  SystemCard,
+} from "../components/dashboard/DashboardWidgets";
+import { formatDuration } from "../components/dashboard/format";
 import SkeletonCard from "../../components/common/SkeletonCard";
 import TrendDelta from "../components/ui/TrendDelta";
 
@@ -73,14 +79,14 @@ const formatRelativeTime = (dateString) => {
    KPI CARD
 ========================================= */
 
-function KpiCard({ icon: Icon, label, value, accent, trendPercent, trendLabel, live, onClick }) {
+function KpiCard({ icon: Icon, label, value, accent, trendPercent, trendLabel, live, onClick, spark, sparkKey, hint }) {
   const Wrapper = onClick ? "button" : "div";
 
   return (
     <Wrapper
       type={onClick ? "button" : undefined}
       onClick={onClick}
-      className={`card glass-hover space-y-4 text-left w-full ${onClick ? "cursor-pointer" : ""}`}
+      className={`card glass-hover flex flex-col justify-start space-y-4 text-left w-full ${onClick ? "cursor-pointer" : ""}`}
     >
       <div className="flex items-center justify-between">
         <span
@@ -106,9 +112,14 @@ function KpiCard({ icon: Icon, label, value, accent, trendPercent, trendLabel, l
         <h2 className="text-heading mt-1">{value}</h2>
       </div>
 
-      {trendPercent !== undefined && (
-        <TrendDelta percent={trendPercent} label={trendLabel} />
+      {(trendPercent !== undefined || hint) && (
+        <div className="flex flex-wrap items-center gap-x-2 gap-y-1">
+          {trendPercent !== undefined && <TrendDelta percent={trendPercent} label={trendLabel} />}
+          {hint && <span className="text-xs text-muted">{hint}</span>}
+        </div>
       )}
+
+      {spark?.length > 1 && <Sparkline data={spark} dataKey={sparkKey} color={accent} />}
     </Wrapper>
   );
 }
@@ -159,18 +170,22 @@ function Dashboard() {
   const navigate = useNavigate();
   const [summary, setSummary] = useState(null);
   const [activity, setActivity] = useState([]);
+  const [insights, setInsights] = useState(null);
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
     const loadDashboard = async () => {
       try {
-        const [summaryData, activityData] = await Promise.all([
+        const [summaryData, activityData, insightsData] = await Promise.all([
           getDashboardSummary(),
           getRecentActivity(10),
+          // Additive: the dashboard still renders if this fails.
+          getDashboardInsights().catch(() => null),
         ]);
 
         setSummary(summaryData);
         setActivity(activityData);
+        setInsights(insightsData);
       } catch {
         toast.error("Failed to load dashboard summary");
       } finally {
@@ -210,18 +225,46 @@ function Dashboard() {
       path: "/dashboard/blog/new",
       icon: PenSquare,
     },
+    {
+      title: "Open Notes",
+      description: "Type or write with your pen.",
+      path: "/dashboard/notes",
+      icon: NotebookPen,
+    },
   ];
+
+  const hour = new Date().getHours();
+  const greeting = hour < 12 ? "Good morning" : hour < 18 ? "Good afternoon" : "Good evening";
+  const today = new Date().toLocaleDateString(undefined, { weekday: "long", month: "long", day: "numeric" });
+  const v = insights?.visitors;
+  const sessions7d = v?.sources?.reduce((t, src) => t + src.count, 0) ?? 0;
 
   return (
     <div className="max-w-6xl mx-auto w-full space-y-10">
       {/* Hero */}
 
-      <section>
-        <h1 className="text-heading">Dashboard</h1>
+      <section className="flex flex-wrap items-end justify-between gap-4">
+        <div>
+          <p className="text-small">{today}</p>
+          <h1 className="text-heading mt-1">{greeting}</h1>
+          <p className="text-body mt-3">
+            Here&apos;s how your portfolio, card and notes are doing.
+          </p>
+        </div>
 
-        <p className="text-body mt-3">
-          Manage your portfolio content, projects, certificates and skills.
-        </p>
+        {insights && (
+          <button
+            type="button"
+            onClick={() => navigate("/dashboard/visitors")}
+            className="inline-flex items-center gap-2 rounded-full border border-border bg-surface px-4 py-2 text-small"
+          >
+            <span className="relative flex h-2.5 w-2.5">
+              <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-500 opacity-75" />
+              <span className="relative inline-flex rounded-full h-2.5 w-2.5 bg-emerald-500" />
+            </span>
+            {insights.live.length} live now
+          </button>
+        )}
       </section>
 
       {/* Traffic KPIs */}
@@ -234,6 +277,8 @@ function Dashboard() {
           accent={ACCENTS.blue}
           trendPercent={summary?.trend?.viewsChangePercent}
           trendLabel="vs prev. 30d"
+          spark={summary?.viewsByDay}
+          sparkKey="count"
           onClick={() => navigate("/dashboard/analytics")}
         />
 
@@ -244,6 +289,8 @@ function Dashboard() {
           accent={ACCENTS.aqua}
           trendPercent={summary?.trend?.visitorsChangePercent}
           trendLabel="vs prev. 30d"
+          spark={v?.daily}
+          sparkKey="visitors"
           onClick={() => navigate("/dashboard/analytics")}
         />
 
@@ -265,55 +312,76 @@ function Dashboard() {
         />
       </section>
 
-      {/* Views trend */}
+      {/* Engagement KPIs */}
 
-      <section className="card">
-        <div className="flex items-center justify-between mb-4">
-          <h2 className="text-title">Views — Last 30 Days</h2>
+      {v && (
+        <section className="grid gap-4 sm:grid-cols-2 xl:grid-cols-4">
+          <KpiCard
+            icon={Activity}
+            label="Sessions Today"
+            value={v.sessionsToday}
+            accent={ACCENTS.blue}
+            trendPercent={v.sessionsTodayChange}
+            trendLabel="vs yesterday"
+            spark={v.daily.slice(-14)}
+            sparkKey="sessions"
+            onClick={() => navigate("/dashboard/visitors")}
+          />
 
-          <button
-            type="button"
+          <KpiCard
+            icon={Timer}
+            label="Avg. Time on Site (7d)"
+            value={formatDuration(v.avgDurationMs)}
+            accent={ACCENTS.aqua}
+            trendPercent={v.avgDurationChange}
+            trendLabel="vs prev. 7d"
+            spark={v.daily.slice(-14)}
+            sparkKey="avgDurationMs"
             onClick={() => navigate("/dashboard/analytics")}
-            className="text-small text-primary hover:opacity-70 transition-opacity inline-flex items-center gap-1"
-          >
-            Full analytics
-            <ArrowRight size={14} />
-          </button>
-        </div>
+          />
 
-        <div className="h-48">
-          <ResponsiveContainer width="100%" height="100%">
-            <AreaChart data={summary?.viewsByDay || []}>
-              <defs>
-                <linearGradient id="viewsGradient" x1="0" y1="0" x2="0" y2="1">
-                  <stop offset="0%" stopColor="var(--color-chart-1)" stopOpacity={0.35} />
-                  <stop offset="100%" stopColor="var(--color-chart-1)" stopOpacity={0} />
-                </linearGradient>
-              </defs>
+          <KpiCard
+            icon={LogOut}
+            label="Bounce Rate (7d)"
+            value={`${v.bounceRate}%`}
+            accent={ACCENTS.orange}
+            trendPercent={v.bounceRateDelta}
+            trendLabel="pts better vs prev. 7d"
+            spark={v.daily.slice(-14).map((d) => ({ ...d, bounceRate: d.bounceRate ?? 0 }))}
+            sparkKey="bounceRate"
+            onClick={() => navigate("/dashboard/analytics")}
+          />
 
-              <XAxis
-                dataKey="date"
-                tick={{ fontSize: 11 }}
-                tickFormatter={(value) => value.slice(5)}
-                axisLine={false}
-                tickLine={false}
-                interval="preserveStartEnd"
-              />
+          <KpiCard
+            icon={Nfc}
+            label="Card Opens (7d)"
+            value={insights.card.opens7d}
+            accent={ACCENTS.yellow}
+            trendPercent={insights.card.opensChange}
+            trendLabel="vs prev. 7d"
+            hint={`${insights.card.saves7d} saved contact`}
+            spark={insights.card.daily}
+            sparkKey="opens"
+            onClick={() => navigate("/dashboard/card")}
+          />
+        </section>
+      )}
 
-              <Tooltip />
+      {/* Traffic trend */}
 
-              <Area
-                type="monotone"
-                dataKey="count"
-                stroke="var(--color-chart-1)"
-                strokeWidth={2}
-                fill="url(#viewsGradient)"
-                dot={false}
-              />
-            </AreaChart>
-          </ResponsiveContainer>
-        </div>
-      </section>
+      <TrafficChart viewsByDay={summary?.viewsByDay} daily={v?.daily} />
+
+      {v && (
+        <section className="grid gap-6 lg:grid-cols-3">
+          <SourcesCard sources={v.sources} total={sessions7d} />
+          <AudienceCard devices={v.devices} countries={v.countries} />
+          <LiveCard live={insights.live} />
+        </section>
+      )}
+
+      {/* Notes */}
+
+      {insights?.notes && <NotesPanel notes={insights.notes} />}
 
       {/* Content counts */}
 
@@ -371,8 +439,9 @@ function Dashboard() {
         />
       </section>
 
-      {/* Recent Activity */}
+      {/* Recent Activity + System */}
 
+      <div className="grid gap-6 lg:grid-cols-[minmax(0,2fr)_minmax(0,1fr)] items-start">
       <section className="card space-y-1">
         <div className="mb-3">
           <h2 className="text-title">Recent Activity</h2>
@@ -424,9 +493,12 @@ function Dashboard() {
         )}
       </section>
 
+      {insights && <SystemCard storage={insights.storage} card={insights.card} />}
+      </div>
+
       {/* Quick Actions */}
 
-      <section className="grid gap-4 sm:grid-cols-2 md:grid-cols-4">
+      <section className="grid gap-4 sm:grid-cols-2 md:grid-cols-3 xl:grid-cols-5">
         {quickActions.map((action) => (
           <button
             key={action.title}
