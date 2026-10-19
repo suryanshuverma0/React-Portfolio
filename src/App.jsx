@@ -47,6 +47,7 @@ import VisitorSession from "./admin/pages/VisitorSession";
 import Storage from "./admin/pages/Storage";
 import CardPage from "./pages/Card";
 import CardAdmin from "./admin/pages/CardAdmin";
+import Notes from "./admin/pages/Notes";
 
 /*
   Gates the public-facing portfolio pages only — login/register/dashboard
@@ -250,6 +251,7 @@ function App() {
                 <Route path="security" element={<Security />} />
                 <Route path="storage" element={<Storage />} />
                 <Route path="card" element={<CardAdmin />} />
+                <Route path="notes" element={<Notes />} />
                 <Route path="settings" element={<Settings />} />
               </Route>
             </Routes>

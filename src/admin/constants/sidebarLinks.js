@@ -17,6 +17,7 @@ import {
   Footprints,
   Database,
   Nfc,
+  NotebookPen,
 } from "lucide-react";
 
 export const sidebarLinks = [
@@ -27,6 +28,11 @@ export const sidebarLinks = [
         label: "Dashboard",
         path: "/dashboard",
         icon: LayoutDashboard,
+      },
+      {
+        label: "Notes",
+        path: "/dashboard/notes",
+        icon: NotebookPen,
       },
       {
         label: "Profile",
