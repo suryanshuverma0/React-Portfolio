@@ -5,11 +5,9 @@ import { Plus, Trash2, ArrowUp, ArrowDown, Eye, EyeOff, Save } from "lucide-reac
 import AdminInput from "../form/AdminInput";
 import AdminTextarea from "../form/AdminTextarea";
 import AdminSwitch from "../form/AdminSwitch";
-import TechnologyInput from "../form/TechnologyInput";
 import ImageUploader from "../upload/ImageUploader";
 import BusinessCard from "../../../components/card/BusinessCard";
 import { getCardSettings, updateCardSettings } from "../../services/card.service";
-import { getProjects } from "../../services/project.service";
 import { uploadImage } from "../../services/upload.service";
 import SkeletonCard from "../../../components/common/SkeletonCard";
 
@@ -52,19 +50,22 @@ const VISIBILITY_GROUPS = [
   {
     title: "Content",
     items: [
-      ["stats", "Stats"],
-      ["skills", "Core stack"],
-      ["projects", "Featured projects"],
       ["links", "Links"],
       ["portfolioButton", "View full portfolio button"],
       ["share", "Share button"],
-      ["qr", "Show QR button"],
+      ["qr", "QR code on card back"],
     ],
   },
 ];
 const ALL_SECTIONS_ON = Object.fromEntries(
   VISIBILITY_GROUPS.flatMap((group) => group.items.map(([key]) => [key, true])),
 );
+
+const FINISHES = [
+  ["midnight", "Midnight", "linear-gradient(135deg,#0b1324,#111827)"],
+  ["black", "Black metal", "linear-gradient(135deg,#2a2a2a,#050505)"],
+  ["accent", "Accent colour", null],
+];
 
 const ACCENTS = ["#2a78d6", "#0ea5e9", "#7c3aed", "#059669", "#e11d48", "#ea580c", "#0a0a0a"];
 
@@ -86,6 +87,7 @@ const toForm = (card) => ({
   skills: card.skills || [],
   featuredProjects: card.featuredProjects || [],
   accentColor: card.accentColor || "#2a78d6",
+  finish: card.finish || "midnight",
   sections: { ...ALL_SECTIONS_ON, ...(card.sections || {}) },
 });
 
@@ -106,16 +108,12 @@ const iconButton =
 
 function CardEditor() {
   const [form, setForm] = useState(null);
-  const [projects, setProjects] = useState([]);
   const [saving, setSaving] = useState(false);
   const [uploading, setUploading] = useState(false);
 
   useEffect(() => {
-    Promise.all([getCardSettings(), getProjects().catch(() => [])])
-      .then(([card, projectList]) => {
-        setForm(toForm(card));
-        setProjects(Array.isArray(projectList) ? projectList : projectList?.projects || []);
-      })
+    getCardSettings()
+      .then((card) => setForm(toForm(card)))
       .catch(() => toast.error("Failed to load card"));
   }, []);
 
@@ -140,21 +138,6 @@ function CardEditor() {
       if (target < 0 || target >= list.length) return prev;
       [list[index], list[target]] = [list[target], list[index]];
       return { ...prev, [key]: list };
-    });
-
-  const toggleProject = (id) =>
-    setForm((prev) => {
-      const selected = prev.featuredProjects.includes(id);
-      if (!selected && prev.featuredProjects.length >= 3) {
-        toast.info("Pick up to 3 projects");
-        return prev;
-      }
-      return {
-        ...prev,
-        featuredProjects: selected
-          ? prev.featuredProjects.filter((p) => p !== id)
-          : [...prev.featuredProjects, id],
-      };
     });
 
   const handlePhoto = async (event) => {
@@ -202,7 +185,6 @@ function CardEditor() {
   // Shape the draft exactly like the public API response for the preview.
   const previewCard = useMemo(() => {
     if (!form) return null;
-    const projectMap = new Map(projects.map((p) => [String(p._id), p]));
     // Same stripping the server does for the public card.
     const show = form.sections;
     const keep = (key, value) => (show[key] ? value : "");
@@ -221,20 +203,8 @@ function CardEditor() {
       links: (show.links ? form.links : [])
         .filter((l) => l.isVisible && l.url)
         .map((l) => ({ ...l, label: l.label || KIND_LABEL[l.kind] || "Link" })),
-      stats: show.stats ? form.stats.filter((s) => s.value && s.label) : [],
-      skills: show.skills ? form.skills : [],
-      featuredProjects: (show.projects ? form.featuredProjects : [])
-        .map((id) => projectMap.get(id))
-        .filter(Boolean)
-        .map((p) => ({
-          title: p.title,
-          slug: p.slug,
-          summary: (p.description || "").replace(/\s+/g, " ").slice(0, 140),
-          thumbnailUrl: p.thumbnail?.url || null,
-          technologies: (p.technologies || []).slice(0, 4),
-        })),
     };
-  }, [form, projects]);
+  }, [form]);
 
   if (!form) return <SkeletonCard />;
 
@@ -363,86 +333,27 @@ function CardEditor() {
           )}
         </Section>
 
-        <Section title="Highlights" hint="Short proof points. Keep stats to 2–3 strong numbers.">
-          <div className="space-y-3">
-            {form.stats.map((stat, index) => (
-              <div key={index} className="flex items-center gap-2">
-                <input
-                  value={stat.value}
-                  placeholder="10+"
-                  maxLength={20}
-                  onChange={(e) => updateItem("stats", index, { value: e.target.value })}
-                  className="h-10 w-24 px-3 rounded-xl border border-border bg-surface text-small"
-                  aria-label="Stat value"
-                />
-                <input
-                  value={stat.label}
-                  placeholder="Projects shipped"
-                  maxLength={40}
-                  onChange={(e) => updateItem("stats", index, { label: e.target.value })}
-                  className="h-10 flex-1 px-3 rounded-xl border border-border bg-surface text-small"
-                  aria-label="Stat label"
-                />
-                <button type="button" className={iconButton} onClick={() => removeItem("stats", index)} aria-label="Remove stat">
-                  <Trash2 size={15} />
-                </button>
-              </div>
-            ))}
-            {form.stats.length < 4 && (
+        <Section title="Appearance" hint="The card's finish, and the accent colour used for its glow and buttons.">
+          <div className="grid grid-cols-3 gap-3">
+            {FINISHES.map(([value, label, swatch]) => (
               <button
+                key={value}
                 type="button"
-                onClick={() => set("stats", [...form.stats, { value: "", label: "" }])}
-                className="h-control px-4 rounded-control border border-border bg-surface text-small inline-flex items-center gap-2"
+                onClick={() => set("finish", value)}
+                aria-pressed={form.finish === value}
+                className={`rounded-2xl border p-2 text-small transition ${
+                  form.finish === value ? "border-primary" : "border-border"
+                }`}
               >
-                <Plus size={15} /> Add stat
+                <span
+                  className="block w-full rounded-lg"
+                  style={{ aspectRatio: "1.586 / 1", background: swatch || form.accentColor }}
+                />
+                <span className="mt-2 block">{label}</span>
               </button>
-            )}
+            ))}
           </div>
 
-          <TechnologyInput
-            label="Core stack (up to 10)"
-            placeholder="Solidity"
-            technologies={form.skills}
-            setTechnologies={(skills) => set("skills", skills.slice(0, 10))}
-          />
-
-          <div className="space-y-2">
-            <p className="text-label">Featured projects (up to 3, in the order you pick them)</p>
-            {!projects.length ? (
-              <p className="text-muted text-xs">No projects yet.</p>
-            ) : (
-              <div className="grid gap-2 sm:grid-cols-2">
-                {projects.map((project) => {
-                  const id = String(project._id);
-                  const position = form.featuredProjects.indexOf(id);
-                  return (
-                    <button
-                      key={id}
-                      type="button"
-                      onClick={() => toggleProject(id)}
-                      aria-pressed={position >= 0}
-                      className={`flex items-center gap-3 rounded-2xl border p-2.5 text-left text-small transition ${
-                        position >= 0 ? "border-primary bg-surface" : "border-border"
-                      }`}
-                    >
-                      {project.thumbnail?.url && (
-                        <img src={project.thumbnail.url} alt="" className="h-10 w-10 rounded-lg object-cover" />
-                      )}
-                      <span className="flex-1 truncate">{project.title}</span>
-                      {position >= 0 && (
-                        <span className="h-6 w-6 shrink-0 rounded-full bg-primary text-background text-xs inline-flex items-center justify-center">
-                          {position + 1}
-                        </span>
-                      )}
-                    </button>
-                  );
-                })}
-              </div>
-            )}
-          </div>
-        </Section>
-
-        <Section title="Appearance">
           <div className="flex flex-wrap items-center gap-3">
             {ACCENTS.map((color) => (
               <button
