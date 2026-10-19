@@ -30,6 +30,7 @@ import {
 import { getPublicSettings } from "../../../services/public.settings.service";
 import { socialsObjectToArray } from "../../../lib/socials";
 import { sendMessage } from "../../../services/public.contact.service";
+import { trackEvent } from "../../../lib/tracker";
 
 function Contact() {
 
@@ -63,6 +64,16 @@ function Contact() {
       setSending(true);
 
       await sendMessage(formData);
+
+      trackEvent("form_submit", {
+        label: "Contact form",
+        section: "contact",
+        meta: {
+          name: formData.name.trim().slice(0, 100),
+          email: formData.email.trim().slice(0, 150),
+          ...(formData.subject?.trim() && { subject: formData.subject.trim().slice(0, 150) }),
+        },
+      });
 
       setSent(true);
       setFormData({ name: "", email: "", subject: "", message: "" });

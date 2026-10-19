@@ -9,7 +9,6 @@ import SEO from "../components/common/SEO";
 import SkeletonCard from "../components/common/SkeletonCard";
 
 import { getPublicPosts, getBlogTags } from "../services/public.blog.service";
-import { trackPageView } from "../services/public.analytics.service";
 
 const formatDate = (date) =>
   date
@@ -33,10 +32,6 @@ function Blog() {
 
   useEffect(() => {
     window.scrollTo({ top: 0, behavior: "instant" });
-  }, []);
-
-  useEffect(() => {
-    trackPageView("/blog");
   }, []);
 
   useEffect(() => {

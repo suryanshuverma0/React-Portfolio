@@ -41,6 +41,9 @@ import Messages from "./admin/pages/Messages";
 import Security from "./admin/pages/Security";
 import MaintenanceScreen from "./components/common/MaintenanceScreen";
 import { getPublicSettings } from "./services/public.settings.service";
+import usePageTracking from "./hooks/usePageTracking";
+import Visitors from "./admin/pages/Visitors";
+import VisitorSession from "./admin/pages/VisitorSession";
 
 /*
   Gates the public-facing portfolio pages only — login/register/dashboard
@@ -62,6 +65,8 @@ function App() {
   const location = useLocation();
 
   const { authLoading } = useAuth();
+
+  usePageTracking();
 
   useEffect(() => {
     const timer = setTimeout(() => {
@@ -228,6 +233,8 @@ function App() {
                 <Route path="certificates" element={<Certificates />} />
                 <Route path="skill" element={<Skills />} />
                 <Route path="analytics" element={<Analytics />} />
+                <Route path="visitors" element={<Visitors />} />
+                <Route path="visitors/:sessionId" element={<VisitorSession />} />
                 <Route path="users" element={<Users />} />
                 <Route path="blog" element={<AdminBlog />} />
                 <Route path="blog/new" element={<BlogEditor />} />

@@ -11,7 +11,6 @@ import NotFound from "./NotFound";
 
 import { getPublicPostBySlug } from "../services/public.blog.service";
 import { getPublicProfile } from "../services/public.profile.service";
-import { trackPageView } from "../services/public.analytics.service";
 
 const formatDate = (date) =>
   date
@@ -60,10 +59,6 @@ function BlogPost() {
       .then(setAuthor)
       .catch(() => setAuthor(null));
   }, []);
-
-  useEffect(() => {
-    trackPageView(`/blog/${slug}`);
-  }, [slug]);
 
   if (!post) {
     if (!checked) return null;

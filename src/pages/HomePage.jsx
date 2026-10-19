@@ -27,7 +27,6 @@ import Footer from "../components/layout/Footer";
 import SEO from "../components/common/SEO";
 
 import { getPublicSettings } from "../services/public.settings.service";
-import { trackPageView } from "../services/public.analytics.service";
 
 const DEFAULT_TITLE =
   "Suryanshu Verma | Blockchain Developer & MERN Engineer";
@@ -51,10 +50,6 @@ function HomePage() {
     };
 
     loadSettings();
-  }, []);
-
-  useEffect(() => {
-    trackPageView("/");
   }, []);
 
   const seo = (

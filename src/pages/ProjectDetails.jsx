@@ -25,7 +25,6 @@ import {
 } from "../components/content/projectsContent";
 
 import { getPublicProjectBySlug } from "../services/public.projects.service";
-import { trackPageView } from "../services/public.analytics.service";
 
 import SEO
 from "../components/common/SEO";
@@ -75,10 +74,6 @@ useEffect(() => {
   return () => {
     cancelled = true;
   };
-}, [slug]);
-
-useEffect(() => {
-  trackPageView(`/projects/${slug}`);
 }, [slug]);
 
 

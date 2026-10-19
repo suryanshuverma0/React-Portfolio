@@ -14,7 +14,7 @@ import {
   Newspaper,
   Mail,
   ShieldCheck,
-
+  Footprints,
 } from "lucide-react";
 
 export const sidebarLinks = [
@@ -80,6 +80,11 @@ export const sidebarLinks = [
         label: "Analytics",
         path: "/dashboard/analytics",
         icon: BarChart3,
+      },
+      {
+        label: "Visitors",
+        path: "/dashboard/visitors",
+        icon: Footprints,
       },
     ],
   },
