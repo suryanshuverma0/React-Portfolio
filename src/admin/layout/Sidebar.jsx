@@ -5,252 +5,96 @@ import { useAuth } from "../../contexts/AuthContext";
 import SidebarItem from "../components/SidebarItem";
 import { sidebarLinks } from "../constants/sidebarLinks";
 
-function Sidebar({
-  sidebarOpen,
-  setSidebarOpen,
-}) {
-  const { logout, user } = useAuth();
+/* ========================================
+   SIDEBAR
+   Mobile: off-canvas drawer over the page.
+   Desktop: full width, or collapsed to an
+   icon rail (labels become tooltips) —
+   toggled from the header, remembered.
+========================================= */
 
+function Sidebar({ sidebarOpen, setSidebarOpen, collapsed = false }) {
+  const { logout, user } = useAuth();
   const navigate = useNavigate();
 
   const handleLogout = async () => {
     await logout();
-
     navigate("/login");
   };
 
   return (
     <>
-      {/* Mobile Overlay */}
-
+      {/* Mobile overlay */}
       {sidebarOpen && (
-        <div
-          onClick={() =>
-            setSidebarOpen(false)
-          }
-          className="
-            inset-0
-
-            bg-black/50
-
-            z-40
-
-            lg:hidden
-          "
-        />
+        <div onClick={() => setSidebarOpen(false)} className="fixed inset-0 bg-black/50 z-40 lg:hidden" aria-hidden />
       )}
-
-      {/* Sidebar */}
 
       <aside
         className={`
-                      overflow-y-auto
-
-          top-0
-          left-0
-
-          z-50
-
-          h-screen
-
-          w-70
-
-          bg-card
-
-          border-r
-          border-border
-
-          flex
-          flex-col
-
-          p-4
-
-          transition-transform
-          duration-300
-
-          lg:static
+          fixed inset-y-0 left-0 z-50 lg:static lg:z-auto print:hidden
+          h-screen overflow-y-auto overflow-x-hidden
+          bg-card border-r border-border
+          flex flex-col
+          transition-[transform,width,padding] duration-300
+          w-70 p-4
+          ${collapsed ? "lg:w-20 lg:px-3" : ""}
           lg:translate-x-0
-
-          ${
-            sidebarOpen
-              ? "translate-x-0"
-              : "-translate-x-full"
-          }
+          ${sidebarOpen ? "translate-x-0" : "-translate-x-full"}
         `}
       >
-        {/* Mobile Close */}
-
-        <div
-          className="
-            flex
-            justify-end
-
-            mb-4
-
-            lg:hidden
-          "
-        >
+        {/* Mobile close */}
+        <div className="flex justify-end mb-4 lg:hidden">
           <button
-            onClick={() =>
-              setSidebarOpen(false)
-            }
-            className="
-              h-10
-              w-10
-
-              flex
-              items-center
-              justify-center
-
-              rounded-control
-
-              bg-surface
-
-              border
-              border-border
-            "
+            onClick={() => setSidebarOpen(false)}
+            aria-label="Close menu"
+            className="h-10 w-10 flex items-center justify-center rounded-control bg-surface border border-border"
           >
             <X size={18} />
           </button>
         </div>
 
-        {/* Logo */}
+        {/* Identity */}
+        <div className={`flex items-center gap-3 ${collapsed ? "lg:justify-center" : ""}`}>
+          <div
+            className="h-10 w-10 my-4 shrink-0 rounded-xl bg-primary text-background flex items-center justify-center text-sm font-semibold"
+            title={collapsed ? "Suryanshu Verma" : undefined}
+          >
+            SV
+          </div>
 
-        {/* <div className="mb-8">
-          <h1 className="text-title">
-            Portfolio CMS
-          </h1>
-
-          <p className="text-small">
-            Admin Panel
-          </p>
-        </div> */}
-
-        
-            <div
-              className="
-                flex
-                items-center
-
-                gap-3
-              "
-            >
-              <div
-                className="
-                  h-10
-                  w-10
-                  my-4
-
-                  rounded-xl
-
-                  bg-primary
-
-                  text-background
-
-                  flex
-                  items-center
-                  justify-center
-
-                  text-sm
-                  font-semibold
-                "
-              >
-                SV
-              </div>
-
-              <div>
-                <p
-                  className="
-                    text-label
-                  "
-                >
-                  Suryanshu Verma
-                </p>
-
-                <p
-                  className="
-                    text-small
-                  "
-                >
-                  Computer Engineer
-                </p>
-              </div>
-            </div>
+          <div className={collapsed ? "lg:hidden" : ""}>
+            <p className="text-label">Suryanshu Verma</p>
+            <p className="text-small">Computer Engineer</p>
+          </div>
+        </div>
 
         {/* Navigation */}
-
-        <div className="space-y-6">
+        <nav className="space-y-6">
           {sidebarLinks.map((section) => (
-            <div
-              key={section.section}
-              className="space-y-2"
-            >
-              <p
-                className="
-                  text-muted
-
-                  px-2
-
-                  uppercase
-
-                  tracking-wider
-                "
-              >
-                {section.section}
-              </p>
+            <div key={section.section} className="space-y-2">
+              <p className={`text-muted px-2 uppercase tracking-wider ${collapsed ? "lg:hidden" : ""}`}>{section.section}</p>
+              {collapsed && <div className="hidden lg:block mx-2 h-px bg-border" aria-hidden />}
 
               {section.items.map((item) => (
-                <SidebarItem
-                  key={item.path}
-                  {...item}
-                />
+                <SidebarItem key={item.path} {...item} collapsed={collapsed} onNavigate={() => setSidebarOpen(false)} />
               ))}
             </div>
           ))}
-        </div>
+        </nav>
 
         {/* Footer */}
-
-        <div className="mt-auto">
-          <div
-            className="
-              card
-
-              mb-4
-            "
-          >
-            <p className="text-small truncate">
-              {user?.email}
-            </p>
+        <div className="mt-auto pt-6">
+          <div className={`card mb-4 ${collapsed ? "lg:hidden" : ""}`}>
+            <p className="text-small truncate">{user?.email}</p>
           </div>
 
           <button
             onClick={handleLogout}
-            className="
-              w-full
-
-              h-control
-
-              flex
-              items-center
-              justify-center
-              gap-2
-
-              rounded-control
-
-              bg-surface
-
-              border
-              border-border
-
-              hover:opacity-80
-
-              transition
-            "
+            title={collapsed ? "Logout" : undefined}
+            className="w-full h-control flex items-center justify-center gap-2 rounded-control bg-surface border border-border hover:opacity-80 transition"
           >
             <LogOut size={18} />
-
-            Logout
+            <span className={collapsed ? "lg:hidden" : ""}>Logout</span>
           </button>
         </div>
       </aside>

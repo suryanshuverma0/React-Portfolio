@@ -1,14 +1,14 @@
 import { NavLink } from "react-router-dom";
 
-function SidebarItem({
-  icon: Icon,
-  label,
-  path,
-}) {
+function SidebarItem({ icon: Icon, label, path, collapsed = false, onNavigate }) {
   return (
     <NavLink
       to={path}
-      end={path === "/dashboard"}
+      // Exact match where a sibling link lives underneath (Blog Analytics).
+      end={path === "/dashboard" || path === "/dashboard/blog"}
+      onClick={onNavigate}
+      title={collapsed ? label : undefined}
+      aria-label={collapsed ? label : undefined}
       className={({ isActive }) =>
         `
         flex
@@ -17,6 +17,7 @@ function SidebarItem({
 
         h-control
         px-4
+        ${collapsed ? "lg:justify-center lg:px-0" : ""}
 
         rounded-control
 
@@ -38,11 +39,9 @@ function SidebarItem({
       `
       }
     >
-      <Icon size={18} />
+      <Icon size={18} className="shrink-0" />
 
-      <span className="text-label">
-        {label}
-      </span>
+      <span className={`text-label truncate ${collapsed ? "lg:hidden" : ""}`}>{label}</span>
     </NavLink>
   );
 }

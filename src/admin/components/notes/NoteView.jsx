@@ -1,11 +1,13 @@
 import { useCallback, useEffect, useRef, useState } from "react";
 import { toast } from "react-toastify";
-import { Pin, History, Trash2, FolderInput, X, Check, CloudOff, Loader2, FileText, PenLine } from "lucide-react";
+import { Pin, History, Trash2, FolderInput, X, Check, CloudOff, Loader2, FileText, PenLine, FileDown, Globe } from "lucide-react";
 
 import TypedEditor from "./TypedEditor";
 import InkEditor from "./ink/InkEditor";
 import { InkPreview } from "./ink/InkCanvas";
 import SkeletonCard from "../../../components/common/SkeletonCard";
+import PublishDialog from "./PublishDialog";
+import { getPublishStatus, downloadNotePdf } from "../../services/automation.service";
 import {
   getNote,
   updateNote,
@@ -261,6 +263,31 @@ function NoteView({ noteId, breadcrumb, onSummaryChange, onMove, onDelete }) {
   const [note, setNote] = useState(null);
   const [contentKey, setContentKey] = useState(0);
   const [showHistory, setShowHistory] = useState(false);
+  const [showPublish, setShowPublish] = useState(false);
+  const [published, setPublished] = useState(null);
+  const [exporting, setExporting] = useState(false);
+
+  useEffect(() => {
+    let cancelled = false;
+    getPublishStatus(noteId)
+      .then((s) => !cancelled && setPublished(s))
+      .catch(() => {});
+    return () => {
+      cancelled = true;
+    };
+  }, [noteId]);
+
+  const exportPdf = async (title) => {
+    try {
+      setExporting(true);
+      await flush();
+      await downloadNotePdf(noteId, title);
+    } catch {
+      toast.error("PDF export failed");
+    } finally {
+      setExporting(false);
+    }
+  };
 
   const onSaved = useCallback(
     (saved, patch) => {
@@ -315,6 +342,16 @@ function NoteView({ noteId, breadcrumb, onSummaryChange, onMove, onDelete }) {
         <div className="flex items-center gap-2 text-xs text-muted">
           <KindIcon size={13} />
           <span className="truncate">{breadcrumb}</span>
+          {published?.published && (
+            <a
+              href={`/blog/${published.post.slug}`}
+              target="_blank"
+              rel="noreferrer noopener"
+              className="inline-flex shrink-0 items-center gap-1 rounded-full bg-emerald-500/10 px-2 py-0.5 text-emerald-600 dark:text-emerald-400"
+            >
+              <Globe size={11} /> On blog
+            </a>
+          )}
           <span className="ml-auto shrink-0">
             <SaveStatus status={status} />
           </span>
@@ -336,6 +373,17 @@ function NoteView({ noteId, breadcrumb, onSummaryChange, onMove, onDelete }) {
             className={`h-9 w-9 inline-flex items-center justify-center rounded-lg ${note.isPinned ? "bg-primary text-background" : "hover:bg-surface"}`}
           >
             <Pin size={16} />
+          </button>
+          <button
+            type="button"
+            onClick={() => setShowPublish(true)}
+            title={published?.published ? "Update or unpublish blog post" : "Publish to blog"}
+            className={`h-9 w-9 inline-flex items-center justify-center rounded-lg ${published?.published ? "text-emerald-600 dark:text-emerald-400" : ""} hover:bg-surface`}
+          >
+            <Globe size={16} />
+          </button>
+          <button type="button" onClick={() => exportPdf(note.title)} disabled={exporting} title="Export as PDF" className="h-9 w-9 inline-flex items-center justify-center rounded-lg hover:bg-surface disabled:opacity-50">
+            {exporting ? <Loader2 size={16} className="animate-spin" /> : <FileDown size={16} />}
           </button>
           <button type="button" onClick={() => setShowHistory(true)} title="Version history" className="h-9 w-9 inline-flex items-center justify-center rounded-lg hover:bg-surface">
             <History size={16} />
@@ -366,6 +414,10 @@ function NoteView({ noteId, breadcrumb, onSummaryChange, onMove, onDelete }) {
           <InkEditor key={contentKey} initialInk={note.ink} onChange={handleInk} />
         )}
       </div>
+
+      {showPublish && (
+        <PublishDialog note={note} flush={flush} onClose={() => setShowPublish(false)} onChange={setPublished} />
+      )}
 
       {showHistory && (
         <VersionsPanel

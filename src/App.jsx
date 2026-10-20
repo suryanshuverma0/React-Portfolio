@@ -48,6 +48,9 @@ import Storage from "./admin/pages/Storage";
 import CardPage from "./pages/Card";
 import CardAdmin from "./admin/pages/CardAdmin";
 import Notes from "./admin/pages/Notes";
+import Automations from "./admin/pages/Automations";
+import BlogAnalytics from "./admin/pages/BlogAnalytics";
+import ExecutiveReport from "./admin/pages/ExecutiveReport";
 
 /*
   Gates the public-facing portfolio pages only — login/register/dashboard
@@ -252,6 +255,9 @@ function App() {
                 <Route path="storage" element={<Storage />} />
                 <Route path="card" element={<CardAdmin />} />
                 <Route path="notes" element={<Notes />} />
+                <Route path="automations" element={<Automations />} />
+                <Route path="blog/analytics" element={<BlogAnalytics />} />
+                <Route path="report" element={<ExecutiveReport />} />
                 <Route path="settings" element={<Settings />} />
               </Route>
             </Routes>

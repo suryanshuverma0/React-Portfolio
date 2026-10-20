@@ -30,6 +30,7 @@ import {
   SystemCard,
 } from "../components/dashboard/DashboardWidgets";
 import { formatDuration } from "../components/dashboard/format";
+import ReportSummaryCard from "../components/dashboard/ReportSummaryCard";
 import SkeletonCard from "../../components/common/SkeletonCard";
 import TrendDelta from "../components/ui/TrendDelta";
 
@@ -266,6 +267,10 @@ function Dashboard() {
           </button>
         )}
       </section>
+
+      {/* Executive summary */}
+
+      <ReportSummaryCard />
 
       {/* Traffic KPIs */}
 

@@ -18,6 +18,9 @@ import {
   Database,
   Nfc,
   NotebookPen,
+  Workflow,
+  FileBarChart,
+  ChartNoAxesCombined,
 } from "lucide-react";
 
 export const sidebarLinks = [
@@ -28,6 +31,11 @@ export const sidebarLinks = [
         label: "Dashboard",
         path: "/dashboard",
         icon: LayoutDashboard,
+      },
+      {
+        label: "Executive Report",
+        path: "/dashboard/report",
+        icon: FileBarChart,
       },
       {
         label: "Notes",
@@ -80,6 +88,11 @@ export const sidebarLinks = [
         icon: Newspaper,
       },
       {
+        label: "Blog Analytics",
+        path: "/dashboard/blog/analytics",
+        icon: ChartNoAxesCombined,
+      },
+      {
         label: "Messages",
         path: "/dashboard/messages",
         icon: Mail,
@@ -114,6 +127,11 @@ export const sidebarLinks = [
         label: "Security",
         path: "/dashboard/security",
         icon: ShieldCheck,
+      },
+      {
+        label: "Automations",
+        path: "/dashboard/automations",
+        icon: Workflow,
       },
       {
         label: "Storage",

@@ -1,10 +1,11 @@
-import { Menu } from "lucide-react";
+import { Menu, PanelLeftClose, PanelLeftOpen } from "lucide-react";
 import { useLocation } from "react-router-dom";
 
 import ThemeToggle from "../../components/ui/ThemeToggle";
 import { useAuth } from "../../contexts/AuthContext";
+import NotificationBell from "../components/NotificationBell";
 
-function Header({ setSidebarOpen }) {
+function Header({ setSidebarOpen, collapsed, onToggleCollapsed }) {
   const location = useLocation();
 
   const { user } = useAuth();
@@ -21,7 +22,18 @@ function Header({ setSidebarOpen }) {
     if (path.includes("/projects")) return "Projects";
     if (path.includes("/certificates")) return "Certificates";
     if (path.includes("/skill")) return "Skills";
+    if (path.includes("/blog/analytics")) return "Blog Analytics";
     if (path.includes("/analytics")) return "Analytics";
+    if (path.includes("/visitors")) return "Visitors";
+    if (path.includes("/notes")) return "Notes";
+    if (path.includes("/card")) return "NFC Card";
+    if (path.includes("/report")) return "Executive Report";
+    if (path.includes("/automations")) return "Automations";
+    if (path.includes("/storage")) return "Storage";
+    if (path.includes("/blog")) return "Blog";
+    if (path.includes("/messages")) return "Messages";
+    if (path.includes("/users")) return "Users";
+    if (path.includes("/security")) return "Security";
     if (path.includes("/settings")) return "Settings";
 
     return "Admin";
@@ -37,6 +49,7 @@ function Header({ setSidebarOpen }) {
     <header
       className="
         sticky
+        print:hidden
         top-0
         z-30
 
@@ -92,6 +105,17 @@ function Header({ setSidebarOpen }) {
           <Menu size={18} />
         </button>
 
+        {/* Desktop: collapse / expand the sidebar */}
+        <button
+          type="button"
+          onClick={onToggleCollapsed}
+          aria-label={collapsed ? "Expand sidebar" : "Collapse sidebar"}
+          title={collapsed ? "Expand sidebar" : "Collapse sidebar"}
+          className="hidden lg:flex h-10 w-10 items-center justify-center rounded-control bg-surface border border-border hover:opacity-80 transition"
+        >
+          {collapsed ? <PanelLeftOpen size={18} /> : <PanelLeftClose size={18} />}
+        </button>
+
         <h1 className="text-title">
           {getTitle()}
         </h1>
@@ -106,6 +130,8 @@ function Header({ setSidebarOpen }) {
           gap-3
         "
       >
+        <NotificationBell />
+
         <ThemeToggle />
 
         <div
