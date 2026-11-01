@@ -7,6 +7,7 @@ import { getPublicProfile } from "../../services/public.profile.service";
 import { getPublicEducations } from "../../services/public.education.service";
 import { getPublicStats } from "../../services/public.stats.service";
 import { trackPointer } from "../../lib/pointer";
+import CountUp from "../motion/CountUp";
 
 const EASE = [0.22, 1, 0.36, 1];
 
@@ -172,7 +173,7 @@ function About() {
                     order-1
                   "
                 >
-                  {item.value}
+                  <CountUp value={item.value} />
                 </dd>
               </div>
             ))}

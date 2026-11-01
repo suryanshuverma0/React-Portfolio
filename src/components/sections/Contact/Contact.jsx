@@ -34,6 +34,7 @@ import { getPublicSettings } from "../../../services/public.settings.service";
 import { socialsObjectToArray } from "../../../lib/socials";
 import { sendMessage } from "../../../services/public.contact.service";
 import { trackEvent } from "../../../lib/tracker";
+import Magnetic from "../../motion/Magnetic";
 
 function Contact() {
 
@@ -230,9 +231,11 @@ function Contact() {
                 </a>
 
                 <div className="mt-6 flex flex-wrap gap-2">
-                  <a href={primaryEmail.href} className="btn btn-primary">
-                    Send an email
-                  </a>
+                  <Magnetic>
+                    <a href={primaryEmail.href} className="btn btn-primary">
+                      Send an email
+                    </a>
+                  </Magnetic>
 
                   <button type="button" onClick={copyEmail} className="btn btn-outline">
                     {copied ? <Check size={15} aria-hidden="true" /> : <Copy size={15} aria-hidden="true" />}

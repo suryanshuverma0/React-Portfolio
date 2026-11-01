@@ -8,6 +8,10 @@ import TechMarquee from "../components/home/TechMarquee";
 
 import ScrollScene from "../components/scene/ScrollScene";
 
+import SmoothScroll from "../components/motion/SmoothScroll";
+
+import Cursor from "../components/motion/Cursor";
+
 import FAQ from "../components/sections/FAQ/FAQ";
 
 import About from "../components/sections/About";
@@ -77,7 +81,13 @@ function HomePage() {
     <>
       {seo}
 
+      <SmoothScroll />
+
       <ScrollScene />
+
+      <Cursor />
+
+      <div aria-hidden="true" className="grain" />
 
       <Navbar />
 

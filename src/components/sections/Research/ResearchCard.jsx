@@ -10,6 +10,8 @@ import { Link } from "react-router-dom";
 
 import { trackPointer } from "../../../lib/pointer";
 
+import Magnetic from "../../motion/Magnetic";
+
 const EASE = [0.22, 1, 0.36, 1];
 
 const toNumber = (value) => Number(String(value).replace(/[^\d.]/g, "")) || 0;
@@ -461,20 +463,22 @@ function ResearchCard({ paper, index = 0 }) {
             py-5
           "
         >
-          <button
-            type="button"
-            onClick={() => setExpanded((open) => !open)}
-            aria-expanded={expanded}
-            aria-controls={expanded ? detailsId : undefined}
-            className="btn btn-primary"
-          >
-            {expanded ? "Hide details" : "Read the full breakdown"}
-            <ChevronDown
-              size={16}
-              aria-hidden="true"
-              className={`transition-transform duration-300 ${expanded ? "rotate-180" : ""}`}
-            />
-          </button>
+          <Magnetic strength={0.2}>
+            <button
+              type="button"
+              onClick={() => setExpanded((open) => !open)}
+              aria-expanded={expanded}
+              aria-controls={expanded ? detailsId : undefined}
+              className="btn btn-primary"
+            >
+              {expanded ? "Hide details" : "Read the full breakdown"}
+              <ChevronDown
+                size={16}
+                aria-hidden="true"
+                className={`transition-transform duration-300 ${expanded ? "rotate-180" : ""}`}
+              />
+            </button>
+          </Magnetic>
 
           <div className="flex flex-wrap items-center gap-2">
             {paper.projectSlug && (

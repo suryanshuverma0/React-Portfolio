@@ -55,9 +55,15 @@ function SectionTitle({
               : "max-w-4xl"
         }
       >
-        <h2 className={`${large ? "text-display" : "text-section"} text-balance`}>
+        <motion.h2
+          initial={{ clipPath: "inset(0% 0% 100% 0%)", y: 40 }}
+          whileInView={{ clipPath: "inset(-20% -10% -25% -10%)", y: 0 }}
+          viewport={{ once: true, margin: "-80px" }}
+          transition={{ duration: 1.1, delay: 0.1, ease: [0.22, 1, 0.36, 1] }}
+          className={`${large ? "text-display" : "text-section"} text-balance`}
+        >
           {title}
-        </h2>
+        </motion.h2>
 
         {description && (
           <p

@@ -12,6 +12,8 @@ import ThemeToggle from "../ui/ThemeToggle";
 
 import Wordmark from "../ui/Wordmark";
 
+import Magnetic from "../motion/Magnetic";
+
 import NavItem from "./NavItem";
 
 import { navbarContent } from "../content/navbarContent";
@@ -220,13 +222,15 @@ function Navbar() {
           <div className="flex items-center gap-1.5 shrink-0">
             <ThemeToggle round />
 
-            <PageLink
-              {...pageHref("#contact")}
-              className="btn btn-primary hidden sm:inline-flex h-10! px-4! text-[13.5px]!"
-            >
-              Let&apos;s talk
-              <ArrowUpRight size={14} aria-hidden="true" />
-            </PageLink>
+            <Magnetic strength={0.25} className="hidden sm:inline-flex">
+              <PageLink
+                {...pageHref("#contact")}
+                className="btn btn-primary h-10! px-4! text-[13.5px]!"
+              >
+                Let&apos;s talk
+                <ArrowUpRight size={14} aria-hidden="true" />
+              </PageLink>
+            </Magnetic>
 
             <button
               type="button"
@@ -269,6 +273,7 @@ function Navbar() {
               className="lg:hidden mt-2 origin-top"
             >
               <div
+                data-lenis-prevent
                 className="
                   max-h-[calc(100svh-6rem)]
 

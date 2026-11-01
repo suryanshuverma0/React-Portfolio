@@ -9,6 +9,7 @@ import {
 } from "framer-motion";
 import { ArrowDown, ArrowRight } from "lucide-react";
 import Container from "../ui/Container";
+import Magnetic from "../motion/Magnetic";
 import { heroContent } from "../content/heroContent";
 import { researchContent } from "../content/researchContent";
 import { iconMap } from "../constants/iconMap";
@@ -342,14 +343,18 @@ function Hero() {
                 gap-3
               "
             >
-              <a href="#research" className="btn btn-primary">
-                Read the research
-                <ArrowDown size={15} aria-hidden="true" />
-              </a>
+              <Magnetic>
+                <a href="#research" className="btn btn-primary">
+                  Read the research
+                  <ArrowDown size={15} aria-hidden="true" />
+                </a>
+              </Magnetic>
 
-              <a href="#contact" className="btn btn-outline">
-                Get in touch
-              </a>
+              <Magnetic>
+                <a href="#contact" className="btn btn-outline">
+                  Get in touch
+                </a>
+              </Magnetic>
 
               <span aria-hidden="true" className="hidden sm:block mx-1 h-6 w-px bg-border" />
 
