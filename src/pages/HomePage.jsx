@@ -6,8 +6,6 @@ import Hero from "../components/home/Hero";
 
 import TechMarquee from "../components/home/TechMarquee";
 
-import ScrollScene from "../components/scene/ScrollScene";
-
 import SmoothScroll from "../components/motion/SmoothScroll";
 
 import Cursor from "../components/motion/Cursor";
@@ -82,8 +80,6 @@ function HomePage() {
       {seo}
 
       <SmoothScroll />
-
-      <ScrollScene />
 
       <Cursor />
 
