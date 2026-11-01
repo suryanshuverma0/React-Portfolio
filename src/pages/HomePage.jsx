@@ -6,6 +6,10 @@ import Hero from "../components/home/Hero";
 
 import TechMarquee from "../components/home/TechMarquee";
 
+import ScrollScene from "../components/scene/ScrollScene";
+
+import FAQ from "../components/sections/FAQ/FAQ";
+
 import About from "../components/sections/About";
 
 import Experience from "../components/sections/Experience/Experience";
@@ -30,10 +34,11 @@ import SEO from "../components/common/SEO";
 
 import { getPublicSettings } from "../services/public.settings.service";
 
+// Kept in step with the static <head> in index.html.
 const DEFAULT_TITLE =
-  "Suryanshu Verma | Blockchain Developer & MERN Engineer";
+  "Suryanshu Verma — Blockchain Engineer, Researcher & Full-Stack Developer";
 const DEFAULT_DESCRIPTION =
-  "Suryanshu Verma is a Computer Engineering student focused on blockchain systems, scalable MERN applications, backend engineering, and production-oriented software development.";
+  "Suryanshu Verma is a computer engineer from Nepal building verifiable blockchain systems and production-grade backends. His pharmaceutical supply-chain blockchain paper was accepted for oral presentation at ICTDsC 2026.";
 const DEFAULT_KEYWORDS =
   "Suryanshu Verma, blockchain developer Nepal, MERN developer Nepal, web3 developer, backend engineer, computer engineer Nepal, portfolio, smart contract developer";
 
@@ -64,12 +69,15 @@ function HomePage() {
           : DEFAULT_KEYWORDS
       }
       image={settings?.ogImage || "/og-image.png"}
+      type="profile"
     />
   );
 
   return (
     <>
       {seo}
+
+      <ScrollScene />
 
       <Navbar />
 
@@ -94,6 +102,8 @@ function HomePage() {
         <Certificates />
 
         <CodingActivity />
+
+        <FAQ />
 
         <Contact />
       </main>

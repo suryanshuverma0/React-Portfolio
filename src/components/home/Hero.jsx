@@ -1,6 +1,12 @@
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import PropTypes from "prop-types";
-import { AnimatePresence, motion } from "framer-motion";
+import {
+  AnimatePresence,
+  motion,
+  useReducedMotion,
+  useScroll,
+  useTransform,
+} from "framer-motion";
 import { ArrowDown, ArrowRight } from "lucide-react";
 import Container from "../ui/Container";
 import { heroContent } from "../content/heroContent";
@@ -80,6 +86,19 @@ function Hero() {
   const [profile, setProfile] = useState(null);
   const [settings, setSettings] = useState(null);
 
+  // Scroll-out parallax: copy lifts and fades, the portrait drifts slower.
+  const sectionRef = useRef(null);
+  const reduceMotion = useReducedMotion();
+
+  const { scrollYProgress } = useScroll({
+    target: sectionRef,
+    offset: ["start start", "end start"],
+  });
+
+  const copyY = useTransform(scrollYProgress, [0, 1], [0, reduceMotion ? 0 : -90]);
+  const copyOpacity = useTransform(scrollYProgress, [0, 0.85], [1, reduceMotion ? 1 : 0.15]);
+  const portraitY = useTransform(scrollYProgress, [0, 1], [0, reduceMotion ? 0 : -160]);
+
   useEffect(() => {
     getPublicProfile()
       .then(setProfile)
@@ -116,6 +135,7 @@ function Hero() {
 
   return (
     <section
+      ref={sectionRef}
       id="home"
       className="
         relative
@@ -247,7 +267,7 @@ function Hero() {
         >
           {/* LEFT */}
 
-          <div className="min-w-0">
+          <motion.div style={{ y: copyY, opacity: copyOpacity }} className="min-w-0">
             {/* Mobile avatar — the large portrait only fits on wide screens */}
 
             <motion.img
@@ -371,7 +391,7 @@ function Hero() {
                 })}
               </div>
             </motion.div>
-          </div>
+          </motion.div>
 
           {/* PORTRAIT */}
 
@@ -379,6 +399,7 @@ function Hero() {
             initial={{ opacity: 0, y: 30, rotate: 0 }}
             animate={{ opacity: 1, y: 0, rotate: 2 }}
             whileHover={{ rotate: 0 }}
+            style={{ y: portraitY }}
             transition={{ duration: 1, delay: 0.3, ease: EASE }}
             className="
               group

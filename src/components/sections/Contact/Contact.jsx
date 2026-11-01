@@ -168,7 +168,7 @@ function Contact() {
     <section id="contact" className="section relative">
       <Container>
         <SectionTitle
-          index="09"
+          index="10"
           eyebrow="Contact"
           title={
             <>

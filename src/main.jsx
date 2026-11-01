@@ -21,6 +21,18 @@ import { GoogleOAuthProvider } from "@react-oauth/google";
 import { MotionConfig } from "framer-motion";
 
 
+/*
+  index.html ships static head tags for crawlers that don't run JS. Once
+  the app boots, <SEO /> owns those tags per route — drop the static copies
+  so rendered pages never carry two descriptions or canonicals. The
+  homepage-only structured data (profile, FAQ) also goes on other routes.
+*/
+document.querySelectorAll("[data-static-seo]").forEach((node) => node.remove());
+
+if (window.location.pathname !== "/") {
+  document.querySelectorAll("[data-home-only]").forEach((node) => node.remove());
+}
+
 createRoot(document.getElementById("root")).render(
   <StrictMode>
     <GoogleOAuthProvider clientId={import.meta.env.VITE_GOOGLE_CLIENT_ID}>

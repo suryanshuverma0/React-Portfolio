@@ -47,7 +47,7 @@ function InitialLoader({ loading }) {
           <div className="relative flex flex-col items-center px-6">
             {/* NAME */}
 
-            <h1
+            <p
               aria-label={NAME}
               className="
                 flex
@@ -89,7 +89,7 @@ function InitialLoader({ loading }) {
                   </motion.span>
                 ))}
               </span>
-            </h1>
+            </p>
 
             {/* PROGRESS */}
 

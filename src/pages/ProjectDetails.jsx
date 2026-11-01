@@ -29,6 +29,8 @@ import { getPublicProjectBySlug } from "../services/public.projects.service";
 import SEO
 from "../components/common/SEO";
 
+import { SITE_URL, absoluteUrl } from "../lib/site";
+
 import NotFound from "./NotFound";
 function ProjectDetails() {
 
@@ -102,26 +104,23 @@ if (!project) {
       {/* SEO */}
 
       <SEO
-
-        title={`
-          ${project.title}
-          | Suryanshu Verma
-        `}
-
-        description={
-          project.description
-        }
-
-        keywords={`
-          ${project.title},
-          blockchain project,
-          MERN project,
-          ${project.technologies.join(",")}
-        `}
-
-        image={
-          project.thumbnail
-        }
+        title={`${project.title} | Suryanshu Verma`}
+        description={project.description}
+        keywords={[project.title, ...(project.technologies || [])].join(", ")}
+        image={project.thumbnail}
+        type="article"
+        jsonLd={{
+          "@context": "https://schema.org",
+          "@type": "SoftwareSourceCode",
+          name: project.title,
+          description: project.description,
+          image: absoluteUrl(project.thumbnail),
+          url: `${SITE_URL}/projects/${project.slug}`,
+          ...(project.githubUrl && { codeRepository: project.githubUrl }),
+          programmingLanguage: project.technologies || [],
+          keywords: (project.technologies || []).join(", "),
+          author: { "@id": `${SITE_URL}/#person` },
+        }}
       />
 
       <Container>

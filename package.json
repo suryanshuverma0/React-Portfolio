@@ -8,6 +8,7 @@
   },
   "scripts": {
     "dev": "vite",
+    "prebuild": "node scripts/generate-sitemap.mjs",
     "build": "vite build",
     "lint": "eslint .",
     "preview": "vite preview"
@@ -44,6 +45,7 @@
     "recharts": "^3.9.2",
     "rehype-highlight": "^7.0.2",
     "remark-gfm": "^4.0.1",
+    "three": "^0.170.0",
     "typewriter-effect": "^2.22.0",
     "zod": "^4.4.3"
   },

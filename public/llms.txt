@@ -1,0 +1,49 @@
+# Suryanshu Verma
+
+> Suryanshu Verma is a computer engineer from Nepal who builds verifiable blockchain systems, backend services and full-stack MERN applications. His paper on a modular multi-contract Ethereum framework for pharmaceutical supply-chain traceability was accepted for oral presentation at ICTDsC 2026 (November 19–20, 2026). He is open to backend engineering, blockchain development, freelance and product-focused opportunities.
+
+- Website: https://www.suryanshuverma.com.np/
+- Email: suryanshuverma.dev@gmail.com
+- GitHub: https://github.com/suryanshuverma0
+- LinkedIn: https://www.linkedin.com/in/suryanshu-verma0/
+- X: https://x.com/SuryanshuVerma5
+
+## Research
+
+- [Design and Evaluation of a Modular Multi-Contract Blockchain Framework for Pharmaceutical Supply Chain Traceability](https://www.suryanshuverma.com.np/#research): Accepted for oral presentation at ICTDsC 2026, Paper ID 162. Authors: Suryanshu Verma, Shreejal Bista, Suman Yadav, Subarna Shakya. Splits an Ethereum framework into three smart contracts (UserRegistry, BatchRegistry, ProductRegistry) and stores only integrity-sensitive fields on-chain. Results — Sepolia testnet: 50/50 benchmarked transactions confirmed, 7.03–24.57 s confirmation; local Hardhat: under 4 ms mean latency per core operation, 179.08 tx/s at 2,000 batches, 8/8 security validation tests passed.
+- [PharmaTrace implementation](https://github.com/suryanshuverma0/PharmaTrace): Source code behind the paper.
+
+## Projects
+
+- [Detection of Counterfeit Pharmaceutical Products Using Blockchain](https://www.suryanshuverma.com.np/projects/pharmaceutical-supply-chain-blockchain): Ethereum supply-chain platform with batch registration, shipment tracking, QR-based product verification and role-based access for manufacturers, distributors, pharmacists, admins and consumers.
+- [Deep Learning Pneumonia Detection System](https://www.suryanshuverma.com.np/projects/pneumonia-detection-system)
+- [Multi Election Voting System](https://www.suryanshuverma.com.np/projects/multi-election-voting-system)
+- [AI Interview Mocker](https://www.suryanshuverma.com.np/projects/ai-interview-mocker)
+- [Pixel Studio](https://www.suryanshuverma.com.np/projects/pixel-studio)
+- [NoteMania](https://www.suryanshuverma.com.np/projects/note-mania)
+- [Library Management System](https://www.suryanshuverma.com.np/projects/library-management-system)
+- [Instant Domain Checker](https://www.suryanshuverma.com.np/projects/instant-domain-checker)
+
+## Experience
+
+- ReactJS Frontend Developer Intern, CyberArrow — Dubai, United Arab Emirates (January 2025 – June 2025). Optimised React components for performance; frontend architecture and production workflows.
+
+## Education
+
+- Bachelor in Computer Engineering — Advanced College of Engineering and Management
+- Higher Secondary Education (+2 Computer Science) — Khwopa Secondary School
+
+## Skills
+
+- Blockchain: Solidity, Ethereum, Hardhat, Ethers.js, MetaMask, Sepolia
+- Backend: Node.js, Express.js, REST APIs, JWT, MongoDB, MySQL, Redis
+- Frontend: React.js, Next.js, React Native, Tailwind CSS
+- Languages: JavaScript, TypeScript, Python, C++, SQL
+
+## Writing
+
+- [Blog](https://www.suryanshuverma.com.np/blog): Articles on software engineering, blockchain and building things.
+
+## Optional
+
+- [Sitemap](https://www.suryanshuverma.com.np/sitemap.xml)

@@ -1,56 +1,66 @@
-import { useEffect, useState } from "react";
+import { Suspense, lazy, useEffect, useState } from "react";
 import { Routes, Route } from "react-router-dom";
 import HomePage from "./pages/HomePage";
-import ProjectDetails from "./pages/ProjectDetails";
-import Blog from "./pages/Blog";
-import BlogPost from "./pages/BlogPost";
+
 import InitialLoader from "./components/common/InitialLoader";
-import NotFound from "./pages/NotFound";
+
 import { AnimatePresence } from "framer-motion";
 import { useLocation } from "react-router-dom";
 import PageTransition from "./components/common/PageTransition";
-import VerifyPage from "./pages/VerifyPage";
+
 import ScrollToHash from "./components/common/ScrollToHash";
-import Login from "./pages/Login";
-import Register from "./pages/Register";
-import ForgotPassword from "./pages/ForgotPassword";
-import ResetPassword from "./pages/ResetPassword";
-import UserAccess from "./pages/UserAccess";
-import LinkPasskey from "./pages/LinkPasskey";
+
 import { useAuth } from "./contexts/AuthContext";
 // import Dashboard from "./pages/Dashboard";
 import ProtectedRoute from "./components/routes/ProtectedRoute";
 
-import AdminLayout from "./admin/layout/AdminLayout";
-import Dashboard from "./admin/pages/Dashboard";
-import Profile from "./admin/pages/Profile";
-import Education from "./admin/pages/Education"
-import Stats from "./admin/pages/Stats"
-import Experience from "./admin/pages/Experience"
-import Services from "./admin/pages/Services"
-import Projects from "./admin/pages/Projects";
-import Certificates from "./admin/pages/Certificates";
-import Skills from "./admin/pages/Skills";
-import Analytics from "./admin/pages/Analytics";
-import Settings from "./admin/pages/Settings";
-import Users from "./admin/pages/Users";
-import AdminBlog from "./admin/pages/Blog";
-import BlogEditor from "./admin/pages/BlogEditor";
-import BlogComments from "./admin/pages/BlogComments";
-import Messages from "./admin/pages/Messages";
-import Security from "./admin/pages/Security";
 import MaintenanceScreen from "./components/common/MaintenanceScreen";
 import { getPublicSettings } from "./services/public.settings.service";
 import usePageTracking from "./hooks/usePageTracking";
-import Visitors from "./admin/pages/Visitors";
-import VisitorSession from "./admin/pages/VisitorSession";
-import Storage from "./admin/pages/Storage";
-import CardPage from "./pages/Card";
-import CardAdmin from "./admin/pages/CardAdmin";
-import Notes from "./admin/pages/Notes";
-import Automations from "./admin/pages/Automations";
-import BlogAnalytics from "./admin/pages/BlogAnalytics";
-import ExecutiveReport from "./admin/pages/ExecutiveReport";
+
+/*
+  Everything except the homepage is split into its own chunk: visitors
+  never download the admin dashboard, the auth screens or the ethers-based
+  verify page unless they open them.
+*/
+const ProjectDetails = lazy(() => import("./pages/ProjectDetails"));
+const Blog = lazy(() => import("./pages/Blog"));
+const BlogPost = lazy(() => import("./pages/BlogPost"));
+const NotFound = lazy(() => import("./pages/NotFound"));
+const VerifyPage = lazy(() => import("./pages/VerifyPage"));
+const Login = lazy(() => import("./pages/Login"));
+const Register = lazy(() => import("./pages/Register"));
+const ForgotPassword = lazy(() => import("./pages/ForgotPassword"));
+const ResetPassword = lazy(() => import("./pages/ResetPassword"));
+const UserAccess = lazy(() => import("./pages/UserAccess"));
+const LinkPasskey = lazy(() => import("./pages/LinkPasskey"));
+const AdminLayout = lazy(() => import("./admin/layout/AdminLayout"));
+const Dashboard = lazy(() => import("./admin/pages/Dashboard"));
+const Profile = lazy(() => import("./admin/pages/Profile"));
+const Education = lazy(() => import("./admin/pages/Education"));
+const Stats = lazy(() => import("./admin/pages/Stats"));
+const Experience = lazy(() => import("./admin/pages/Experience"));
+const Services = lazy(() => import("./admin/pages/Services"));
+const Projects = lazy(() => import("./admin/pages/Projects"));
+const Certificates = lazy(() => import("./admin/pages/Certificates"));
+const Skills = lazy(() => import("./admin/pages/Skills"));
+const Analytics = lazy(() => import("./admin/pages/Analytics"));
+const Settings = lazy(() => import("./admin/pages/Settings"));
+const Users = lazy(() => import("./admin/pages/Users"));
+const AdminBlog = lazy(() => import("./admin/pages/Blog"));
+const BlogEditor = lazy(() => import("./admin/pages/BlogEditor"));
+const BlogComments = lazy(() => import("./admin/pages/BlogComments"));
+const Messages = lazy(() => import("./admin/pages/Messages"));
+const Security = lazy(() => import("./admin/pages/Security"));
+const Visitors = lazy(() => import("./admin/pages/Visitors"));
+const VisitorSession = lazy(() => import("./admin/pages/VisitorSession"));
+const Storage = lazy(() => import("./admin/pages/Storage"));
+const CardPage = lazy(() => import("./pages/Card"));
+const CardAdmin = lazy(() => import("./admin/pages/CardAdmin"));
+const Notes = lazy(() => import("./admin/pages/Notes"));
+const Automations = lazy(() => import("./admin/pages/Automations"));
+const BlogAnalytics = lazy(() => import("./admin/pages/BlogAnalytics"));
+const ExecutiveReport = lazy(() => import("./admin/pages/ExecutiveReport"));
 
 /*
   Gates the public-facing portfolio pages only — login/register/dashboard
@@ -106,11 +116,10 @@ function App() {
           className="
             min-h-screen
 
-            bg-background
-
             text-primary
           "
         >
+          <Suspense fallback={null}>
           <AnimatePresence mode="wait">
             <ScrollToHash />
             <Routes location={location} key={location.pathname}>
@@ -262,6 +271,7 @@ function App() {
               </Route>
             </Routes>
           </AnimatePresence>
+          </Suspense>
         </div>
       )}
     </>

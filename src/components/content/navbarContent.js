@@ -81,6 +81,16 @@ export const navbarContent = [
   },
 
   {
+    label: "FAQ",
+
+    mobileLabel: "FAQ",
+
+    href: "#faq",
+
+    desktop: false,
+  },
+
+  {
     label: "Contact",
 
     mobileLabel: "Contact",

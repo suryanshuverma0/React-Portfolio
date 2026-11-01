@@ -3,6 +3,8 @@
   <head>
     <meta charset="UTF-8" />
 
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
+
     <script>
       const theme = localStorage.getItem("theme");
 
@@ -22,23 +24,351 @@
 
     <style>
       html,
-      body,
-      #root {
+      body {
         margin: 0;
         min-height: 100%;
-        background: inherit;
+      }
+
+      /* Static summary for crawlers that don't run JavaScript. Its first
+         screen mirrors the loader (the name, centred) so visitors see no
+         flash before React replaces it. */
+      .prerender {
+        font-family: "Geist", "Inter", ui-sans-serif, system-ui, sans-serif;
+        color: #0a0a0a;
+        line-height: 1.6;
+      }
+      .dark .prerender {
+        color: #fafafa;
+      }
+      .prerender-hero {
+        min-height: 100vh;
+        min-height: 100svh;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        text-align: center;
+        padding: 0 20px;
+      }
+      .prerender-hero h1 {
+        font-size: clamp(2.4rem, 9vw, 5.5rem);
+        font-weight: 600;
+        letter-spacing: -0.06em;
+        line-height: 1;
+        margin: 0;
+      }
+      .prerender-hero p {
+        max-width: 36rem;
+        opacity: 0.6;
+        margin: 1.25rem 0 0;
+      }
+      .prerender-body {
+        max-width: 720px;
+        margin: 0 auto;
+        padding: 0 20px 80px;
+      }
+      .prerender-body a {
+        color: inherit;
       }
     </style>
 
+    <!-- Fonts: preconnect + stylesheet here so they load alongside the CSS -->
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      rel="stylesheet"
+      href="https://fonts.googleapis.com/css2?family=Geist:wght@100..900&family=Geist+Mono:wght@300..700&family=Instrument+Serif:ital@0;1&display=swap"
+    />
+
+    <!-- API: open the connection early — every section reads from it -->
+    <link rel="preconnect" href="https://portfolio-backend-uy0a.onrender.com" crossorigin />
+
     <link rel="icon" href="./src/assets/suryanshu2.jpg" />
+    <link rel="apple-touch-icon" href="/suryanshu-verma.jpg" />
 
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="theme-color" content="#ffffff" media="(prefers-color-scheme: light)" />
+    <meta name="theme-color" content="#0a0a0a" media="(prefers-color-scheme: dark)" />
 
-    <title>Suryanshu Verma</title>
+    <!--
+      Static head for crawlers and link previews that don't run JavaScript
+      (AI crawlers, social unfurlers). Tags marked data-static-seo are
+      removed at boot in main.jsx, after which <SEO /> manages them per
+      route, so rendered pages never carry duplicates.
+    -->
+    <title>Suryanshu Verma — Blockchain Engineer, Researcher &amp; Full-Stack Developer</title>
+
+    <meta data-static-seo name="description" content="Suryanshu Verma is a computer engineer from Nepal building verifiable blockchain systems and production-grade backends. His pharmaceutical supply-chain blockchain paper was accepted for oral presentation at ICTDsC 2026." />
+    <meta data-static-seo name="author" content="Suryanshu Verma" />
+    <meta data-static-seo name="robots" content="index, follow, max-image-preview:large, max-snippet:-1, max-video-preview:-1" />
+
+    <meta data-static-seo property="og:site_name" content="Suryanshu Verma" />
+    <meta data-static-seo property="og:locale" content="en_US" />
+    <meta data-static-seo property="og:type" content="profile" />
+    <meta data-static-seo property="og:url" content="https://www.suryanshuverma.com.np/" />
+    <meta data-static-seo property="og:title" content="Suryanshu Verma — Blockchain Engineer, Researcher &amp; Full-Stack Developer" />
+    <meta data-static-seo property="og:description" content="Computer engineer building verifiable blockchain systems and production-grade backends. Paper accepted for oral presentation at ICTDsC 2026." />
+    <meta data-static-seo property="og:image" content="https://www.suryanshuverma.com.np/og-image.png" />
+    <meta data-static-seo property="og:image:width" content="1200" />
+    <meta data-static-seo property="og:image:height" content="630" />
+    <meta data-static-seo property="og:image:alt" content="Suryanshu Verma — Blockchain Engineer, Researcher &amp; Full-Stack Developer" />
+    <meta data-static-seo property="profile:first_name" content="Suryanshu" />
+    <meta data-static-seo property="profile:last_name" content="Verma" />
+
+    <meta data-static-seo name="twitter:card" content="summary_large_image" />
+    <meta data-static-seo name="twitter:site" content="@SuryanshuVerma5" />
+    <meta data-static-seo name="twitter:creator" content="@SuryanshuVerma5" />
+    <meta data-static-seo name="twitter:title" content="Suryanshu Verma — Blockchain Engineer, Researcher &amp; Full-Stack Developer" />
+    <meta data-static-seo name="twitter:description" content="Computer engineer building verifiable blockchain systems and production-grade backends. Paper accepted for oral presentation at ICTDsC 2026." />
+    <meta data-static-seo name="twitter:image" content="https://www.suryanshuverma.com.np/og-image.png" />
+
+    <link rel="sitemap" type="application/xml" href="/sitemap.xml" />
+    <link rel="alternate" type="text/markdown" href="/llms.txt" title="Suryanshu Verma — summary for language models" />
+
+    <!--
+      Structured data: who this is, the site, the paper and the FAQ.
+      ProfilePage and FAQPage describe homepage content only — main.jsx
+      drops this block on other routes. The FAQ text mirrors
+      src/components/content/faqContent.js word for word.
+    -->
+    <script type="application/ld+json" data-home-only>
+      {
+        "@context": "https://schema.org",
+        "@graph": [
+          {
+            "@type": "WebSite",
+            "@id": "https://www.suryanshuverma.com.np/#website",
+            "url": "https://www.suryanshuverma.com.np/",
+            "name": "Suryanshu Verma",
+            "description": "Portfolio, research and writing of Suryanshu Verma, blockchain engineer and full-stack developer.",
+            "inLanguage": "en",
+            "publisher": { "@id": "https://www.suryanshuverma.com.np/#person" }
+          },
+          {
+            "@type": "ProfilePage",
+            "@id": "https://www.suryanshuverma.com.np/#profilepage",
+            "url": "https://www.suryanshuverma.com.np/",
+            "name": "Suryanshu Verma — Blockchain Engineer, Researcher & Full-Stack Developer",
+            "isPartOf": { "@id": "https://www.suryanshuverma.com.np/#website" },
+            "mainEntity": { "@id": "https://www.suryanshuverma.com.np/#person" },
+            "inLanguage": "en"
+          },
+          {
+            "@type": "Person",
+            "@id": "https://www.suryanshuverma.com.np/#person",
+            "name": "Suryanshu Verma",
+            "givenName": "Suryanshu",
+            "familyName": "Verma",
+            "url": "https://www.suryanshuverma.com.np/",
+            "image": "https://www.suryanshuverma.com.np/suryanshu-verma.jpg",
+            "jobTitle": "Blockchain Engineer & Full-Stack Developer",
+            "description": "Computer engineer from Nepal building verifiable blockchain systems, backend services and full-stack MERN applications, and publishing the research behind them.",
+            "email": "mailto:suryanshuverma.dev@gmail.com",
+            "nationality": { "@type": "Country", "name": "Nepal" },
+            "homeLocation": { "@type": "Country", "name": "Nepal" },
+            "alumniOf": [
+              {
+                "@type": "CollegeOrUniversity",
+                "name": "Advanced College of Engineering and Management"
+              },
+              {
+                "@type": "EducationalOrganization",
+                "name": "Khwopa Secondary School"
+              }
+            ],
+            "hasCredential": {
+              "@type": "EducationalOccupationalCredential",
+              "credentialCategory": "degree",
+              "name": "Bachelor in Computer Engineering",
+              "recognizedBy": {
+                "@type": "CollegeOrUniversity",
+                "name": "Advanced College of Engineering and Management"
+              }
+            },
+            "knowsAbout": [
+              "Blockchain",
+              "Ethereum",
+              "Solidity",
+              "Smart contracts",
+              "Hardhat",
+              "Ethers.js",
+              "Supply chain traceability",
+              "Backend engineering",
+              "Node.js",
+              "Express.js",
+              "REST APIs",
+              "MongoDB",
+              "React.js",
+              "Next.js",
+              "MERN stack",
+              "Full-stack development"
+            ],
+            "sameAs": [
+              "https://github.com/suryanshuverma0",
+              "https://www.linkedin.com/in/suryanshu-verma0/",
+              "https://x.com/SuryanshuVerma5",
+              "https://www.instagram.com/suryanshu_0",
+              "https://www.facebook.com/share/18vs7Jqz6C/"
+            ]
+          },
+          {
+            "@type": "ScholarlyArticle",
+            "@id": "https://www.suryanshuverma.com.np/#research-ictdsc-2026",
+            "headline": "Design and Evaluation of a Modular Multi-Contract Blockchain Framework for Pharmaceutical Supply Chain Traceability",
+            "name": "Design and Evaluation of a Modular Multi-Contract Blockchain Framework for Pharmaceutical Supply Chain Traceability",
+            "url": "https://www.suryanshuverma.com.np/#research",
+            "author": [
+              { "@id": "https://www.suryanshuverma.com.np/#person" },
+              { "@type": "Person", "name": "Shreejal Bista" },
+              { "@type": "Person", "name": "Suman Yadav" },
+              { "@type": "Person", "name": "Subarna Shakya" }
+            ],
+            "abstract": "Pharmaceutical supply chains often depend on a single authority for manufacturing, shipment, and verification records, which leaves those records open to tampering. The paper proposes an Ethereum framework split into three smart contracts for stakeholder authorization, batch lifecycle tracking, and product lookup, storing only integrity-sensitive fields on-chain to limit gas cost.",
+            "creativeWorkStatus": "Accepted for oral presentation",
+            "identifier": "ICTDsC 2026 Paper ID 162",
+            "publication": {
+              "@type": "PublicationEvent",
+              "name": "ICTDsC 2026",
+              "startDate": "2026-11-19",
+              "endDate": "2026-11-20"
+            },
+            "about": ["Blockchain", "Pharmaceutical supply chain", "Smart contracts", "Ethereum", "Traceability"],
+            "keywords": "blockchain, Ethereum, smart contracts, pharmaceutical supply chain, traceability, Solidity, Hardhat, Sepolia",
+            "isBasedOn": "https://github.com/suryanshuverma0/PharmaTrace",
+            "inLanguage": "en"
+          },
+          {
+            "@type": "FAQPage",
+            "@id": "https://www.suryanshuverma.com.np/#faq",
+            "mainEntity": [
+              {
+                "@type": "Question",
+                "name": "Who is Suryanshu Verma?",
+                "acceptedAnswer": { "@type": "Answer", "text": "Suryanshu Verma is a computer engineer from Nepal who builds blockchain systems, backend services and full-stack MERN applications. He studied Computer Engineering at Advanced College of Engineering and Management and focuses on production-oriented software with clean architecture, performance and security." }
+              },
+              {
+                "@type": "Question",
+                "name": "What research has Suryanshu Verma published?",
+                "acceptedAnswer": { "@type": "Answer", "text": "His paper \"Design and Evaluation of a Modular Multi-Contract Blockchain Framework for Pharmaceutical Supply Chain Traceability\" (with Shreejal Bista, Suman Yadav and Subarna Shakya) was accepted for oral presentation at ICTDsC 2026, scheduled for November 19–20, 2026. It splits an Ethereum framework into three smart contracts and evaluates it on a local Hardhat network and the public Sepolia testnet." }
+              },
+              {
+                "@type": "Question",
+                "name": "What were the key results of the pharmaceutical blockchain research?",
+                "acceptedAnswer": { "@type": "Answer", "text": "On the Sepolia testnet, 50 of 50 benchmarked transactions confirmed successfully, with confirmation times between 7.03 and 24.57 seconds. On a local Hardhat network, each of the five core operations averaged under 4 ms, throughput reached 179.08 transactions per second at 2,000 batches, and 8 of 8 security validation tests passed." }
+              },
+              {
+                "@type": "Question",
+                "name": "What technologies does Suryanshu Verma work with?",
+                "acceptedAnswer": { "@type": "Answer", "text": "Blockchain: Solidity, Ethereum, Hardhat, Ethers.js and MetaMask. Backend: Node.js, Express.js, REST APIs, JWT authentication, MongoDB and MySQL. Frontend: React.js, Next.js and Tailwind CSS." }
+              },
+              {
+                "@type": "Question",
+                "name": "What is PharmaTrace?",
+                "acceptedAnswer": { "@type": "Answer", "text": "PharmaTrace is Suryanshu Verma's blockchain platform for detecting counterfeit medicines. It uses Ethereum smart contracts for batch registration, shipment tracking and QR-based product verification, with role-based access for manufacturers, distributors, pharmacists, admins and consumers. It is the implementation behind his ICTDsC 2026 paper." }
+              },
+              {
+                "@type": "Question",
+                "name": "Where has Suryanshu Verma worked?",
+                "acceptedAnswer": { "@type": "Answer", "text": "He worked as a ReactJS Frontend Developer Intern at CyberArrow (Dubai, United Arab Emirates) from January to June 2025, optimising React components for performance and working on frontend architecture." }
+              },
+              {
+                "@type": "Question",
+                "name": "Is Suryanshu Verma available for work, and how can I contact him?",
+                "acceptedAnswer": { "@type": "Answer", "text": "Yes — he is open to backend engineering, blockchain development, freelance collaborations and product-focused opportunities. Email suryanshuverma.dev@gmail.com or use the contact form on suryanshuverma.com.np; he usually responds within 24 hours." }
+              }
+            ]
+          }
+        ]
+      }
+    </script>
   </head>
 
   <body>
-    <div id="root"></div>
+    <div id="root">
+      <!--
+        Replaced by React on mount. Real, visible content (not hidden text):
+        it's what crawlers without JavaScript index, and what anyone with
+        JavaScript off reads.
+      -->
+      <main class="prerender">
+        <header class="prerender-hero">
+          <h1>Suryanshu Verma</h1>
+          <p>Blockchain engineer, researcher &amp; full-stack developer — building verifiable blockchain systems and production-grade backends.</p>
+        </header>
+
+        <div class="prerender-body">
+          <nav aria-label="Primary">
+            <a href="#research">Research</a> ·
+            <a href="#about">About</a> ·
+            <a href="#experience">Experience</a> ·
+            <a href="#projects">Projects</a> ·
+            <a href="/blog">Blog</a> ·
+            <a href="#faq">FAQ</a> ·
+            <a href="#contact">Contact</a>
+          </nav>
+
+          <section id="research">
+            <h2>Research</h2>
+            <article>
+              <h3>Design and Evaluation of a Modular Multi-Contract Blockchain Framework for Pharmaceutical Supply Chain Traceability</h3>
+              <p><strong>Accepted for oral presentation at ICTDsC 2026</strong> (Paper ID 162, scheduled for November 19–20, 2026). Authors: Suryanshu Verma, Shreejal Bista, Suman Yadav, Subarna Shakya.</p>
+              <p>Pharmaceutical supply chains often depend on a single authority for manufacturing, shipment, and verification records, which leaves those records open to tampering. The paper proposes an Ethereum framework split into three smart contracts — UserRegistry, BatchRegistry and ProductRegistry — for stakeholder authorization, batch lifecycle tracking, and product lookup, storing only integrity-sensitive fields on-chain to limit gas cost.</p>
+              <ul>
+                <li>Public testnet (Ethereum Sepolia): 50 / 50 benchmarked transactions confirmed; confirmation times 7.03–24.57 s.</li>
+                <li>Local benchmark (Hardhat): under 4 ms mean latency per core operation; 179.08 tx/s at 2,000 batches; 8 / 8 security validation tests passed.</li>
+              </ul>
+              <p>Implementation: <a href="https://github.com/suryanshuverma0/PharmaTrace">PharmaTrace on GitHub</a>.</p>
+            </article>
+          </section>
+
+          <section id="about">
+            <h2>About</h2>
+            <p>Suryanshu Verma is a computer engineer from Nepal focused on blockchain systems, backend engineering and full-stack MERN development, with an emphasis on clean architecture, performance, security and real-world usability. He studied a Bachelor in Computer Engineering at Advanced College of Engineering and Management, after higher secondary education in Computer Science at Khwopa Secondary School.</p>
+          </section>
+
+          <section id="experience">
+            <h2>Experience</h2>
+            <p><strong>ReactJS Frontend Developer Intern</strong>, CyberArrow — Dubai, United Arab Emirates (Jan 2025 – Jun 2025). Optimized ReactJS components for application performance and worked on frontend architecture and production-oriented workflows.</p>
+          </section>
+
+          <section id="projects">
+            <h2>Selected projects</h2>
+            <ul>
+              <li><a href="/projects/pharmaceutical-supply-chain-blockchain">Detection of Counterfeit Pharmaceutical Products Using Blockchain</a> — Ethereum supply-chain platform with batch registration, shipment tracking and QR verification.</li>
+              <li><a href="/projects/pneumonia-detection-system">Deep Learning Pneumonia Detection System</a></li>
+              <li><a href="/projects/multi-election-voting-system">Multi Election Voting System</a></li>
+              <li><a href="/projects/ai-interview-mocker">AI Interview Mocker</a></li>
+              <li><a href="/projects/pixel-studio">Pixel Studio</a></li>
+              <li><a href="/projects/note-mania">NoteMania</a></li>
+              <li><a href="/projects/library-management-system">Library Management System</a></li>
+              <li><a href="/projects/instant-domain-checker">Instant Domain Checker</a></li>
+            </ul>
+          </section>
+
+          <section id="skills">
+            <h2>Skills</h2>
+            <p>Solidity, Ethereum, Hardhat, Ethers.js, MetaMask, Node.js, Express.js, REST APIs, JWT, MongoDB, MySQL, Redis, React.js, Next.js, React Native, Tailwind CSS, JavaScript, TypeScript, Python, C++.</p>
+          </section>
+
+          <section id="faq">
+            <h2>FAQ</h2>
+            <h3>Who is Suryanshu Verma?</h3>
+            <p>Suryanshu Verma is a computer engineer from Nepal who builds blockchain systems, backend services and full-stack MERN applications.</p>
+            <h3>Is Suryanshu Verma available for work?</h3>
+            <p>Yes — he is open to backend engineering, blockchain development, freelance collaborations and product-focused opportunities.</p>
+          </section>
+
+          <section id="contact">
+            <h2>Contact</h2>
+            <p>Email: <a href="mailto:suryanshuverma.dev@gmail.com">suryanshuverma.dev@gmail.com</a></p>
+            <p>
+              <a href="https://github.com/suryanshuverma0">GitHub</a> ·
+              <a href="https://www.linkedin.com/in/suryanshu-verma0/">LinkedIn</a> ·
+              <a href="https://x.com/SuryanshuVerma5">X</a>
+            </p>
+          </section>
+        </div>
+      </main>
+    </div>
 
     <script type="module" src="/src/main.jsx"></script>
   </body>

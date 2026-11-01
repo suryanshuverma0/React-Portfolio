@@ -5,6 +5,7 @@ import { ArrowLeft, Clock } from "lucide-react";
 import Footer from "../components/layout/Footer";
 import Container from "../components/ui/Container";
 import SEO from "../components/common/SEO";
+import { SITE_URL, absoluteUrl } from "../lib/site";
 import MarkdownRenderer from "../components/blog/MarkdownRenderer";
 import CommentSection from "../components/blog/CommentSection";
 import NotFound from "./NotFound";
@@ -73,6 +74,20 @@ function BlogPost() {
         description={post.excerpt || post.title}
         keywords={`${post.title}, ${(post.tags || []).join(", ")}`}
         image={post.coverImage || "/og-image.png"}
+        type="article"
+        jsonLd={{
+          "@context": "https://schema.org",
+          "@type": "BlogPosting",
+          headline: post.title,
+          description: post.excerpt || post.title,
+          image: absoluteUrl(post.coverImage || "/og-image.png"),
+          datePublished: post.publishedAt,
+          dateModified: post.updatedAt || post.publishedAt,
+          keywords: (post.tags || []).join(", "),
+          mainEntityOfPage: `${SITE_URL}/blog/${post.slug}`,
+          author: { "@id": `${SITE_URL}/#person` },
+          publisher: { "@id": `${SITE_URL}/#person` },
+        }}
       />
 
       <Container className="section max-w-3xl">

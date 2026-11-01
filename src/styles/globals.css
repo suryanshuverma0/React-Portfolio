@@ -1,4 +1,5 @@
-@import url("https://fonts.googleapis.com/css2?family=Geist:wght@100..900&family=Geist+Mono:wght@300..700&family=Instrument+Serif:ital@0;1&display=swap");
+/* Fonts load from index.html (<link> with preconnect) so they start in
+   parallel with this stylesheet instead of after it. */
 
 @import "tailwindcss";
 
@@ -79,12 +80,25 @@
    BASE
 ======================================== */
 
+/* The page colour lives on <html>; body and #root stay transparent so the
+   fixed 3D scene (z-index -1) shows through behind the content. The
+   !important overrides the pre-paint inline colour index.html sets, so the
+   theme toggle still repaints it. */
+
 html {
   scroll-behavior: smooth;
+
+  background-color: var(--color-background) !important;
+
+  transition: background-color 0.3s ease;
+}
+
+body,
+#root {
+  background: transparent !important;
 }
 
 body {
-  background-color: var(--color-background);
 
   color: var(--color-primary);
 
@@ -96,9 +110,7 @@ body {
 
   text-rendering: optimizeLegibility;
 
-  transition:
-    background-color 0.3s ease,
-    color 0.3s ease;
+  transition: color 0.3s ease;
 }
 
 /* ========================================

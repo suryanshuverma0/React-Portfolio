@@ -1,5 +1,43 @@
+# Suryanshu Verma — https://www.suryanshuverma.com.np
+# Search engines and AI assistants are welcome to index and cite this site.
+
 User-agent: *
-
 Allow: /
+Disallow: /dashboard
+Disallow: /login
+Disallow: /register
+Disallow: /forgot-password
+Disallow: /reset-password/
+Disallow: /account
+Disallow: /link-passkey/
 
-Sitemap: https://suryanshuverma.com.np/sitemap.xml
+# AI search and assistant crawlers — named explicitly so the welcome is
+# unambiguous. A named group replaces the * group for that bot, so the
+# private routes are repeated here.
+User-agent: GPTBot
+User-agent: OAI-SearchBot
+User-agent: ChatGPT-User
+User-agent: ClaudeBot
+User-agent: Claude-SearchBot
+User-agent: Claude-User
+User-agent: anthropic-ai
+User-agent: PerplexityBot
+User-agent: Perplexity-User
+User-agent: Google-Extended
+User-agent: Applebot-Extended
+User-agent: Bingbot
+User-agent: DuckAssistBot
+User-agent: CCBot
+User-agent: meta-externalagent
+User-agent: cohere-ai
+User-agent: YouBot
+Allow: /
+Disallow: /dashboard
+Disallow: /login
+Disallow: /register
+Disallow: /forgot-password
+Disallow: /reset-password/
+Disallow: /account
+Disallow: /link-passkey/
+
+Sitemap: https://www.suryanshuverma.com.np/sitemap.xml
