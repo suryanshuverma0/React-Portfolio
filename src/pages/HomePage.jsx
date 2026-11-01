@@ -4,6 +4,8 @@ import Navbar from "../components/layout/Navbar";
 
 import Hero from "../components/home/Hero";
 
+import TechMarquee from "../components/home/TechMarquee";
+
 import About from "../components/sections/About";
 
 import Experience from "../components/sections/Experience/Experience";
@@ -74,26 +76,29 @@ function HomePage() {
       <main>
         <Hero />
 
+        <TechMarquee />
+
+        {/* Research leads — it's the strongest proof of depth */}
+        <Research />
+
         <About />
 
         <Experience />
 
+        <Projects />
+
         <Skills />
 
         <Services />
-
-        <Projects />
-
-        <Research />
 
         <Certificates />
 
         <CodingActivity />
 
         <Contact />
-
-        <Footer />
       </main>
+
+      <Footer />
     </>
   );
 }

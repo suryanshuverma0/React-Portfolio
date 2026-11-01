@@ -5,6 +5,11 @@ export const heroContent = {
 
   availability: "Open to opportunities",
 
+  headline:
+    "Computer engineer building verifiable blockchain systems and production-grade backends — and publishing the research behind them.",
+
+  focus: "Blockchain · Backend · MERN",
+
   image: HeroImage,
 
   roles: [

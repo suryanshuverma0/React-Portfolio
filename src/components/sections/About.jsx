@@ -6,222 +6,178 @@ import { aboutContent } from "../content/aboutContent";
 import { getPublicProfile } from "../../services/public.profile.service";
 import { getPublicEducations } from "../../services/public.education.service";
 import { getPublicStats } from "../../services/public.stats.service";
+import { trackPointer } from "../../lib/pointer";
+
+const EASE = [0.22, 1, 0.36, 1];
+
+const reveal = (delay = 0) => ({
+  initial: { opacity: 0, y: 24 },
+  whileInView: { opacity: 1, y: 0 },
+  viewport: { once: true, margin: "-60px" },
+  transition: { duration: 0.6, delay, ease: EASE },
+});
+
 function About() {
-  const aboutData = aboutContent;
   const [profile, setProfile] = useState(null);
   const [educations, setEducations] = useState([]);
   const [stats, setStats] = useState([]);
-  const loadData = async () => {
-    try {
-      const [profileData, educationData, statsData] = await Promise.all([
-        getPublicProfile(),
-        getPublicEducations(),
-        getPublicStats(),
-      ]);
-
-      setProfile(profileData);
-      setEducations(educationData);
-      setStats(statsData);
-    } catch (error) {
-      console.error(error);
-    }
-  };
 
   useEffect(() => {
+    const loadData = async () => {
+      try {
+        const [profileData, educationData, statsData] = await Promise.all([
+          getPublicProfile(),
+          getPublicEducations(),
+          getPublicStats(),
+        ]);
+
+        setProfile(profileData);
+        setEducations(educationData);
+        setStats(statsData);
+      } catch (error) {
+        console.error(error);
+      }
+    };
+
     loadData();
   }, []);
 
-  const displayProfile = profile || aboutContent;
+  const description = profile?.description || aboutContent.description;
 
   const displayEducations =
     educations.length > 0 ? educations : aboutContent.education;
 
-  const displayStats = stats.length > 0 ? stats : aboutContent.stats;
+  // API stats are tagged by section; the fallback list has no tag.
+  const displayStats =
+    stats.length > 0
+      ? stats.filter((item) => item.section === "about")
+      : aboutContent.stats;
+
   return (
-    <section
-      id="about"
-      className="
-        section
-      "
-    >
+    <section id="about" className="section">
       <Container>
-        {/* TITLE */}
+        <SectionTitle index="02" eyebrow="About" title={aboutContent.title} />
 
-        <SectionTitle
-          eyebrow="About"
-          title={aboutData.title}
-          description={displayProfile.description}
-        />
+        <div className="grid grid-cols-1 lg:grid-cols-[1.15fr_1fr] gap-10 lg:gap-16">
+          {/* STATEMENT */}
 
-        {/* EDUCATION */}
-
-        <div
-          className="
-    grid
-
-    grid-cols-1
-    md:grid-cols-2
-
-    gap-8
-
-    mb-12
-  "
-        >
-          {displayEducations.map((item, index) => (
-            <motion.div
-              key={index}
-              initial={{
-                opacity: 0,
-                y: 20,
-              }}
-              whileInView={{
-                opacity: 1,
-                y: 0,
-              }}
-              viewport={{
-                once: true,
-              }}
-              transition={{
-                duration: 0.4,
-                delay: index * 0.08,
-              }}
+          <motion.div {...reveal()}>
+            <p
               className="
-          card
+                text-[20px]
+                md:text-[26px]
 
-          h-full
-        "
+                leading-[1.45]
+
+                tracking-[-0.02em]
+
+                text-primary
+
+                text-pretty
+              "
             >
-              {/* YEARS */}
+              {description}
+            </p>
+          </motion.div>
 
-              <div
-                className="
-            flex
-            items-center
+          {/* EDUCATION */}
 
-            gap-2
+          <motion.div
+            {...reveal(0.1)}
+            onMouseMove={trackPointer}
+            className="panel spotlight p-5 sm:p-7 self-start"
+          >
+            <p className="text-eyebrow text-primary! mb-6">Education</p>
 
-            mb-5
-          "
-              >
-                <div
-                  className="
-              h-2
-              w-2
+            <ol className="flex flex-col">
+              {displayEducations.map((item, index) => (
+                <li
+                  key={item._id || index}
+                  className={`
+                    grid
+                    grid-cols-[88px_1fr]
 
-              rounded-full
+                    gap-4
 
-              bg-blue-500
-            "
-                />
+                    py-5
 
-                <p
-                  className="
-              text-muted
-            "
+                    ${index === 0 ? "pt-0" : "border-t border-border"}
+                  `}
                 >
-                  {item.startYear}
-                  {" — "}
-                  {item.current ? "Present" : item.endYear}
-                </p>
-              </div>
+                  <p className="font-mono text-[12px] text-muted tabular-nums pt-1">
+                    {item.startYear}
+                    {" — "}
+                    {item.current || !item.endYear ? "Now" : item.endYear}
+                  </p>
 
-              {/* DEGREE */}
+                  <div className="min-w-0">
+                    <h3 className="text-[17px] font-semibold tracking-[-0.02em] leading-snug">
+                      {item.degree}
+                    </h3>
 
-              <h3
-                className="
-            text-title
+                    <p className="text-small mt-1 text-primary/80">{item.institution}</p>
 
-            mb-2
-          "
-              >
-                {item.degree}
-              </h3>
-
-              {/* INSTITUTION */}
-
-              <p
-                className="
-            text-label
-
-            text-secondary
-
-            mb-4
-          "
-              >
-                {item.institution}
-              </p>
-
-              {/* DESCRIPTION */}
-
-              <p
-                className="
-            text-body
-          "
-              >
-                {item.description}
-              </p>
-            </motion.div>
-          ))}
+                    {item.description && (
+                      <p className="text-small mt-2">{item.description}</p>
+                    )}
+                  </div>
+                </li>
+              ))}
+            </ol>
+          </motion.div>
         </div>
 
         {/* STATS */}
 
-        <div
-          className="
-            grid
+        {displayStats.length > 0 && (
+          <motion.dl
+            {...reveal(0.15)}
+            className="
+              mt-14
+              md:mt-20
 
-            grid-cols-2
-            md:grid-cols-4
+              grid
+              grid-cols-2
+              md:grid-cols-4
 
-            gap-6
-          "
-        >
-          {displayStats
-            .filter((item) => item.section === "about")
-            .map((item, index) => (
-              <motion.div
-                key={item._id || index}
-                initial={{
-                  opacity: 0,
-                  y: 20,
-                }}
-                whileInView={{
-                  opacity: 1,
-                  y: 0,
-                }}
-                viewport={{
-                  once: true,
-                }}
-                transition={{
-                  duration: 0.4,
-                  delay: index * 0.08,
-                }}
-                className="
-                  card
+              gap-px
 
-                  text-center
-                "
-              >
-                <div
+              overflow-hidden
+
+              rounded-[28px]
+
+              border
+              border-border
+
+              bg-border
+            "
+          >
+            {displayStats.map((item, index) => (
+              <div key={item._id || index} className="flex flex-col bg-background p-6 md:p-8">
+                <dt className="text-eyebrow mt-4 order-2">{item.label}</dt>
+
+                <dd
                   className="
-                    text-heading
+                    text-[44px]
+                    md:text-[64px]
 
-                    mb-1
+                    font-semibold
+
+                    leading-none
+
+                    tracking-[-0.06em]
+
+                    tabular-nums
+
+                    order-1
                   "
                 >
                   {item.value}
-                </div>
-
-                <p
-                  className="
-                    text-small
-                  "
-                >
-                  {item.label}
-                </p>
-              </motion.div>
+                </dd>
+              </div>
             ))}
-        </div>
+          </motion.dl>
+        )}
       </Container>
     </section>
   );

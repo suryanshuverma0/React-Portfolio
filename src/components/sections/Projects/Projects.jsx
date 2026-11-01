@@ -29,12 +29,18 @@ function Projects() {
     <section id="projects" className="section">
       <Container>
         <SectionTitle
-          eyebrow="Projects"
-          title="Selected systems, applications, and engineering projects."
+          index="04"
+          eyebrow="Selected work"
+          title={
+            <>
+              Systems, applications, and{" "}
+              <span className="text-accent">engineering projects.</span>
+            </>
+          }
           description="A collection of blockchain systems, AI applications, MERN platforms, and production-oriented software projects focused on scalability, architecture, and real-world problem solving."
         />
 
-        <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
+        <div className="grid grid-cols-1 lg:grid-cols-2 gap-5 md:gap-6">
           {displayProjects.map((project, index) => (
             <ProjectCard
               key={project.slug}

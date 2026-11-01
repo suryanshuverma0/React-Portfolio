@@ -1,11 +1,11 @@
 export const servicesContent = [
   {
-    category: "Full     technologies",
+    category: "Full Stack",
 
-    title: "Full     technologies Web Applications",
+    title: "Full Stack Web Applications",
 
     description:
-      "Building scalable full-    technologies applications with modern frontend systems, backend APIs, authentication, and database integration.",
+      "Building scalable full-stack applications with modern frontend systems, backend APIs, authentication, and database integration.",
 
         technologies: ["React.js", "Next.js", "Node.js", "Express.js", "MongoDB"],
   },

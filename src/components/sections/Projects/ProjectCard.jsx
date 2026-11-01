@@ -1,30 +1,34 @@
+import PropTypes from "prop-types";
+
 import { motion } from "framer-motion";
 
 import { ArrowUpRight } from "lucide-react";
 
+import { FaGithub } from "react-icons/fa";
+
 import { Link } from "react-router-dom";
 
-const secondaryLinkClass = `
-  h-11
-  px-4
+import { trackPointer } from "../../../lib/pointer";
 
-  rounded-2xl
+const iconLinkClass = `
+  h-10
+  w-10
+
+  rounded-full
 
   border
   border-border
-
-  bg-surface
-
-  text-small
 
   inline-flex
   items-center
   justify-center
 
-  transition-all
-  duration-300
+  text-secondary
 
-  hover:bg-background
+  transition-colors
+  duration-200
+
+  hover:border-primary
   hover:text-primary
 `;
 
@@ -36,282 +40,187 @@ const secondaryLinkClass = `
 function ProjectCard({ project, index, lead = false }) {
   const technologies = project.technologies || [];
 
+  const number = String(index + 1).padStart(2, "0");
+
   return (
     <motion.article
-      initial={{
-        opacity: 0,
-        y: 20,
-      }}
-      whileInView={{
-        opacity: 1,
-        y: 0,
-      }}
-      viewport={{
-        once: true,
-      }}
-      transition={{
-        duration: 0.4,
-        delay: index * 0.06,
-      }}
+      initial={{ opacity: 0, y: 28 }}
+      whileInView={{ opacity: 1, y: 0 }}
+      viewport={{ once: true, margin: "-60px" }}
+      transition={{ duration: 0.6, delay: (index % 2) * 0.08, ease: [0.22, 1, 0.36, 1] }}
+      onMouseMove={trackPointer}
       className={`
-        card
-        glass-hover
+        panel
+        panel-hover
+        spotlight
 
         group
 
         h-full
 
-        overflow-hidden
+        p-3
 
         flex
         flex-col
 
-        transition-[border-color,box-shadow]
-        duration-300
-
-        hover:border-secondary/40
-        hover:shadow-[0_12px_40px_rgba(0,0,0,0.07)]
-
-        ${lead ? "lg:col-span-2 lg:flex-row lg:gap-8" : ""}
+        ${lead ? "lg:col-span-2 lg:grid lg:grid-cols-[1.25fr_1fr] lg:gap-2" : ""}
       `}
     >
       {/* THUMBNAIL */}
 
-      <div
-        className={`
+      <Link
+        to={`/projects/${project.slug}`}
+        tabIndex={-1}
+        aria-hidden="true"
+        className="
           relative
+
+          block
+
+          self-start
 
           overflow-hidden
 
-          rounded-2xl
+          rounded-[20px]
 
           border
           border-border
 
           bg-surface
-
-          mb-5
-
-          ${lead ? "lg:mb-0 lg:w-[55%] lg:shrink-0" : ""}
-        `}
+        "
       >
         <img
           src={project.thumbnail}
-          alt={project.title}
+          alt=""
           loading="lazy"
           decoding="async"
           className={`
             w-full
 
-            aspect-[16/6]
+            ${lead ? "aspect-[16/10]" : "aspect-[16/9]"}
 
             object-cover
 
             transition-transform
-            duration-500
+            duration-700
+            ease-out
 
-            group-hover:scale-[1.02]
-
-            ${lead ? "lg:h-full lg:aspect-[16/10]" : ""}
+            group-hover:scale-[1.03]
           `}
         />
 
-        {/* CATEGORY */}
-
-        <div
+        <span
           className="
             absolute
             top-3
             left-3
+
+            chip
+
+            bg-background/85!
+            backdrop-blur-md
+
+            text-primary!
           "
         >
-          <div
-            className="
-              px-3
-              py-1.5
-
-              rounded-full
-
-              bg-background/90
-
-              backdrop-blur-xl
-
-              border
-              border-border
-
-              text-[12px]
-
-              font-medium
-
-              tracking-tight
-            "
-          >
-            {project.category}
-          </div>
-        </div>
-      </div>
+          {project.category}
+        </span>
+      </Link>
 
       {/* CONTENT */}
 
-      <div
-        className={`
-          flex-1
-
-          flex
-          flex-col
-
-          ${lead ? "lg:py-2" : ""}
-        `}
-      >
-        {lead && (
-          <p
-            className="
-              text-muted
-
-              mb-3
-            "
-          >
-            Featured project
-          </p>
-        )}
-
-        {/* TITLE */}
+      <div className={`flex-1 flex flex-col p-3 pt-5 ${lead ? "lg:p-6" : ""}`}>
+        <div className="flex items-center justify-between mb-4">
+          <span className="text-eyebrow">
+            {number}
+            {lead && <span className="text-primary"> · Featured project</span>}
+          </span>
+        </div>
 
         <h3
-          className="
-            text-title
+          className={`
+            ${lead ? "text-[26px] md:text-[32px]" : "text-[21px] md:text-[23px]"}
 
-            mb-3
-          "
+            font-semibold
+
+            leading-[1.15]
+
+            tracking-[-0.035em]
+
+            text-balance
+          `}
         >
-          {project.title}
+          <Link to={`/projects/${project.slug}`} className="hover:opacity-75 transition-opacity">
+            {project.title}
+          </Link>
         </h3>
 
         {lead && project.description && (
-          <p
-            className="
-              text-body
-
-              line-clamp-4
-
-              mb-5
-            "
-          >
-            {project.description}
-          </p>
+          <p className="text-body mt-4 line-clamp-5 text-pretty">{project.description}</p>
         )}
 
         {/* TECH STACK */}
 
-        <div
-          className="
-            flex
-            flex-wrap
-
-            gap-2
-
-            mb-6
-          "
-        >
-          {technologies.slice(0, lead ? 6 : 4).map((tech) => (
-            <div
-              key={tech}
-              className="
-                  px-3
-                  py-1.5
-
-                  rounded-xl
-
-                  bg-surface
-
-                  border
-                  border-border
-
-                  text-small
-
-                  leading-none
-                "
-            >
+        <div className="mt-5 mb-7 flex flex-wrap gap-2">
+          {technologies.slice(0, lead ? 7 : 4).map((tech) => (
+            <span key={tech} className="chip">
               {tech}
-            </div>
+            </span>
           ))}
+
+          {technologies.length > (lead ? 7 : 4) && (
+            <span className="chip text-muted!">
+              +{technologies.length - (lead ? 7 : 4)}
+            </span>
+          )}
         </div>
 
         {/* CTA */}
 
-        <div
-          className="
-            mt-auto
-
-            flex
-            items-center
-            justify-between
-
-            gap-3
-          "
-        >
-          {/* DETAILS */}
-
+        <div className="mt-auto flex items-center justify-between gap-3 pt-5 border-t border-border">
           <Link
             to={`/projects/${project.slug}`}
-            aria-label={`Detail: ${project.title}`}
-            className="
-              h-control
-
-              px-control
-
-              rounded-control
-
-              bg-primary
-
-              text-background
-
-              inline-flex
-              items-center
-              justify-center
-
-              gap-2
-
-              text-label
-
-              transition-all
-              duration-300
-
-              hover:opacity-90
-            "
+            aria-label={`Case study: ${project.title}`}
+            className="group/cta inline-flex items-center gap-2 text-[14px] font-medium tracking-tight"
           >
-            Detail
-            <ArrowUpRight
-              size={16}
+            View case study
+            <span
               className="
+                h-8
+                w-8
+
+                rounded-full
+
+                bg-primary
+
+                text-background
+
+                inline-flex
+                items-center
+                justify-center
+
                 transition-transform
                 duration-300
 
-                group-hover:translate-x-0.5
-                group-hover:-translate-y-0.5
+                group-hover/cta:rotate-45
               "
-            />
+            >
+              <ArrowUpRight size={15} aria-hidden="true" />
+            </span>
           </Link>
 
           {/* LINKS — only rendered when the project actually has them */}
 
-          <div
-            className="
-              flex
-              items-center
-
-              gap-2
-            "
-          >
+          <div className="flex items-center gap-2">
             {project.githubUrl && (
               <a
                 href={project.githubUrl}
                 target="_blank"
                 rel="noreferrer"
                 aria-label={`GitHub: ${project.title}`}
-                className={secondaryLinkClass}
+                className={iconLinkClass}
               >
-                GitHub
+                <FaGithub size={16} />
               </a>
             )}
 
@@ -321,9 +230,10 @@ function ProjectCard({ project, index, lead = false }) {
                 target="_blank"
                 rel="noreferrer"
                 aria-label={`Live: ${project.title}`}
-                className={secondaryLinkClass}
+                className="btn btn-outline h-10! px-4! text-[13px]!"
               >
                 Live
+                <ArrowUpRight size={14} aria-hidden="true" />
               </a>
             )}
           </div>
@@ -332,5 +242,20 @@ function ProjectCard({ project, index, lead = false }) {
     </motion.article>
   );
 }
+
+ProjectCard.propTypes = {
+  project: PropTypes.shape({
+    slug: PropTypes.string,
+    title: PropTypes.string,
+    category: PropTypes.string,
+    description: PropTypes.string,
+    thumbnail: PropTypes.string,
+    technologies: PropTypes.array,
+    githubUrl: PropTypes.string,
+    liveUrl: PropTypes.string,
+  }).isRequired,
+  index: PropTypes.number.isRequired,
+  lead: PropTypes.bool,
+};
 
 export default ProjectCard;

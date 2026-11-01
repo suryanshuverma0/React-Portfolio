@@ -1,185 +1,92 @@
 import PropTypes from "prop-types";
 
-import {
-  motion,
-} from "framer-motion";
+import { motion } from "framer-motion";
 
+/*
+  Editorial section header: a hairline rule carrying the section number
+  and name, then the heading with its description set beside it on wide
+  screens. `align="center"` keeps the stacked, centred layout for pages
+  that still use it.
+*/
 function SectionTitle({
-
+  index,
   eyebrow,
-
   title,
-
   description,
-
-  align = "center",
-
+  align = "left",
   large = false,
 }) {
-
-  const alignment = {
-
-    center:
-      "text-center items-center",
-
-    left:
-      "text-left items-start",
-  };
+  const centered = align === "center";
 
   return (
-
-    <motion.div
-
-      initial={{
-        opacity: 0,
-        y: 20,
-      }}
-
-      whileInView={{
-        opacity: 1,
-        y: 0,
-      }}
-
-      viewport={{
-        once: true,
-      }}
-
-      transition={{
-        duration: 0.4,
-      }}
-
-      className={`
-        flex
-        flex-col
-
-        ${alignment[align]}
-
-        max-w-2xl
-
-        ${
-          align === "center"
-            ? "mx-auto"
-            : ""
-        }
-
-        mb-12
-      `}
+    <motion.header
+      initial={{ opacity: 0, y: 24 }}
+      whileInView={{ opacity: 1, y: 0 }}
+      viewport={{ once: true, margin: "-80px" }}
+      transition={{ duration: 0.6, ease: [0.22, 1, 0.36, 1] }}
+      className={`mb-12 md:mb-16 ${centered ? "text-center" : ""}`}
     >
-
-      {/* EYEBROW */}
-
       {eyebrow && (
-
         <div
-          className="
-            inline-flex
-            items-center
+          className={`
+            flex items-center gap-4
 
-            gap-2
+            pb-5 mb-8 md:mb-10
 
-            rounded-full
+            border-b border-border
 
-            border
-            border-border
-
-            bg-surface
-
-            px-4
-            py-2
-
-            mb-5
-          "
+            ${centered ? "justify-center" : "justify-between"}
+          `}
         >
-
-          <span
-            className="
-              h-2
-              w-2
-
-              rounded-full
-
-              bg-blue-500
-            "
-          />
-
-          <span
-            className="
-              text-small
-
-              uppercase
-
-              tracking-[0.18em]
-            "
-          >
-
+          <span className="text-eyebrow text-primary!">
+            {index && <span className="text-muted mr-3">{index}</span>}
             {eyebrow}
-
           </span>
 
+          {!centered && (
+            <span aria-hidden="true" className="text-eyebrow hidden sm:inline">
+              Suryanshu Verma
+            </span>
+          )}
         </div>
-
       )}
 
-      {/* TITLE */}
-
-      <h2
-        className={`
-          ${
-            large
-              ? "text-hero"
-              : "text-heading"
-          }
-
-          tracking-tight
-        `}
+      <div
+        className={
+          centered
+            ? "max-w-3xl mx-auto"
+            : description
+              ? "grid grid-cols-1 lg:grid-cols-[1.35fr_1fr] gap-6 lg:gap-16 items-end"
+              : "max-w-4xl"
+        }
       >
+        <h2 className={`${large ? "text-display" : "text-section"} text-balance`}>
+          {title}
+        </h2>
 
-        {title}
+        {description && (
+          <p
+            className={`
+              text-body text-pretty
 
-      </h2>
-
-      {/* DESCRIPTION */}
-
-      {description && (
-
-        <p
-          className="
-            text-body
-
-            mt-5
-          "
-        >
-
-          {description}
-
-        </p>
-
-      )}
-
-    </motion.div>
+              ${centered ? "mt-5" : "lg:pb-1.5 max-w-xl"}
+            `}
+          >
+            {description}
+          </p>
+        )}
+      </div>
+    </motion.header>
   );
 }
 
 SectionTitle.propTypes = {
-
-  eyebrow:
-    PropTypes.string,
-
-  title:
-    PropTypes.string
-      .isRequired,
-
-  description:
-    PropTypes.string,
-
-  align:
-    PropTypes.oneOf([
-      "center",
-      "left",
-    ]),
-
-  large:
-    PropTypes.bool,
+  index: PropTypes.string,
+  eyebrow: PropTypes.string,
+  title: PropTypes.node.isRequired,
+  description: PropTypes.string,
+  align: PropTypes.oneOf(["center", "left"]),
+  large: PropTypes.bool,
 };
 
 export default SectionTitle;

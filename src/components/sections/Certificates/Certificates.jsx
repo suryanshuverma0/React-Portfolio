@@ -1,57 +1,18 @@
-import CarouselModule from "react-multi-carousel";
-
-const Carousel = CarouselModule.default;
-
-import "react-multi-carousel/lib/styles.css";
-
 import { motion } from "framer-motion";
+
+import { ArrowUpRight, BadgeCheck } from "lucide-react";
+
+import { useEffect, useState } from "react";
 
 import Container from "../../ui/Container";
 
 import SectionTitle from "../../ui/SectionTitle";
 
-import { useEffect, useState } from "react";
-
 import { certificatesContent } from "../../content/certificatesContent";
 
 import { getPublicCertificates } from "../../../services/public.certificate.service";
 
-/* ========================================
-   RESPONSIVE
-======================================== */
-
-const responsive = {
-  desktop: {
-    breakpoint: {
-      max: 3000,
-      min: 1024,
-    },
-
-    items: 1,
-  },
-
-  tablet: {
-    breakpoint: {
-      max: 1024,
-      min: 640,
-    },
-
-    items: 1,
-  },
-
-  mobile: {
-    breakpoint: {
-      max: 640,
-      min: 0,
-    },
-
-    items: 1,
-  },
-};
-
-/* ========================================
-   COMPONENT
-======================================== */
+import { trackPointer } from "../../../lib/pointer";
 
 function Certificates() {
   const [certificates, setCertificates] = useState([]);
@@ -62,7 +23,6 @@ function Certificates() {
         const data = await getPublicCertificates();
 
         setCertificates(data);
-        console.log("certificate",data)
       } catch (error) {
         console.error("Failed to load certificates", error);
       }
@@ -73,284 +33,109 @@ function Certificates() {
 
   const displayCertificates =
     certificates.length > 0 ? certificates : certificatesContent;
+
   return (
-    <section
-      id="certificates"
-      className="
-        section
-
-        overflow-hidden
-      "
-    >
+    <section id="certificates" className="section">
       <Container>
-        {/* TITLE */}
-
         <SectionTitle
+          index="07"
           eyebrow="Certificates"
-          title="
-            Technical certifications
-            and learning milestones.
-          "
-          description="
-            Selected certifications
-            across backend engineering,
-            blockchain systems,
-            and software development.
-          "
+          title={
+            <>
+              Certifications and{" "}
+              <span className="text-accent">learning milestones.</span>
+            </>
+          }
+          description="Selected certifications across backend engineering, blockchain systems, and software development — each one independently verifiable."
         />
 
-        {/* CAROUSEL */}
-
-        <div
-          className="
-            relative
-          "
-        >
-          {/* GLOW */}
-
-          <div
-            className="
-              absolute
-              inset-0
-
-              bg-blue-500/5
-
-              blur-[120px]
-
-              rounded-full
-
-              pointer-events-none
-            "
-          />
-
-          <Carousel
-            responsive={responsive}
-            arrows
-            showDots
-            infinite
-            autoPlay
-            autoPlaySpeed={4500}
-            swipeable
-            draggable
-            keyBoardControl
-            renderDotsOutside={false}
-            containerClass="
-              w-full
-            "
-            itemClass="
-              px-0
-              sm:px-2
-            "
-          >
-            {displayCertificates.map((item, index) => (
-              <motion.div
-                key={index}
-                initial={{
-                  opacity: 0,
-                  y: 20,
-                }}
-                whileInView={{
-                  opacity: 1,
-                  y: 0,
-                }}
-                viewport={{
-                  once: true,
-                }}
-                transition={{
-                  duration: 0.4,
-                  delay: index * 0.05,
-                }}
-                className="
-                    card
-
-                    overflow-hidden
-
-                    mx-auto
-
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-5">
+          {displayCertificates.map((item, index) => (
+            <motion.article
+              key={item._id || index}
+              initial={{ opacity: 0, y: 24 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              viewport={{ once: true, margin: "-40px" }}
+              transition={{ duration: 0.6, delay: (index % 3) * 0.06, ease: [0.22, 1, 0.36, 1] }}
+              onMouseMove={trackPointer}
+              className="panel panel-hover spotlight group p-3 flex flex-col"
+            >
+              <div className="overflow-hidden rounded-[20px] border border-border bg-surface">
+                <img
+                  src={item.image?.url || item.image}
+                  alt={item.title}
+                  loading="lazy"
+                  decoding="async"
+                  className="
                     w-full
 
-                    max-w-[920px]
-                  "
-              >
-                {/* TOP */}
+                    aspect-[16/11]
 
-                <div
-                  className="
-                      flex
+                    object-cover
+
+                    transition-transform
+                    duration-700
+
+                    group-hover:scale-[1.03]
+                  "
+                />
+              </div>
+
+              <div className="flex-1 flex flex-col p-3 pt-5">
+                <p className="text-eyebrow mb-3">
+                  {item.issuer}
+                  {item.year && ` · ${item.year}`}
+                </p>
+
+                <h3 className="text-[17px] font-semibold tracking-[-0.02em] leading-snug text-balance mb-6">
+                  {item.title}
+                </h3>
+
+                {item.verifyUrl && (
+                  <a
+                    href={item.verifyUrl}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    aria-label={`Verify ${item.title} (opens in a new tab)`}
+                    className="
+                      mt-auto
+
+                      inline-flex
                       items-center
                       justify-between
 
-                      pb-4
+                      gap-2
 
-                      border-b
-                      border-border
-                    "
-                >
-                  {/* DOTS */}
-
-                  <div
-                    className="
-                        flex
-                        items-center
-
-                        gap-2
-                      "
-                  >
-                    <div
-                      className="
-                          h-2
-                          w-2
-
-                          rounded-full
-
-                          bg-red-400
-                        "
-                    />
-
-                    <div
-                      className="
-                          h-2
-                          w-2
-
-                          rounded-full
-
-                          bg-yellow-400
-                        "
-                    />
-
-                    <div
-                      className="
-                          h-2
-                          w-2
-
-                          rounded-full
-
-                          bg-green-400
-                        "
-                    />
-                  </div>
-
-                  <p
-                    className="
-                        text-muted
-
-                        uppercase
-
-                        tracking-[0.18em]
-                      "
-                  >
-                    Certificate
-                  </p>
-                </div>
-
-                {/* IMAGE */}
-
-                <div
-                  className="
-                      mt-4
-
-                      overflow-hidden
-
-                      rounded-2xl
-
-                      border
-                      border-border
-
-                      bg-surface
-                    "
-                >
-                  <img
-                    src={ item.image?.url || item.image}
-                    alt={item.title}
-                    loading="lazy"
-                    className="
-                        w-full
-
-                        aspect-video
-
-                        object-cover
-                      "
-                  />
-                </div>
-
-                {/* FOOTER */}
-
-                <div
-                  className="
                       pt-4
 
-                      flex
-                      flex-col
-                      sm:flex-row
+                      border-t
+                      border-border
 
-                      sm:items-center
-                      sm:justify-between
+                      text-[13px]
+                      font-medium
 
-                      gap-4
+                      text-secondary
+
+                      transition-colors
+
+                      hover:text-primary
                     "
-                >
-                  {/* INFO */}
-
-                  <div>
-                    <p
-                      className="
-                          text-muted
-
-                          mb-1
-                        "
-                    >
-                      {item.issuer}
-                      {" · "}
-                      {item.year}
-                    </p>
-
-                    <h3
-                      className="
-                          text-label
-                        "
-                    >
-                      {item.title}
-                    </h3>
-                  </div>
-
-                  {/* CTA */}
-
-                  <button
-                    type="button"
-                    onClick={() =>
-                      window.open(
-                        item.verifyUrl,
-                        "_blank",
-                        "noopener,noreferrer",
-                      )
-                    }
-                    className="
-                        h-control
-
-                        px-control
-
-                        rounded-control
-
-                        bg-primary
-
-                        text-background
-
-                        text-label
-
-                        shrink-0
-
-                        transition-all
-                        duration-300
-
-                        hover:opacity-90
-                      "
                   >
-                    Verify
-                  </button>
-                </div>
-              </motion.div>
-            ))}
-          </Carousel>
+                    <span className="inline-flex items-center gap-2">
+                      <BadgeCheck size={15} aria-hidden="true" />
+                      Verify credential
+                    </span>
+
+                    <ArrowUpRight
+                      size={15}
+                      aria-hidden="true"
+                      className="transition-transform duration-300 group-hover:translate-x-0.5 group-hover:-translate-y-0.5"
+                    />
+                  </a>
+                )}
+              </div>
+            </motion.article>
+          ))}
         </div>
       </Container>
     </section>

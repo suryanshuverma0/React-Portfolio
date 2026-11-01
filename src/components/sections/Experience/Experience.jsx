@@ -1,4 +1,4 @@
-import {useState,useEffect} from "react"
+import { useState, useEffect } from "react";
 import { motion } from "framer-motion";
 import Container from "../../ui/Container";
 import SectionTitle from "../../ui/SectionTitle";
@@ -25,63 +25,38 @@ function Experience() {
 
   const displayExperiences =
     experiences.length > 0 ? experiences : experienceContent;
+
   return (
-    <section
-      id="experience"
-      className="
-        section
-      "
-    >
+    <section id="experience" className="section">
       <Container>
         <SectionTitle
+          index="03"
           eyebrow="Experience"
-          title="
-            Professional experience
-            and engineering work.
-          "
-          description="
-            Hands-on work focused
-            on backend systems,
-            scalable applications,
-            and blockchain development.
-          "
+          title={
+            <>
+              Professional experience and{" "}
+              <span className="text-accent">engineering work.</span>
+            </>
+          }
+          description="Hands-on work focused on backend systems, scalable applications, and blockchain development."
         />
 
-        {/* GRID */}
-
-        <div
-          className="
-            grid
-
-            grid-cols-1
-            md:grid-cols-2
-
-            gap-5
-          "
-        >
-          {displayExperiences?.map((item, index) => (
-            <motion.div
+        <ol>
+          {displayExperiences.map((item, index) => (
+            <motion.li
               key={item._id || index}
-              initial={{
-                opacity: 0,
-                y: 20,
-              }}
-              whileInView={{
-                opacity: 1,
-                y: 0,
-              }}
-              viewport={{
-                once: true,
-              }}
-              transition={{
-                duration: 0.4,
-                delay: index * 0.08,
-              }}
+              initial={{ opacity: 0, y: 24 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              viewport={{ once: true, margin: "-60px" }}
+              transition={{ duration: 0.6, delay: index * 0.06, ease: [0.22, 1, 0.36, 1] }}
             >
-              <ExperienceCard experience={item} />
-            </motion.div>
+              <ExperienceCard
+                experience={item}
+                last={index === displayExperiences.length - 1}
+              />
+            </motion.li>
           ))}
-        </div>
+        </ol>
       </Container>
     </section>
   );

@@ -1,56 +1,47 @@
-import {
-  useEffect,
-  useState,
-} from "react";
+import { useEffect, useState } from "react";
 
-import { useLocation } from "react-router-dom";
+import { Link, useLocation } from "react-router-dom";
 
-import {
-  Menu,
-  X,
-} from "lucide-react";
+import { ArrowUpRight, Menu, X } from "lucide-react";
 
-import {
-  motion,
-  AnimatePresence,
-} from "framer-motion";
+import { motion, AnimatePresence, useScroll, useSpring, useTransform } from "framer-motion";
 
-import Container
-from "../ui/Container";
+import Container from "../ui/Container";
 
-import ThemeToggle
-from "../ui/ThemeToggle";
+import ThemeToggle from "../ui/ThemeToggle";
 
-import NavItem
-from "./NavItem";
+import Wordmark from "../ui/Wordmark";
 
-import {
-  navbarContent,
-} from "../content/navbarContent";
+import NavItem from "./NavItem";
+
+import { navbarContent } from "../content/navbarContent";
 
 function Navbar() {
+  const navItems = navbarContent;
 
-  const navItems =
-    navbarContent;
+  const desktopItems = navItems.filter((item) => item.desktop !== false);
 
   const location = useLocation();
 
   const onRoutedPage = location.pathname !== "/";
 
-  const [
-    mobileOpen,
-    setMobileOpen,
-  ] = useState(false);
+  const [mobileOpen, setMobileOpen] = useState(false);
 
-  const [
-    scrolled,
-    setScrolled,
-  ] = useState(false);
+  const [scrolled, setScrolled] = useState(false);
 
-  const [
-    activeSection,
-    setActiveSection,
-  ] = useState("Home");
+  const [activeSection, setActiveSection] = useState("Home");
+
+  // Thin reading-progress line along the top edge of the bar.
+  const { scrollYProgress } = useScroll();
+
+  const progress = useSpring(scrollYProgress, {
+    stiffness: 200,
+    damping: 40,
+    restDelta: 0.001,
+  });
+
+  // Hidden at the very top so a zero-width line doesn't leave a 1px speck.
+  const progressOpacity = useTransform(scrollYProgress, [0, 0.01], [0, 1]);
 
   /* ========================================
      ROUTED PAGE (e.g. /blog) — active nav
@@ -77,67 +68,35 @@ function Navbar() {
   ========================================= */
 
   useEffect(() => {
-    if (onRoutedPage) return;
+    const handleScroll = () => {
+      setScrolled(window.scrollY > 12);
 
-    const handleScroll =
-      () => {
+      if (onRoutedPage) return;
 
-        setScrolled(
-          window.scrollY > 12
-        );
+      let current = "Home";
 
-        let current =
-          "Home";
+      navItems.forEach((item) => {
+        if (!item.href.startsWith("#")) return;
 
-        navItems.forEach(
-          (item) => {
+        const section = document.getElementById(item.href.slice(1));
 
-            const sectionId =
-              item.href.replace(
-                "#",
-                ""
-              );
+        if (!section) return;
 
-            const section =
-              document.getElementById(
-                sectionId
-              );
+        const rect = section.getBoundingClientRect();
 
-            if (!section)
-              return;
+        if (rect.top <= 140 && rect.bottom >= 140) {
+          current = item.label;
+        }
+      });
 
-            const rect =
-              section.getBoundingClientRect();
-
-            if (
-              rect.top <= 140 &&
-              rect.bottom >= 140
-            ) {
-
-              current =
-                item.label;
-            }
-          }
-        );
-
-        setActiveSection(
-          current
-        );
-      };
+      setActiveSection(current);
+    };
 
     handleScroll();
 
-    window.addEventListener(
-      "scroll",
-      handleScroll
-    );
+    window.addEventListener("scroll", handleScroll, { passive: true });
 
-    return () =>
-      window.removeEventListener(
-        "scroll",
-        handleScroll
-      );
-
+    return () => window.removeEventListener("scroll", handleScroll);
   }, [navItems, onRoutedPage]);
 
   /* ========================================
@@ -145,35 +104,32 @@ function Navbar() {
   ========================================= */
 
   useEffect(() => {
+    const handleResize = () => {
+      if (window.innerWidth >= 1024) {
+        setMobileOpen(false);
+      }
+    };
 
-    const handleResize =
-      () => {
+    window.addEventListener("resize", handleResize);
 
-        if (
-          window.innerWidth >= 1024
-        ) {
-
-          setMobileOpen(
-            false
-          );
-        }
-      };
-
-    window.addEventListener(
-      "resize",
-      handleResize
-    );
-
-    return () =>
-      window.removeEventListener(
-        "resize",
-        handleResize
-      );
-
+    return () => window.removeEventListener("resize", handleResize);
   }, []);
 
-  return (
+  // Lock page scroll behind the open mobile menu.
+  useEffect(() => {
+    document.body.style.overflow = mobileOpen ? "hidden" : "";
 
+    return () => {
+      document.body.style.overflow = "";
+    };
+  }, [mobileOpen]);
+
+  // Off the homepage, in-page anchors must route back to "/" first.
+  const PageLink = onRoutedPage ? Link : "a";
+
+  const pageHref = (hash) => (onRoutedPage ? { to: `/${hash}` } : { href: hash });
+
+  return (
     <header
       className="
         fixed
@@ -184,350 +140,182 @@ function Navbar() {
 
         z-50
 
-        px-3
-        sm:px-4
-
         pt-3
         sm:pt-4
       "
     >
-
       <Container>
-
-        {/* NAVBAR */}
-
         <motion.div
-
-          initial={{
-            y: -24,
-            opacity: 0,
-          }}
-
-          animate={{
-            y: 0,
-            opacity: 1,
-          }}
-
-          transition={{
-            duration: 0.45,
-          }}
-
+          initial={{ y: -24, opacity: 0 }}
+          animate={{ y: 0, opacity: 1 }}
+          transition={{ duration: 0.6, ease: [0.22, 1, 0.36, 1] }}
           className={`
-            glass
+            relative
 
             flex
             items-center
             justify-between
 
-            h-[62px]
-            md:h-[68px]
+            gap-3
 
-            px-3
-            sm:px-4
-            md:px-5
+            h-14
+            md:h-[60px]
 
-            rounded-2xl
+            pl-4
+            pr-2
+            md:pl-5
 
-            transition-all
+            rounded-full
+
+            border
+
+            backdrop-blur-xl
+            backdrop-saturate-150
+
+            transition-[background-color,border-color,box-shadow]
             duration-300
 
             ${
-              scrolled
-                ? `
-                  shadow-[0_8px_30px_rgba(0,0,0,0.08)]
-                `
-                : ""
+              scrolled || mobileOpen
+                ? "bg-background/80 border-border shadow-[0_12px_40px_-12px_rgba(0,0,0,0.18)]"
+                : "bg-background/40 border-transparent"
             }
           `}
         >
+          {/* PROGRESS */}
+
+          {!onRoutedPage && (
+            <span aria-hidden="true" className="absolute inset-x-6 bottom-0 h-px overflow-hidden">
+              <motion.span
+                style={{ scaleX: progress, opacity: progressOpacity }}
+                className="block h-full origin-left bg-primary/60"
+              />
+            </span>
+          )}
 
           {/* LOGO */}
 
-          <a
-
-            href="#home"
-
-            className="
-              flex
-              items-center
-
-              gap-3
-
-              min-w-0
-
-              shrink-0
-            "
+          <PageLink
+            {...(onRoutedPage ? { to: "/" } : { href: "#home" })}
+            aria-label="Suryanshu Verma — home"
+            className="shrink-0 min-w-0"
           >
-
-            {/* ICON */}
-
-            <div
-              className="
-                h-9
-                w-9
-
-                md:h-10
-                md:w-10
-
-                rounded-xl
-
-                bg-primary
-
-                text-background
-
-                flex
-                items-center
-                justify-center
-
-                text-sm
-                font-semibold
-
-                shrink-0
-              "
-            >
-
-              SV
-
-            </div>
-
-            {/* TEXT */}
-
-            <div
-              className="
-                hidden
-                sm:flex
-
-                lg:hidden
-                xl:flex
-
-                flex-col
-
-                min-w-0
-              "
-            >
-
-              <span
-                className="
-                  text-sm
-
-                  font-semibold
-
-                  tracking-tight
-
-                  truncate
-                "
-              >
-
-                Suryanshu Verma
-
-              </span>
-
-              <span
-                className="
-                  text-[11px]
-
-                  text-muted
-
-                  truncate
-                "
-              >
-
-                Blockchain Engineer
-
-              </span>
-
-            </div>
-
-          </a>
+            <Wordmark />
+          </PageLink>
 
           {/* DESKTOP NAV */}
 
-          <nav
-            className="
-              hidden
-              lg:flex
-
-              items-center
-
-              gap-1
-            "
-          >
-
-            {navItems.map(
-              (item) => (
-
-                <NavItem
-                  key={item.label}
-
-                  item={item}
-
-                  active={
-                    activeSection ===
-                    item.label
-                  }
-                />
-
-              )
-            )}
-
+          <nav aria-label="Primary" className="hidden lg:flex items-center gap-0.5">
+            {desktopItems.map((item) => (
+              <NavItem
+                key={item.label}
+                item={item}
+                active={activeSection === item.label}
+              />
+            ))}
           </nav>
 
           {/* ACTIONS */}
 
-          <div
-            className="
-              flex
-              items-center
+          <div className="flex items-center gap-1.5 shrink-0">
+            <ThemeToggle round />
 
-              gap-2
-
-              shrink-0
-            "
-          >
-
-            <ThemeToggle />
-
-            {/* MOBILE TOGGLE */}
+            <PageLink
+              {...pageHref("#contact")}
+              className="btn btn-primary hidden sm:inline-flex h-10! px-4! text-[13.5px]!"
+            >
+              Let&apos;s talk
+              <ArrowUpRight size={14} aria-hidden="true" />
+            </PageLink>
 
             <button
-
-              onClick={() =>
-                setMobileOpen(
-                  !mobileOpen
-                )
-              }
-
-              aria-label="Toggle menu"
-
+              type="button"
+              onClick={() => setMobileOpen(!mobileOpen)}
+              aria-label={mobileOpen ? "Close menu" : "Open menu"}
+              aria-expanded={mobileOpen}
               className="
                 lg:hidden
 
                 h-10
                 w-10
 
-                rounded-xl
+                rounded-full
 
                 flex
                 items-center
                 justify-center
 
-                text-secondary
+                text-primary
 
-                hover:text-primary
+                hover:bg-surface
 
-                hover:bg-black/[0.04]
-                dark:hover:bg-white/[0.05]
-
-                transition-all
+                transition-colors
               "
             >
-
-              {mobileOpen ? (
-
-                <X size={18} />
-
-              ) : (
-
-                <Menu size={18} />
-
-              )}
-
+              {mobileOpen ? <X size={18} /> : <Menu size={18} />}
             </button>
-
           </div>
-
         </motion.div>
 
         {/* MOBILE MENU */}
 
         <AnimatePresence>
-
           {mobileOpen && (
-
             <motion.div
-
-              initial={{
-                opacity: 0,
-                y: -10,
-              }}
-
-              animate={{
-                opacity: 1,
-                y: 0,
-              }}
-
-              exit={{
-                opacity: 0,
-                y: -10,
-              }}
-
-              transition={{
-                duration: 0.2,
-              }}
-
-              className="
-                lg:hidden
-
-                mt-2
-              "
+              initial={{ opacity: 0, y: -8, scale: 0.98 }}
+              animate={{ opacity: 1, y: 0, scale: 1 }}
+              exit={{ opacity: 0, y: -8, scale: 0.98 }}
+              transition={{ duration: 0.25, ease: [0.22, 1, 0.36, 1] }}
+              className="lg:hidden mt-2 origin-top"
             >
-
               <div
                 className="
-                  glass
+                  max-h-[calc(100svh-6rem)]
 
-                  rounded-2xl
+                  overflow-y-auto
 
-                  p-2
+                  rounded-[28px]
+
+                  border
+                  border-border
+
+                  bg-background/95
+
+                  backdrop-blur-xl
+
+                  shadow-[0_30px_60px_-20px_rgba(0,0,0,0.3)]
+
+                  px-6
+                  pt-3
+                  pb-6
                 "
               >
-
-                <nav
-                  className="
-                    flex
-                    flex-col
-
-                    gap-1
-                  "
-                >
-
-                  {navItems.map(
-                    (item) => (
-
-                      <NavItem
-                        key={item.label}
-
-                        item={item}
-
-                        mobile
-
-                        active={
-                          activeSection ===
-                          item.label
-                        }
-
-                        onClick={() =>
-                          setMobileOpen(
-                            false
-                          )
-                        }
-                      />
-
-                    )
-                  )}
-
+                <nav aria-label="Mobile" className="flex flex-col">
+                  {navItems.map((item, index) => (
+                    <NavItem
+                      key={item.label}
+                      item={item}
+                      index={index}
+                      mobile
+                      active={activeSection === item.label}
+                      onClick={() => setMobileOpen(false)}
+                    />
+                  ))}
                 </nav>
 
+                <PageLink
+                  {...pageHref("#contact")}
+                  onClick={() => setMobileOpen(false)}
+                  className="btn btn-primary w-full mt-6"
+                >
+                  Let&apos;s talk
+                  <ArrowUpRight size={15} aria-hidden="true" />
+                </PageLink>
               </div>
-
             </motion.div>
-
           )}
-
         </AnimatePresence>
-
       </Container>
-
     </header>
   );
 }

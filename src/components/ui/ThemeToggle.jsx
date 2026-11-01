@@ -1,7 +1,8 @@
 import { Moon, Sun } from "lucide-react";
 import { useEffect, useState } from "react";
 
-function ThemeToggle() {
+// `round` is the borderless circle used inside the public navbar pill.
+function ThemeToggle({ round = false }) {
   const [darkMode, setDarkMode] = useState(false);
 
   // INITIALIZE THEME
@@ -42,19 +43,14 @@ function ThemeToggle() {
     <button
       onClick={toggleTheme}
       aria-label="Toggle Theme"
-      className="
-        glass
+      className={`
+        ${round ? "h-10 w-10 rounded-full hover:bg-surface!" : "glass h-control w-11 rounded-control"}
 
         relative
-
-        h-control
-        w-11
 
         flex
         items-center
         justify-center
-
-        rounded-control
 
         text-secondary
         hover:text-primary
@@ -66,7 +62,7 @@ function ThemeToggle() {
         duration-300
 
         active:scale-95
-      "
+      `}
     >
       {/* SUN ICON */}
       <Sun

@@ -1,6 +1,8 @@
 import { Link, useLocation } from "react-router-dom";
 
-function NavItem({ item, mobile = false, active = false, onClick }) {
+import { motion } from "framer-motion";
+
+function NavItem({ item, mobile = false, active = false, onClick, index = 0 }) {
   const location = useLocation();
 
   const isHash = item.href.startsWith("#");
@@ -16,84 +18,81 @@ function NavItem({ item, mobile = false, active = false, onClick }) {
     ? { to: isHash ? `/${item.href}` : item.href }
     : { href: item.href };
 
+  if (mobile) {
+    return (
+      <LinkComponent
+        {...linkProp}
+        onClick={onClick}
+        aria-current={active ? "true" : undefined}
+        className={`
+          group
+
+          flex
+          items-center
+          justify-between
+
+          py-3.5
+
+          border-b
+          border-border
+
+          text-[22px]
+          font-semibold
+
+          tracking-[-0.03em]
+
+          transition-colors
+
+          ${active ? "text-primary" : "text-secondary hover:text-primary"}
+        `}
+      >
+        {item.mobileLabel}
+
+        <span className="text-eyebrow">{String(index + 1).padStart(2, "0")}</span>
+      </LinkComponent>
+    );
+  }
+
   return (
     <LinkComponent
       {...linkProp}
       onClick={onClick}
+      aria-current={active ? "true" : undefined}
       className={`
         relative
+        isolate
 
-        ${
-          mobile
-            ? `
-              h-11
-              px-4
+        h-9
+        px-3
+        xl:px-3.5
 
-              flex
-              items-center
-            `
-            : `
-              h-10
-              px-2.5
-              xl:px-3
-              2xl:px-4
+        inline-flex
+        items-center
+        justify-center
 
-              inline-flex
-              items-center
-              justify-center
-            `
-        }
+        rounded-full
 
-        rounded-xl
-
-        text-sm
+        text-[13.5px]
         font-medium
 
         tracking-tight
 
-        transition-all
+        transition-colors
         duration-200
 
-        ${
-          active
-            ? `
-              text-primary
-
-              bg-black/5
-              dark:bg-white/8
-            `
-            : `
-              text-secondary
-
-              hover:text-primary
-
-              hover:bg-black/[0.03]
-              dark:hover:bg-white/[0.04]
-            `
-        }
+        ${active ? "text-background" : "text-secondary hover:text-primary"}
       `}
     >
-      {mobile ? item.mobileLabel : item.label}
-
-      {!mobile && active && (
-        <span
-          className="
-            absolute
-
-            bottom-1.5
-            left-1/2
-
-            -translate-x-1/2
-
-            h-1
-            w-1
-
-            rounded-full
-
-            bg-primary
-          "
+      {/* Shared pill that slides between the active items */}
+      {active && (
+        <motion.span
+          layoutId="nav-active"
+          transition={{ type: "spring", stiffness: 420, damping: 36 }}
+          className="absolute inset-0 -z-10 rounded-full bg-primary"
         />
       )}
+
+      {item.label}
     </LinkComponent>
   );
 }

@@ -3,6 +3,9 @@ import {
 } from "framer-motion";
 
 import {
+  ArrowUpRight,
+  Check,
+  Copy,
   Send,
 } from "lucide-react";
 
@@ -44,6 +47,7 @@ function Contact() {
   });
 
   const [sending, setSending] = useState(false);
+  const [copied, setCopied] = useState(false);
   const [sent, setSent] = useState(false);
 
   const handleChange = (e) => {
@@ -140,513 +144,252 @@ function Contact() {
   const settingsSocials = socialsObjectToArray(settings?.socials);
   const socials = settingsSocials.length ? settingsSocials : contactContent.socials;
 
+  const primaryEmail = contacts.find((item) => item.type === "email");
+  const otherContacts = contacts.filter((item) => item !== primaryEmail);
+
+  const copyEmail = async () => {
+    if (!primaryEmail) return;
+
+    try {
+      await navigator.clipboard.writeText(primaryEmail.value);
+      setCopied(true);
+      setTimeout(() => setCopied(false), 2000);
+    } catch {
+      toast.error("Couldn't copy — select the address instead");
+    }
+  };
+
+  // Last two words of the heading get the serif accent.
+  const titleWords = contactContent.title.split(" ");
+  const titleLead = titleWords.slice(0, -2).join(" ");
+  const titleAccent = titleWords.slice(-2).join(" ");
+
   return (
-
-    <section
-      id="contact"
-
-      className="
-        section
-      "
-    >
+    <section id="contact" className="section relative">
+      <div
+        aria-hidden="true"
+        className="pointer-events-none absolute inset-0 -z-10 bg-grid mask-radial opacity-60"
+      />
 
       <Container>
-
-        {/* TITLE */}
-
         <SectionTitle
-
+          index="09"
           eyebrow="Contact"
-
           title={
-            contactContent.title
+            <>
+              {titleLead} <span className="text-accent">{titleAccent}</span>
+            </>
           }
-
-          description={
-            contactContent.description
-          }
+          description={contactContent.description}
         />
 
-        {/* GRID */}
-
-        <div
-          className="
-            grid
-
-            grid-cols-1
-            xl:grid-cols-[0.92fr_1.08fr]
-
-            gap-4
-            md:gap-5
-          "
-        >
-
+        <div className="grid grid-cols-1 lg:grid-cols-[1fr_1.1fr] gap-5 lg:gap-6">
           {/* LEFT */}
 
           <motion.div
-
-            initial={{
-              opacity: 0,
-              y: 20,
-            }}
-
-            whileInView={{
-              opacity: 1,
-              y: 0,
-            }}
-
-            viewport={{
-              once: true,
-            }}
-
-            transition={{
-              duration: 0.4,
-            }}
-
-            className="
-              card
-
-              flex
-              flex-col
-              justify-between
-
-              h-full
-            "
+            initial={{ opacity: 0, y: 24 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true, margin: "-60px" }}
+            transition={{ duration: 0.6, ease: [0.22, 1, 0.36, 1] }}
+            className="flex flex-col"
           >
+            {/* EMAIL — the main call to action */}
 
-            <div>
+            {primaryEmail && (
+              <div className="panel p-5 sm:p-7">
+                <p className="text-eyebrow mb-5">Write to me</p>
 
-              {/* HEADER */}
-
-              <div
-                className="
-                  flex
-                  items-center
-
-                  gap-2
-
-                  mb-5
-                "
-              >
-
-                <div
+                <a
+                  href={primaryEmail.href}
                   className="
-                    h-2
-                    w-2
+                    group
 
-                    rounded-full
-
-                    bg-blue-500
-                  "
-                />
-
-                <p
-                  className="
-                    text-label
-                  "
-                >
-
-                  Contact Information
-
-                </p>
-
-              </div>
-
-              {/* DESCRIPTION */}
-
-              <p
-                className="
-                  text-body
-
-                  mb-7
-                "
-              >
-
-                Open to backend engineering,
-                blockchain development,
-                freelance collaborations,
-                and product-focused opportunities.
-
-              </p>
-
-              {/* CONTACT ITEMS */}
-
-              <div
-                className="
-                  flex
-                  flex-col
-
-                  gap-4
-                "
-              >
-
-                {contacts.map(
-                  (
-                    item,
-                    index
-                  ) => {
-
-                    const Icon =
-                      iconMap[item.type];
-
-                    return (
-
-                      <div
-                        key={index}
-
-                        className="
-                          flex
-                          items-start
-
-                          gap-3
-                        "
-                      >
-
-                        {/* ICON */}
-
-                        <div
-                          className="
-                            h-10
-                            w-10
-
-                            rounded-xl
-
-                            bg-surface
-
-                            border
-                            border-border
-
-                            flex
-                            items-center
-                            justify-center
-
-                            shrink-0
-                          "
-                        >
-
-                          <Icon
-                            size={16}
-                          />
-
-                        </div>
-
-                        {/* CONTENT */}
-
-                        <div
-                          className="
-                            min-w-0
-                          "
-                        >
-
-                          <p
-                            className="
-                              text-muted
-
-                              mb-1
-                            "
-                          >
-
-                            {item.label}
-
-                          </p>
-
-                          {item.href ? (
-
-                            <a
-
-                              href={item.href}
-
-                              className="
-                                text-label
-
-                                break-all
-
-                                hover:opacity-70
-
-                                transition-opacity
-                              "
-                            >
-
-                              {item.value}
-
-                            </a>
-
-                          ) : (
-
-                            <p
-                              className="
-                                text-label
-
-                                break-all
-                              "
-                            >
-
-                              {item.value}
-
-                            </p>
-
-                          )}
-
-                        </div>
-
-                      </div>
-
-                    );
-                  }
-                )}
-
-              </div>
-
-              {/* SOCIALS */}
-
-              <div
-                className="
-                  mt-8
-
-                  pt-5
-
-                  border-t
-                  border-border
-                "
-              >
-
-                <p
-                  className="
-                    text-muted
-
-                    mb-4
-                  "
-                >
-
-                  Social Links
-
-                </p>
-
-                <div
-                  className="
-                    flex
-                    flex-wrap
+                    inline-flex
+                    items-start
 
                     gap-2
+
+                    max-w-full
+
+                    text-[22px]
+                    sm:text-[30px]
+
+                    font-semibold
+
+                    leading-tight
+
+                    tracking-[-0.04em]
+
+                    break-all
                   "
                 >
+                  <span className="bg-[linear-gradient(currentColor,currentColor)] bg-no-repeat bg-[length:0%_1px] bg-[position:0_100%] transition-[background-size] duration-500 group-hover:bg-[length:100%_1px]">
+                    {primaryEmail.value}
+                  </span>
 
-                  {socials.map(
-                    (
-                      item,
-                      index
-                    ) => {
+                  <ArrowUpRight
+                    size={22}
+                    aria-hidden="true"
+                    className="mt-1 shrink-0 text-muted transition-transform duration-300 group-hover:translate-x-0.5 group-hover:-translate-y-0.5 group-hover:text-primary"
+                  />
+                </a>
 
-                      const Icon =
-                        iconMap[item.icon];
+                <div className="mt-6 flex flex-wrap gap-2">
+                  <a href={primaryEmail.href} className="btn btn-primary">
+                    Send an email
+                  </a>
 
-                      if (!Icon) return null;
-
-                      return (
-
-                        <a
-                          key={index}
-
-                          href={item.href}
-
-                          target="_blank"
-
-                          rel="noreferrer"
-
-                          className="
-                            h-10
-                            w-10
-
-                            rounded-xl
-
-                            bg-surface
-
-                            border
-                            border-border
-
-                            flex
-                            items-center
-                            justify-center
-
-                            text-secondary
-
-                            transition-all
-                            duration-300
-
-                            hover:text-primary
-                            hover:bg-background
-                          "
-                        >
-
-                          <Icon
-                            size={16}
-                          />
-
-                        </a>
-
-                      );
-                    }
-                  )}
-
+                  <button type="button" onClick={copyEmail} className="btn btn-outline">
+                    {copied ? <Check size={15} aria-hidden="true" /> : <Copy size={15} aria-hidden="true" />}
+                    {copied ? "Copied" : "Copy address"}
+                  </button>
                 </div>
+              </div>
+            )}
 
+            {/* OTHER CHANNELS */}
+
+            <div className="panel mt-5 p-5 sm:p-7 flex-1 flex flex-col">
+              {otherContacts.length > 0 && (
+                <dl className="flex flex-col gap-5 mb-7">
+                  {otherContacts.map((item, index) => {
+                    const Icon = iconMap[item.type];
+
+                    return (
+                      <div key={index} className="flex items-center gap-4">
+                        <span className="h-11 w-11 shrink-0 rounded-full border border-border bg-background flex items-center justify-center">
+                          {Icon && <Icon size={15} />}
+                        </span>
+
+                        <div className="min-w-0">
+                          <dt className="text-eyebrow mb-1.5">{item.label}</dt>
+                          <dd className="text-label break-all">
+                            {item.href ? (
+                              <a href={item.href} className="hover:opacity-70 transition-opacity">
+                                {item.value}
+                              </a>
+                            ) : (
+                              item.value
+                            )}
+                          </dd>
+                        </div>
+                      </div>
+                    );
+                  })}
+                </dl>
+              )}
+
+              <p className="text-eyebrow mb-4">Elsewhere</p>
+
+              <div className="flex flex-wrap gap-2">
+                {socials.map((item, index) => {
+                  const Icon = iconMap[item.icon];
+
+                  if (!Icon) return null;
+
+                  return (
+                    <a
+                      key={index}
+                      href={item.href}
+                      target="_blank"
+                      rel="noreferrer"
+                      aria-label={item.icon}
+                      className="
+                        h-11
+                        w-11
+
+                        rounded-full
+
+                        border
+                        border-border
+
+                        bg-background
+
+                        flex
+                        items-center
+                        justify-center
+
+                        text-secondary
+
+                        transition-all
+                        duration-300
+
+                        hover:bg-primary
+                        hover:border-primary
+                        hover:text-background
+                      "
+                    >
+                      <Icon size={16} />
+                    </a>
+                  );
+                })}
               </div>
 
-            </div>
-
-            {/* FOOTER */}
-
-            <div
-              className="
-                mt-7
-
-                pt-5
-
-                border-t
-                border-border
-              "
-            >
-
-              <p
-                className="
-                  text-small
-                "
-              >
-
+              <p className="mt-auto pt-7 flex items-center gap-2.5 text-small">
+                <span aria-hidden="true" className="relative flex h-2 w-2">
+                  <span className="absolute inline-flex h-full w-full rounded-full bg-primary opacity-40 animate-ping" />
+                  <span className="relative inline-flex h-2 w-2 rounded-full bg-primary" />
+                </span>
                 Usually responds within 24 hours.
-
               </p>
-
             </div>
-
           </motion.div>
 
           {/* FORM */}
 
           <motion.div
-
-            initial={{
-              opacity: 0,
-              y: 20,
-            }}
-
-            whileInView={{
-              opacity: 1,
-              y: 0,
-            }}
-
-            viewport={{
-              once: true,
-            }}
-
-            transition={{
-              duration: 0.4,
-              delay: 0.08,
-            }}
-
-            className="
-              card
-            "
+            initial={{ opacity: 0, y: 24 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true, margin: "-60px" }}
+            transition={{ duration: 0.6, delay: 0.08, ease: [0.22, 1, 0.36, 1] }}
+            className="panel p-5 sm:p-8"
           >
-
             {sent ? (
-              <div
-                className="
-                  h-full
-
-                  flex
-                  flex-col
-                  items-center
-                  justify-center
-
-                  text-center
-
-                  gap-3
-
-                  py-10
-                "
-              >
-                <div
-                  className="
-                    h-11
-                    w-11
-
-                    rounded-2xl
-
-                    bg-primary
-
-                    text-background
-
-                    flex
-                    items-center
-                    justify-center
-
-                    text-sm
-                    font-semibold
-                  "
-                >
-                  ✓
+              <div className="h-full min-h-[420px] flex flex-col items-center justify-center text-center gap-3 py-10">
+                <div className="h-14 w-14 rounded-full bg-primary text-background flex items-center justify-center mb-2">
+                  <Check size={22} aria-hidden="true" />
                 </div>
 
-                <p className="text-label">Message sent</p>
+                <p className="text-[22px] font-semibold tracking-[-0.03em]">Message sent</p>
 
                 <p className="text-small max-w-xs">
-                  Thanks for reaching out — I've received your message and
+                  Thanks for reaching out — I&apos;ve received your message and
                   will get back to you soon.
                 </p>
 
                 <button
                   type="button"
                   onClick={() => setSent(false)}
-                  className="
-                    mt-2
-
-                    text-small
-
-                    text-primary
-
-                    hover:opacity-70
-
-                    transition-opacity
-                  "
+                  className="btn btn-outline mt-4"
                 >
                   Send another message
                 </button>
               </div>
             ) : (
-              <form
-                onSubmit={handleSubmit}
-                className="
-                  flex
-                  flex-col
+              <form onSubmit={handleSubmit} className="flex flex-col gap-5">
+                <p className="text-eyebrow text-primary! mb-1">Send a message</p>
 
-                  gap-4
-                "
-              >
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-5">
+                  <FormField
+                    label="Full name"
+                    type="text"
+                    name="name"
+                    value={formData.name}
+                    onChange={handleChange}
+                    placeholder="John Doe"
+                    autoComplete="name"
+                  />
 
-                {/* NAME */}
-
-                <FormField
-                  label="Full Name"
-                  type="text"
-                  name="name"
-                  value={formData.name}
-                  onChange={handleChange}
-                  placeholder="John Doe"
-                />
-
-                {/* EMAIL */}
-
-                <FormField
-                  label="Email Address"
-                  type="email"
-                  name="email"
-                  value={formData.email}
-                  onChange={handleChange}
-                  placeholder="john@example.com"
-                />
-
-                {/* SUBJECT */}
+                  <FormField
+                    label="Email address"
+                    type="email"
+                    name="email"
+                    value={formData.email}
+                    onChange={handleChange}
+                    placeholder="john@example.com"
+                    autoComplete="email"
+                  />
+                </div>
 
                 <FormField
                   label="Subject"
@@ -654,125 +397,38 @@ function Contact() {
                   name="subject"
                   value={formData.subject}
                   onChange={handleChange}
-                  placeholder="Project Collaboration"
+                  placeholder="Project collaboration"
                 />
 
-                {/* MESSAGE */}
-
                 <div>
-
-                  <label
-                    className="
-                      text-muted
-
-                      block
-
-                      mb-2
-                    "
-                  >
-
+                  <label htmlFor="contact-message" className="text-eyebrow block mb-2.5">
                     Message
-
                   </label>
 
                   <textarea
-
+                    id="contact-message"
                     name="message"
-
                     value={formData.message}
-
                     onChange={handleChange}
-
-                    rows={5}
-
-                    placeholder="
-                      Tell me about your project
-                      or opportunity...
-                    "
-
-                    className="
-                      w-full
-
-                      px-4
-                      py-3
-
-                      rounded-[22px]
-
-                      bg-surface
-
-                      border
-                      border-border
-
-                      outline-none
-
-                      resize-none
-
-                      text-label
-
-                      transition-all
-                      duration-300
-
-                      focus:border-primary
-                    "
+                    rows={6}
+                    placeholder="Tell me about your project or opportunity…"
+                    className={`${fieldClass} py-3.5 resize-none`}
                   />
-
                 </div>
 
-                {/* BUTTON */}
-
                 <button
-
                   type="submit"
-
                   disabled={sending}
-
-                  className="
-                    h-10
-                    md:h-11
-
-                    px-control
-
-                    rounded-control
-
-                    bg-primary
-
-                    text-background
-
-                    inline-flex
-                    items-center
-                    justify-center
-
-                    gap-2
-
-                    text-label
-
-                    transition-all
-                    duration-300
-
-                    hover:opacity-90
-
-                    disabled:opacity-50
-                    disabled:cursor-not-allowed
-                  "
+                  className="btn btn-primary w-full h-12! disabled:opacity-50 disabled:cursor-not-allowed"
                 >
-
-                  {sending ? "Sending..." : "Send Message"}
-
-                  <Send
-                    size={16}
-                  />
-
+                  {sending ? "Sending…" : "Send message"}
+                  <Send size={15} aria-hidden="true" />
                 </button>
-
               </form>
             )}
-
           </motion.div>
-
         </div>
-
       </Container>
-
     </section>
   );
 }
@@ -781,6 +437,35 @@ function Contact() {
    FORM FIELD
 ======================================== */
 
+const fieldClass = `
+  w-full
+
+  px-4
+
+  rounded-2xl
+
+  bg-background
+
+  border
+  border-border
+
+  outline-none
+
+  text-[15px]
+
+  text-primary
+
+  placeholder:text-muted
+
+  transition-[border-color,box-shadow]
+  duration-200
+
+  hover:border-border-strong
+
+  focus:border-primary
+  focus:shadow-[0_0_0_4px_color-mix(in_srgb,var(--color-primary)_8%,transparent)]
+`;
+
 function FormField({
   label,
   type,
@@ -788,66 +473,27 @@ function FormField({
   value,
   onChange,
   placeholder,
+  autoComplete,
 }) {
+  const id = `contact-${name}`;
 
   return (
-
     <div>
-
-      <label
-        className="
-          text-muted
-
-          block
-
-          mb-2
-        "
-      >
-
+      <label htmlFor={id} className="text-eyebrow block mb-2.5">
         {label}
-
       </label>
 
       <input
-
+        id={id}
         type={type}
-
         name={name}
-
         value={value}
-
         onChange={onChange}
-
         placeholder={placeholder}
-
-        className="
-          w-full
-
-          h-10
-          md:h-11
-
-          px-4
-
-          rounded-control
-
-          bg-surface
-
-          border
-          border-border
-
-          outline-none
-
-          text-label
-
-          transition-all
-          duration-300
-
-          focus:border-primary
-        "
+        autoComplete={autoComplete}
+        className={`${fieldClass} h-12`}
       />
-
     </div>
-
   );
 }
 

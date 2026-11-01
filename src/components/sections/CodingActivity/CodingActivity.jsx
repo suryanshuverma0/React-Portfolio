@@ -4,26 +4,28 @@ import { FolderGit2, Star, Users, Trophy, ExternalLink } from "lucide-react";
 
 import Container from "../../ui/Container";
 import SectionTitle from "../../ui/SectionTitle";
+import { trackPointer } from "../../../lib/pointer";
 
 import { getIntegrationsStatus } from "../../../services/public.integrations.service";
 
 /* ========================================
-   Difficulty bar colors reuse the same
-   chart palette used in the admin analytics
-   dashboard — nothing new invented.
+   Difficulty bars stay monochrome: the
+   primary ink at three strengths, hardest
+   darkest, so the section keeps to the
+   site's black-and-white palette.
 ========================================= */
 
-const DIFFICULTY_COLORS = {
-  Easy: "var(--color-chart-3)",
-  Medium: "var(--color-chart-4)",
-  Hard: "var(--color-chart-2)",
+const DIFFICULTY_OPACITY = {
+  Easy: 0.35,
+  Medium: 0.65,
+  Hard: 1,
 };
 
 function StatPill({ icon: Icon, label, value }) {
   return (
-    <div className="flex items-center gap-2 rounded-2xl border border-border bg-surface px-4 py-2.5">
+    <div className="flex items-center gap-2 rounded-full border border-border bg-background px-4 py-2">
       <Icon size={15} className="text-muted shrink-0" />
-      <span className="text-label">{value}</span>
+      <span className="text-label tabular-nums">{value}</span>
       <span className="text-muted text-sm">{label}</span>
     </div>
   );
@@ -36,11 +38,12 @@ function GitHubCard({ data }) {
       whileInView={{ opacity: 1, y: 0 }}
       viewport={{ once: true }}
       transition={{ duration: 0.4 }}
-      className="card h-full flex flex-col"
+      onMouseMove={trackPointer}
+      className="panel panel-hover spotlight h-full p-5 sm:p-7 flex flex-col"
     >
-      <div className="flex items-center gap-2 mb-6">
-        <div className="h-2 w-2 rounded-full bg-blue-500" />
-        <h3 className="text-title">GitHub</h3>
+      <div className="flex items-center justify-between gap-2 mb-6">
+        <h3 className="text-eyebrow text-primary!">GitHub</h3>
+        <span className="text-eyebrow">Live</span>
       </div>
 
       <div className="flex items-center gap-4 mb-6">
@@ -49,7 +52,7 @@ function GitHubCard({ data }) {
             src={data.avatarUrl}
             alt={data.username}
             loading="lazy"
-            className="h-14 w-14 rounded-2xl border border-border object-cover"
+            className="h-14 w-14 rounded-full border border-border object-cover grayscale"
           />
         )}
 
@@ -73,7 +76,7 @@ function GitHubCard({ data }) {
               href={repo.url}
               target="_blank"
               rel="noopener noreferrer"
-              className="flex items-center justify-between gap-3 rounded-2xl border border-border bg-surface px-4 py-3 transition hover:border-primary/40"
+              className="flex items-center justify-between gap-3 rounded-2xl border border-border bg-background px-4 py-3 transition-colors hover:border-primary"
             >
               <div className="min-w-0">
                 <p className="text-label truncate">{repo.name}</p>
@@ -95,7 +98,7 @@ function GitHubCard({ data }) {
         href={data.profileUrl}
         target="_blank"
         rel="noopener noreferrer"
-        className="mt-auto h-control px-control rounded-control bg-primary text-background text-label inline-flex items-center justify-center gap-2 transition hover:opacity-90"
+        className="mt-auto btn btn-primary w-full"
       >
         View GitHub
         <ExternalLink size={15} />
@@ -119,11 +122,12 @@ function LeetCodeCard({ data }) {
       whileInView={{ opacity: 1, y: 0 }}
       viewport={{ once: true }}
       transition={{ duration: 0.4, delay: 0.08 }}
-      className="card h-full flex flex-col"
+      onMouseMove={trackPointer}
+      className="panel panel-hover spotlight h-full p-5 sm:p-7 flex flex-col"
     >
-      <div className="flex items-center gap-2 mb-6">
-        <div className="h-2 w-2 rounded-full bg-yellow-500" />
-        <h3 className="text-title">LeetCode</h3>
+      <div className="flex items-center justify-between gap-2 mb-6">
+        <h3 className="text-eyebrow text-primary!">LeetCode</h3>
+        <span className="text-eyebrow">Live</span>
       </div>
 
       <div className="flex items-center gap-4 mb-6">
@@ -132,7 +136,7 @@ function LeetCodeCard({ data }) {
             src={data.avatarUrl}
             alt={data.username}
             loading="lazy"
-            className="h-14 w-14 rounded-2xl border border-border object-cover"
+            className="h-14 w-14 rounded-full border border-border object-cover grayscale"
           />
         )}
 
@@ -160,7 +164,8 @@ function LeetCodeCard({ data }) {
                 className="h-full rounded-full"
                 style={{
                   width: `${Math.max((item.count / max) * 100, 3)}%`,
-                  backgroundColor: DIFFICULTY_COLORS[item.label],
+                  backgroundColor: "var(--color-primary)",
+                  opacity: DIFFICULTY_OPACITY[item.label],
                 }}
               />
             </div>
@@ -172,7 +177,7 @@ function LeetCodeCard({ data }) {
         href={data.profileUrl}
         target="_blank"
         rel="noopener noreferrer"
-        className="mt-auto h-control px-control rounded-control bg-primary text-background text-label inline-flex items-center justify-center gap-2 transition hover:opacity-90"
+        className="mt-auto btn btn-primary w-full"
       >
         View LeetCode
         <ExternalLink size={15} />
@@ -208,12 +213,17 @@ function CodingActivity() {
     <section id="coding-activity" className="section">
       <Container>
         <SectionTitle
-          eyebrow="Coding Activity"
-          title="Live from GitHub and LeetCode."
+          index="08"
+          eyebrow="Coding activity"
+          title={
+            <>
+              Live from GitHub <span className="text-accent">and LeetCode.</span>
+            </>
+          }
           description="Real-time snapshots of what I'm building and the problems I'm solving — pulled directly from my public profiles."
         />
 
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-5">
           {status.github && <GitHubCard data={status.github} />}
           {status.leetcode && <LeetCodeCard data={status.leetcode} />}
         </div>

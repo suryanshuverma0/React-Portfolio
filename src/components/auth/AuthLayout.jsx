@@ -1,4 +1,5 @@
 import { motion } from "framer-motion";
+import Wordmark from "../ui/Wordmark";
 
 function AuthLayout({
   title,
@@ -121,65 +122,8 @@ function AuthLayout({
 
         {/* LOGO */}
 
-        <div
-          className="
-            mb-8
-
-            flex
-            items-center
-            gap-3
-          "
-        >
-
-          <div
-            className="
-              h-11
-              w-11
-
-              rounded-2xl
-
-              bg-primary
-
-              text-background
-
-              flex
-              items-center
-              justify-center
-
-              text-sm
-              font-semibold
-
-              tracking-tight
-
-              shrink-0
-            "
-          >
-            SV
-          </div>
-
-          <div>
-
-            <h1
-              className="
-                text-[17px]
-                font-semibold
-                tracking-tight
-              "
-            >
-              Suryanshu
-            </h1>
-
-            <p
-              className="
-                text-[13px]
-                text-muted
-              "
-            >
-              Authentication Portal
-            </p>
-
-          </div>
-
+        <div className="mb-8">
+          <Wordmark subtitle="Authentication portal" />
         </div>
 
         {/* HEADER */}

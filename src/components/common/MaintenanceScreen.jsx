@@ -1,3 +1,5 @@
+import Wordmark from "../ui/Wordmark";
+
 function MaintenanceScreen() {
   return (
     <main
@@ -28,31 +30,8 @@ function MaintenanceScreen() {
           text-center
         "
       >
-        <div
-          className="
-            mx-auto
-            mb-6
-
-            h-11
-            w-11
-
-            rounded-2xl
-
-            bg-primary
-
-            text-background
-
-            flex
-            items-center
-            justify-center
-
-            text-sm
-            font-semibold
-
-            tracking-tight
-          "
-        >
-          SV
+        <div className="mb-8 flex justify-center">
+          <Wordmark />
         </div>
 
         <h1

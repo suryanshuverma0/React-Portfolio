@@ -1,182 +1,169 @@
 import { useState, useEffect } from "react";
+import { Link, useLocation } from "react-router-dom";
+import { ArrowUp, ArrowUpRight } from "lucide-react";
 import Container from "../ui/Container";
+import Wordmark from "../ui/Wordmark";
 import { getPublicSettings } from "../../services/public.settings.service";
 import { socialsObjectToArray } from "../../lib/socials";
-import { iconMap } from "../constants/iconMap";
+import { navbarContent } from "../content/navbarContent";
+import { contactContent } from "../content/contactContent";
+
+const SOCIAL_LABELS = {
+  github: "GitHub",
+  linkedin: "LinkedIn",
+  twitter: "X / Twitter",
+  instagram: "Instagram",
+  facebook: "Facebook",
+};
 
 function Footer() {
   const year = new Date().getFullYear();
   const [settings, setSettings] = useState(null);
 
+  const location = useLocation();
+  const onHomePage = location.pathname === "/";
+
   useEffect(() => {
-    const loadSettings = async () => {
-      try {
-        const data = await getPublicSettings();
-
-        setSettings(data);
-      } catch (error) {
-        console.error("Failed to load settings", error);
-      }
-    };
-
-    loadSettings();
+    getPublicSettings()
+      .then(setSettings)
+      .catch((error) => console.error("Failed to load settings", error));
   }, []);
 
   const footerName = settings?.footerName || "Suryanshu Verma";
   const footerRole = settings?.footerRole || "Computer Engineer";
-  const socials = socialsObjectToArray(settings?.socials);
+
+  const settingsSocials = socialsObjectToArray(settings?.socials);
+  const socials = settingsSocials.length ? settingsSocials : contactContent.socials;
+
+  const email = settings?.contactEmail || contactContent.contacts.find((c) => c.type === "email")?.value;
+
+  // Same rule as the navbar: in-page anchors route home first off "/".
+  const renderLink = (item) => {
+    const isHash = item.href.startsWith("#");
+
+    const className = "text-small hover:text-primary transition-colors";
+
+    if (isHash && onHomePage) {
+      return (
+        <a href={item.href} className={className}>
+          {item.label}
+        </a>
+      );
+    }
+
+    return (
+      <Link to={isHash ? `/${item.href}` : item.href} className={className}>
+        {item.label}
+      </Link>
+    );
+  };
 
   return (
-    <footer
-      className="
-        border-t
-        border-border
-      "
-    >
+    <footer className="relative border-t border-border overflow-hidden">
       <Container>
-        <div
+        {/* TOP */}
+
+        <div className="grid grid-cols-1 lg:grid-cols-[1.4fr_1fr_1fr] gap-12 pt-16 md:pt-24 pb-14">
+          <div>
+            <p className="text-eyebrow mb-5">Next step</p>
+
+            <p className="text-[30px] md:text-[44px] font-semibold leading-[1.02] tracking-[-0.05em] max-w-md text-balance">
+              Have an idea worth building?{" "}
+              <span className="text-accent text-secondary">Let&apos;s talk.</span>
+            </p>
+
+            {email && (
+              <a href={`mailto:${email}`} className="btn btn-primary mt-8">
+                {email}
+                <ArrowUpRight size={15} aria-hidden="true" />
+              </a>
+            )}
+          </div>
+
+          <nav aria-label="Footer">
+            <p className="text-eyebrow mb-5">Navigate</p>
+
+            <ul className="grid grid-cols-2 gap-x-6 gap-y-3">
+              {navbarContent.map((item) => (
+                <li key={item.label}>{renderLink(item)}</li>
+              ))}
+            </ul>
+          </nav>
+
+          <div>
+            <p className="text-eyebrow mb-5">Elsewhere</p>
+
+            <ul className="flex flex-col gap-3">
+              {socials.map((item) => (
+                <li key={item.icon}>
+                  <a
+                    href={item.href}
+                    target="_blank"
+                    rel="noreferrer"
+                    className="group inline-flex items-center gap-1.5 text-small hover:text-primary transition-colors"
+                  >
+                    {SOCIAL_LABELS[item.icon] || item.icon}
+                    <ArrowUpRight
+                      size={13}
+                      aria-hidden="true"
+                      className="opacity-0 -translate-x-1 transition-all duration-300 group-hover:opacity-100 group-hover:translate-x-0"
+                    />
+                  </a>
+                </li>
+              ))}
+            </ul>
+          </div>
+        </div>
+
+        {/* SIGN-OFF — the name, set edge to edge */}
+
+        <p
+          aria-hidden="true"
           className="
-            py-8
+            select-none
 
-            flex
-            flex-col
-            md:flex-row
+            text-center
 
-            items-center
-            justify-between
+            font-semibold
 
-            gap-6
+            leading-[0.8]
+
+            tracking-[-0.07em]
+
+            whitespace-nowrap
+
+            text-[clamp(3rem,13.2vw,11.5rem)]
+
+            bg-gradient-to-b
+            from-primary
+            to-primary/0
+
+            bg-clip-text
+            text-transparent
+
+            pb-[0.08em]
           "
         >
-          {/* LEFT */}
+          {footerName}
+        </p>
 
-          <div
-            className="
-              flex
-              flex-col
+        {/* BOTTOM BAR */}
 
-              items-center
-              md:items-start
+        <div className="relative flex flex-col sm:flex-row items-center justify-between gap-4 border-t border-border py-6">
+          <Wordmark name={footerName} subtitle={footerRole} />
 
-              gap-2
-            "
+          <p className="text-muted text-center">© {year} {footerName}. All rights reserved.</p>
+
+          <button
+            type="button"
+            onClick={() => window.scrollTo({ top: 0, behavior: "smooth" })}
+            className="group inline-flex items-center gap-2 text-small hover:text-primary transition-colors"
           >
-            <div
-              className="
-                flex
-                items-center
-
-                gap-3
-              "
-            >
-              <div
-                className="
-                  h-10
-                  w-10
-
-                  rounded-xl
-
-                  bg-primary
-
-                  text-background
-
-                  flex
-                  items-center
-                  justify-center
-
-                  text-sm
-                  font-semibold
-                "
-              >
-                SV
-              </div>
-
-              <div>
-                <p
-                  className="
-                    text-label
-                  "
-                >
-                  {footerName}
-                </p>
-
-                <p
-                  className="
-                    text-small
-                  "
-                >
-                  {footerRole}
-                </p>
-              </div>
-            </div>
-          </div>
-
-          {/* CENTER */}
-
-          <div
-            className="
-              text-center
-            "
-          >
-            <p
-              className="
-                text-small
-              "
-            >
-              © {year} {footerName}. All rights reserved.
-            </p>
-          </div>
-
-          {/* RIGHT */}
-
-          <div
-            className="
-              flex
-              items-center
-
-              gap-3
-            "
-          >
-            {socials.map((item) => {
-              const Icon = iconMap[item.icon];
-
-              if (!Icon) return null;
-
-              return (
-                <a
-                  key={item.icon}
-                  href={item.href}
-                  target="_blank"
-                  rel="noreferrer"
-                  className="
-                    h-9
-                    w-9
-
-                    rounded-xl
-
-                    bg-surface
-
-                    border
-                    border-border
-
-                    flex
-                    items-center
-                    justify-center
-
-                    text-secondary
-
-                    transition-all
-                    duration-300
-
-                    hover:text-primary
-                    hover:bg-background
-                  "
-                >
-                  <Icon size={15} />
-                </a>
-              );
-            })}
-          </div>
+            Back to top
+            <span className="h-8 w-8 rounded-full border border-border inline-flex items-center justify-center transition-colors group-hover:border-primary">
+              <ArrowUp size={14} aria-hidden="true" />
+            </span>
+          </button>
         </div>
       </Container>
     </footer>

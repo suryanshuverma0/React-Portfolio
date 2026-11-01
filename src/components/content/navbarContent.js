@@ -1,10 +1,27 @@
+/*
+  Order follows the homepage. `desktop: false` keeps an item out of the
+  desktop bar (the wordmark already goes home, and Contact is the CTA
+  button) while still listing it in the mobile menu.
+*/
 export const navbarContent = [
   {
     label: "Home",
 
     mobileLabel: "Home",
+
     href: "#home",
+
+    desktop: false,
   },
+
+  {
+    label: "Research",
+
+    mobileLabel: "Research",
+
+    href: "#research",
+  },
+
   {
     label: "About",
 
@@ -22,6 +39,14 @@ export const navbarContent = [
   },
 
   {
+    label: "Projects",
+
+    mobileLabel: "Projects",
+
+    href: "#projects",
+  },
+
+  {
     label: "Skills",
 
     mobileLabel: "Skills",
@@ -35,22 +60,8 @@ export const navbarContent = [
     mobileLabel: "Services",
 
     href: "#services",
-  },
 
-  {
-    label: "Projects",
-
-    mobileLabel: "Projects",
-
-    href: "#projects",
-  },
-
-  {
-    label: "Research",
-
-    mobileLabel: "Research",
-
-    href: "#research",
+    desktop: false,
   },
 
   {
@@ -58,7 +69,7 @@ export const navbarContent = [
 
     mobileLabel: "Certificates",
 
-    href: "#certificates"
+    href: "#certificates",
   },
 
   {
@@ -75,5 +86,7 @@ export const navbarContent = [
     mobileLabel: "Contact",
 
     href: "#contact",
+
+    desktop: false,
   },
 ];

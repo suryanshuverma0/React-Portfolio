@@ -1,193 +1,168 @@
 import { motion } from "framer-motion";
-import {useEffect, useState} from "react"
+import { useEffect, useState } from "react";
+import { ArrowUpRight } from "lucide-react";
 import Container from "../../ui/Container";
 import SectionTitle from "../../ui/SectionTitle";
 import { servicesContent } from "../../content/servicesContent";
 import { getPublicServices } from "../../../services/public.service.service";
 
-
 function Services() {
   const [services, setServices] = useState([]);
 
-   useEffect(() => {
-      const loadServices = async () => {
-        try {
-          const data = await getPublicServices();
-  
-          setServices(data);
-        } catch (error) {
-          console.error("Failed to load services", error);
-        }
-      };
-  
-      loadServices();
-    }, []);
+  useEffect(() => {
+    const loadServices = async () => {
+      try {
+        const data = await getPublicServices();
 
-    
-      const displayServices =
-        services.length > 0 ? services : servicesContent;
+        setServices(data);
+      } catch (error) {
+        console.error("Failed to load services", error);
+      }
+    };
+
+    loadServices();
+  }, []);
+
+  const displayServices = services.length > 0 ? services : servicesContent;
 
   return (
-    <section
-      id="services"
-      className="
-        section
-      "
-    >
+    <section id="services" className="section">
       <Container>
-        {/* TITLE */}
-
         <SectionTitle
+          index="06"
           eyebrow="Services"
-          title="What I can help build."
+          title={
+            <>
+              What I can help <span className="text-accent">build.</span>
+            </>
+          }
           description="Focused on scalable backend systems, modern web applications, blockchain integrations, and production-oriented software solutions."
         />
 
-        {/* GRID */}
+        {/* Editorial index — one row per service */}
 
-        <div
-          className="
-            grid
-
-            grid-cols-1
-            md:grid-cols-2
-
-            gap-8
-          "
-        >
+        <ol className="border-t border-border">
           {displayServices.map((item, index) => (
-            <motion.div
-              key={index}
-              initial={{
-                opacity: 0,
-                y: 20,
-              }}
-              whileInView={{
-                opacity: 1,
-                y: 0,
-              }}
-              viewport={{
-                once: true,
-              }}
-              transition={{
-                duration: 0.4,
-                delay: index * 0.06,
-              }}
+            <motion.li
+              key={item._id || index}
+              initial={{ opacity: 0, y: 20 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              viewport={{ once: true, margin: "-40px" }}
+              transition={{ duration: 0.5, delay: index * 0.05, ease: [0.22, 1, 0.36, 1] }}
               className="
-                  card
+                group
 
-                  h-full
-                "
+                relative
+                isolate
+
+                grid
+                grid-cols-1
+                md:grid-cols-[72px_1fr_1.15fr_40px]
+
+                gap-x-8
+                gap-y-4
+
+                border-b
+                border-border
+
+                py-8
+                md:py-10
+
+                transition-colors
+                duration-300
+              "
             >
-              {/* TOP */}
-
-              <div
+              {/* Hover wash */}
+              <span
+                aria-hidden="true"
                 className="
-                    flex
-                    items-start
-                    justify-between
+                  pointer-events-none
 
-                    gap-4
+                  absolute
+                  inset-y-0
+                  -inset-x-4
+                  md:-inset-x-6
 
-                    mb-6
-                  "
-              >
-                {/* LEFT */}
+                  -z-10
 
-                <div>
-                  <p
-                    className="
-                        text-muted
+                  rounded-3xl
 
-                        uppercase
+                  bg-surface
 
-                        tracking-[0.16em]
+                  opacity-0
 
-                        mb-3
-                      "
-                  >
-                    {item.category}
-                  </p>
+                  transition-opacity
+                  duration-300
 
-                  <h3
-                    className="
-                        text-title
+                  group-hover:opacity-100
+                "
+              />
 
-                        leading-tight
-                      "
-                  >
-                    {item.title}
-                  </h3>
-                </div>
+              <span className="font-mono text-[13px] text-muted tabular-nums md:pt-1.5">
+                {String(index + 1).padStart(2, "0")}
+              </span>
 
-                {/* NUMBER */}
+              <div>
+                {item.category && <p className="text-eyebrow mb-3">{item.category}</p>}
 
-                <span
-                  className="
-                      text-muted
-
-                      text-sm
-
-                      shrink-0
-                    "
-                >
-                  0{index + 1}
-                </span>
+                <h3 className="text-[22px] md:text-[28px] font-semibold leading-[1.1] tracking-[-0.035em] text-balance">
+                  {item.title}
+                </h3>
               </div>
 
-              {/* DESCRIPTION */}
+              <div>
+                <p className="text-body text-pretty">{item.description}</p>
 
-              <p
-                className="
-                    text-body
-
-                    mb-6
-                  "
-              >
-                {item.description}
-              </p>
-
-              {/* STACK */}
-
-              <div
-                className="
-                    flex
-                    flex-wrap
-
-                    items-center
-
-                    gap-x-3
-                    gap-y-2
-                  "
-              >
-                {item.technologies?.map((tech, techIndex) => (
-                  <div
-                    key={techIndex}
-                    className="
-                          flex
-                          items-center
-
-                          text-small
-                        "
-                  >
-                    <span>{tech}</span>
-
-                    {techIndex !== item.technologies.length - 1 && (
-                      <span
-                        className="
-                              ml-3
-
-                              text-muted
-                            "
-                      >
-                        •
-                      </span>
-                    )}
-                  </div>
-                ))}
+                {item.technologies?.length > 0 && (
+                  <ul className="mt-5 flex flex-wrap gap-2">
+                    {item.technologies.map((tech) => (
+                      <li key={tech} className="chip">
+                        {tech}
+                      </li>
+                    ))}
+                  </ul>
+                )}
               </div>
-            </motion.div>
+
+              <span
+                aria-hidden="true"
+                className="
+                  hidden
+                  md:inline-flex
+
+                  h-10
+                  w-10
+
+                  items-center
+                  justify-center
+
+                  rounded-full
+
+                  border
+                  border-border
+
+                  text-muted
+
+                  transition-all
+                  duration-300
+
+                  group-hover:bg-primary
+                  group-hover:text-background
+                  group-hover:border-primary
+                  group-hover:rotate-45
+                "
+              >
+                <ArrowUpRight size={16} />
+              </span>
+            </motion.li>
           ))}
+        </ol>
+
+        <div className="mt-10 flex justify-center">
+          <a href="#contact" className="btn btn-primary">
+            Start a project
+            <ArrowUpRight size={15} aria-hidden="true" />
+          </a>
         </div>
       </Container>
     </section>
