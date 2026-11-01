@@ -2,7 +2,6 @@ import { useState, useEffect } from "react";
 import { Link, useLocation } from "react-router-dom";
 import { ArrowUp, ArrowUpRight } from "lucide-react";
 import Container from "../ui/Container";
-import Wordmark from "../ui/Wordmark";
 import { getPublicSettings } from "../../services/public.settings.service";
 import { socialsObjectToArray } from "../../lib/socials";
 import { navbarContent } from "../content/navbarContent";
@@ -150,9 +149,9 @@ function Footer() {
         {/* BOTTOM BAR */}
 
         <div className="relative flex flex-col sm:flex-row items-center justify-between gap-4 border-t border-border py-6">
-          <Wordmark name={footerName} subtitle={footerRole} />
-
-          <p className="text-muted text-center">© {year} {footerName}. All rights reserved.</p>
+          <p className="text-muted text-center sm:text-left">
+            © {year} {footerName} · {footerRole}
+          </p>
 
           <button
             type="button"

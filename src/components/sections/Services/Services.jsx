@@ -1,6 +1,5 @@
 import { motion } from "framer-motion";
 import { useEffect, useState } from "react";
-import { ArrowUpRight } from "lucide-react";
 import Container from "../../ui/Container";
 import SectionTitle from "../../ui/SectionTitle";
 import { servicesContent } from "../../content/servicesContent";
@@ -57,7 +56,7 @@ function Services() {
 
                 grid
                 grid-cols-1
-                md:grid-cols-[72px_1fr_1.15fr_40px]
+                md:grid-cols-[72px_1fr_1.15fr]
 
                 gap-x-8
                 gap-y-4
@@ -114,56 +113,16 @@ function Services() {
                 <p className="text-body text-pretty">{item.description}</p>
 
                 {item.technologies?.length > 0 && (
-                  <ul className="mt-5 flex flex-wrap gap-2">
-                    {item.technologies.map((tech) => (
-                      <li key={tech} className="chip">
-                        {tech}
-                      </li>
-                    ))}
-                  </ul>
+                  <p className="mt-4 font-mono text-[12.5px] text-muted">
+                    {item.technologies.join("  ·  ")}
+                  </p>
                 )}
               </div>
 
-              <span
-                aria-hidden="true"
-                className="
-                  hidden
-                  md:inline-flex
-
-                  h-10
-                  w-10
-
-                  items-center
-                  justify-center
-
-                  rounded-full
-
-                  border
-                  border-border
-
-                  text-muted
-
-                  transition-all
-                  duration-300
-
-                  group-hover:bg-primary
-                  group-hover:text-background
-                  group-hover:border-primary
-                  group-hover:rotate-45
-                "
-              >
-                <ArrowUpRight size={16} />
-              </span>
             </motion.li>
           ))}
         </ol>
 
-        <div className="mt-10 flex justify-center">
-          <a href="#contact" className="btn btn-primary">
-            Start a project
-            <ArrowUpRight size={15} aria-hidden="true" />
-          </a>
-        </div>
       </Container>
     </section>
   );

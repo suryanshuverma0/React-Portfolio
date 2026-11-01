@@ -69,8 +69,7 @@ function Skills() {
               onMouseMove={trackPointer}
               className="panel panel-hover spotlight h-full p-5 sm:p-7 flex flex-col"
             >
-              <div className="flex items-center justify-between mb-8">
-                <span className="text-eyebrow">{String(index + 1).padStart(2, "0")}</span>
+              <div className="mb-8">
                 <span className="text-eyebrow">
                   {item.skills.length} {item.skills.length === 1 ? "tool" : "tools"}
                 </span>

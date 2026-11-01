@@ -244,10 +244,7 @@ function ResearchCard({ paper, index = 0 }) {
                 text-background
               "
             >
-              <span aria-hidden="true" className="relative flex h-1.5 w-1.5">
-                <span className="absolute inline-flex h-full w-full rounded-full bg-background opacity-60 animate-ping" />
-                <span className="relative inline-flex h-1.5 w-1.5 rounded-full bg-background" />
-              </span>
+              <span aria-hidden="true" className="h-1.5 w-1.5 rounded-full bg-background" />
               {paper.status}
             </span>
           </div>
@@ -300,16 +297,6 @@ function ResearchCard({ paper, index = 0 }) {
             <p className="text-eyebrow mt-9 mb-3">Abstract</p>
 
             <p className="text-body text-pretty">{paper.summary}</p>
-
-            {/* STACK */}
-
-            <div className="mt-8 flex flex-wrap gap-2">
-              {paper.technologies.map((tech) => (
-                <span key={tech} className="chip">
-                  {tech}
-                </span>
-              ))}
-            </div>
           </div>
 
           {/* RESULTS */}
@@ -423,6 +410,18 @@ function ResearchCard({ paper, index = 0 }) {
                     <GasChart rows={paper.gas} />
                   </section>
                 </div>
+
+                <section>
+                  <DetailHeading>Stack</DetailHeading>
+
+                  <div className="flex flex-wrap gap-2">
+                    {paper.technologies.map((tech) => (
+                      <span key={tech} className="chip">
+                        {tech}
+                      </span>
+                    ))}
+                  </div>
+                </section>
 
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-12">
                   <section>

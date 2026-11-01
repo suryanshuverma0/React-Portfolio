@@ -47,10 +47,6 @@ function ExperienceCard({ experience, last = false }) {
         />
 
         <span className="relative mt-[30px] flex h-2.5 w-2.5">
-          {range.current && (
-            <span className="absolute inline-flex h-full w-full rounded-full bg-primary opacity-40 animate-ping" />
-          )}
-
           <span
             className={`
               relative

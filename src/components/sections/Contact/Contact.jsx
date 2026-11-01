@@ -166,11 +166,6 @@ function Contact() {
 
   return (
     <section id="contact" className="section relative">
-      <div
-        aria-hidden="true"
-        className="pointer-events-none absolute inset-0 -z-10 bg-grid mask-radial opacity-60"
-      />
-
       <Container>
         <SectionTitle
           index="09"
@@ -326,10 +321,7 @@ function Contact() {
               </div>
 
               <p className="mt-auto pt-7 flex items-center gap-2.5 text-small">
-                <span aria-hidden="true" className="relative flex h-2 w-2">
-                  <span className="absolute inline-flex h-full w-full rounded-full bg-primary opacity-40 animate-ping" />
-                  <span className="relative inline-flex h-2 w-2 rounded-full bg-primary" />
-                </span>
+                <span aria-hidden="true" className="h-1.5 w-1.5 rounded-full bg-primary" />
                 Usually responds within 24 hours.
               </p>
             </div>

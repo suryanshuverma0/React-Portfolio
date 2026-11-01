@@ -111,12 +111,8 @@ function Hero() {
   const meta = [
     { label: "Status", value: data.availability, live: true },
     { label: "Focus", value: heroContent.focus },
-    featuredPaper && {
-      label: "Research",
-      value: `${featuredPaper.venue} · Oral`,
-    },
     { label: "Role", value: <RoleRotator roles={roles} /> },
-  ].filter(Boolean);
+  ];
 
   return (
     <section
@@ -422,10 +418,6 @@ function Hero() {
               />
             </div>
 
-            <figcaption className="flex items-center justify-between px-2.5 pt-3 pb-1.5">
-              <span className="text-eyebrow">Fig. 01</span>
-              <span className="text-eyebrow">{heroContent.roles[0]}</span>
-            </figcaption>
           </motion.figure>
         </div>
 
@@ -438,8 +430,8 @@ function Hero() {
             md:mt-24
 
             grid
-            grid-cols-2
-            md:grid-cols-4
+            grid-cols-1
+            sm:grid-cols-3
 
             border-t
             border-border
@@ -454,8 +446,7 @@ function Hero() {
 
                 pr-4
 
-                ${index % 2 === 1 ? "pl-4 md:pl-6 border-l border-border" : ""}
-                ${index >= 2 ? "md:pl-6 md:border-l md:border-border max-md:pt-6" : ""}
+                ${index > 0 ? "sm:pl-6 sm:border-l sm:border-border" : ""}
               `}
             >
               <dt className="text-eyebrow mb-2.5">{item.label}</dt>

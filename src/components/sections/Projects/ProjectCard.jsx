@@ -40,8 +40,6 @@ const iconLinkClass = `
 function ProjectCard({ project, index, lead = false }) {
   const technologies = project.technologies || [];
 
-  const number = String(index + 1).padStart(2, "0");
-
   return (
     <motion.article
       initial={{ opacity: 0, y: 28 }}
@@ -130,12 +128,7 @@ function ProjectCard({ project, index, lead = false }) {
       {/* CONTENT */}
 
       <div className={`flex-1 flex flex-col p-3 pt-5 ${lead ? "lg:p-6" : ""}`}>
-        <div className="flex items-center justify-between mb-4">
-          <span className="text-eyebrow">
-            {number}
-            {lead && <span className="text-primary"> · Featured project</span>}
-          </span>
-        </div>
+        {lead && <p className="text-eyebrow text-primary! mb-4">Featured project</p>}
 
         <h3
           className={`
@@ -162,17 +155,11 @@ function ProjectCard({ project, index, lead = false }) {
         {/* TECH STACK */}
 
         <div className="mt-5 mb-7 flex flex-wrap gap-2">
-          {technologies.slice(0, lead ? 7 : 4).map((tech) => (
+          {technologies.slice(0, lead ? 6 : 3).map((tech) => (
             <span key={tech} className="chip">
               {tech}
             </span>
           ))}
-
-          {technologies.length > (lead ? 7 : 4) && (
-            <span className="chip text-muted!">
-              +{technologies.length - (lead ? 7 : 4)}
-            </span>
-          )}
         </div>
 
         {/* CTA */}

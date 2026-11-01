@@ -6,12 +6,6 @@ import { researchContent } from "../../content/researchContent";
 function Research() {
   return (
     <section id="research" className="section relative">
-      {/* Dotted field behind the featured paper */}
-      <div
-        aria-hidden="true"
-        className="pointer-events-none absolute inset-x-0 top-1/3 -z-10 h-2/3 bg-dots mask-radial opacity-70"
-      />
-
       <Container>
         <SectionTitle
           index="01"

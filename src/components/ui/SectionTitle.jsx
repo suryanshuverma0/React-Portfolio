@@ -35,7 +35,7 @@ function SectionTitle({
 
             border-b border-border
 
-            ${centered ? "justify-center" : "justify-between"}
+            ${centered ? "justify-center" : ""}
           `}
         >
           <span className="text-eyebrow text-primary!">
@@ -43,11 +43,6 @@ function SectionTitle({
             {eyebrow}
           </span>
 
-          {!centered && (
-            <span aria-hidden="true" className="text-eyebrow hidden sm:inline">
-              Suryanshu Verma
-            </span>
-          )}
         </div>
       )}
 

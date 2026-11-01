@@ -8,10 +8,7 @@ import PropTypes from "prop-types";
 function Wordmark({ name = "Suryanshu Verma", subtitle, className = "" }) {
   return (
     <span className={`inline-flex items-center gap-2.5 min-w-0 ${className}`}>
-      <span aria-hidden="true" className="relative flex h-2 w-2 shrink-0">
-        <span className="absolute inline-flex h-full w-full rounded-full bg-primary opacity-40 animate-ping" />
-        <span className="relative inline-flex h-2 w-2 rounded-full bg-primary" />
-      </span>
+      <span aria-hidden="true" className="h-2 w-2 shrink-0 rounded-full bg-primary" />
 
       <span className="flex flex-col min-w-0 leading-none">
         <span className="text-[15px] font-semibold tracking-[-0.03em] truncate">
