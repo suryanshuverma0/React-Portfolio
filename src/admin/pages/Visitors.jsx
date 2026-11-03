@@ -15,8 +15,10 @@ import {
   getVisitorSessions,
   getLiveVisitors,
   getJourneyInsights,
+  getAudienceInsights,
 } from "../services/analytics.service";
 import SkeletonCard from "../../components/common/SkeletonCard";
+import AudiencePanel from "../components/visitors/AudiencePanel";
 import {
   countryFlag,
   countryName,
@@ -42,6 +44,7 @@ const rangeOptions = [
 
 const TABS = [
   { id: "sessions", label: "Sessions" },
+  { id: "audience", label: "Audience" },
   { id: "engagement", label: "Engagement" },
 ];
 
@@ -151,7 +154,7 @@ function LiveVisitors({ live, onRefresh, refreshing }) {
 
                 <div className="min-w-0 flex-1 space-y-1">
                   <p className="text-small font-medium truncate">
-                    {formatLocation(session.location)}
+                    {formatLocation(session.location, session.timezone)}
                   </p>
 
                   <p className="text-muted text-xs inline-flex items-center gap-1.5">
@@ -201,7 +204,7 @@ function SessionRow({ session, onOpen }) {
         <div className="min-w-0">
           <p className="text-small font-medium truncate inline-flex items-center gap-2 max-w-full">
             {session.isLive && <LiveDot />}
-            <span className="truncate">{formatLocation(session.location)}</span>
+            <span className="truncate">{formatLocation(session.location, session.timezone)}</span>
           </p>
 
           <p className="text-muted text-xs truncate font-mono">
@@ -634,6 +637,7 @@ function Visitors() {
   const [range, setRange] = useState(30);
   const [tab, setTab] = useState("sessions");
   const [insights, setInsights] = useState(null);
+  const [audience, setAudience] = useState(null);
   const [live, setLive] = useState([]);
   const [refreshingLive, setRefreshingLive] = useState(false);
 
@@ -643,6 +647,10 @@ function Visitors() {
     getJourneyInsights(range)
       .then((data) => !cancelled && setInsights(data))
       .catch(() => !cancelled && toast.error("Failed to load visitor insights"));
+
+    getAudienceInsights(range)
+      .then((data) => !cancelled && setAudience(data))
+      .catch(() => !cancelled && toast.error("Failed to load audience insights"));
 
     return () => {
       cancelled = true;
@@ -755,7 +763,9 @@ function Visitors() {
       </div>
 
       {/* keyed by range so changing it starts again from page 1 */}
-      {tab === "sessions" ? <SessionsPanel key={range} range={range} /> : <EngagementPanel insights={insights} />}
+      {tab === "sessions" && <SessionsPanel key={range} range={range} />}
+      {tab === "audience" && <AudiencePanel audience={audience} />}
+      {tab === "engagement" && <EngagementPanel insights={insights} />}
     </div>
   );
 }

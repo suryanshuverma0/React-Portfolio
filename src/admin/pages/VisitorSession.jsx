@@ -30,6 +30,12 @@ const TONE_CLASSES = {
   muted: "bg-surface border-border text-muted",
 };
 
+const LOCATION_SOURCES = {
+  cloudflare: "Edge headers",
+  geoip: "Offline IP database",
+  ipapi: "IP lookup (ipapi.co)",
+};
+
 /* ========================================
    DETAIL CARDS
 ========================================= */
@@ -323,7 +329,7 @@ function VisitorSession() {
           </span>
 
           <div className="min-w-0">
-            <h1 className="text-heading break-words">{formatLocation(session.location)}</h1>
+            <h1 className="text-heading break-words">{formatLocation(session.location, session.timezone)}</h1>
 
             <p className="text-body mt-2 inline-flex flex-wrap items-center gap-x-2 gap-y-1">
               {session.isLive && (
@@ -377,14 +383,16 @@ function VisitorSession() {
             title="Location"
             rows={[
               { label: "City", value: session.location?.city },
-              { label: "Region", value: session.location?.region },
+              { label: "Region", value: session.location?.regionName || session.location?.region },
+              { label: "Postal code", value: session.location?.postal },
               {
                 label: "Country",
                 value: session.location?.country
                   ? `${countryFlag(session.location.country)} ${countryName(session.location.country)}`
-                  : "Unknown",
+                  : formatLocation(null, session.timezone),
               },
               { label: "Timezone", value: session.location?.timezone },
+              { label: "Located via", value: LOCATION_SOURCES[session.location?.source] },
               {
                 label: "Coordinates",
                 value:
@@ -418,6 +426,8 @@ function VisitorSession() {
                   </button>
                 ) : undefined,
               },
+              { label: "ISP / network", value: session.network?.org },
+              { label: "ASN", value: session.network?.asn, mono: true },
               { label: "Connection", value: session.connection },
               { label: "Visitor ID", value: session.visitorId, mono: true },
               { label: "Session ID", value: session.sessionId, mono: true },

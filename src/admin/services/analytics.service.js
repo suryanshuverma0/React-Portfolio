@@ -70,6 +70,22 @@ export const getJourneyInsights = async (rangeDays) => {
   return response.data.data;
 };
 
+export const getAudienceInsights = async (rangeDays) => {
+  const response = await api.get("/analytics/audience", {
+    params: { range: rangeDays },
+  });
+
+  return response.data.data;
+};
+
+// What the API resolves for the admin's own request (IP, proxy headers,
+// location) — used to check visitor geolocation is working.
+export const getGeoDebug = async () => {
+  const response = await api.get("/analytics/debug/geo");
+
+  return response.data.data;
+};
+
 export const getRecentActivity = async (limit = 12) => {
   const response = await api.get("/analytics/recent-activity", {
     params: { limit },

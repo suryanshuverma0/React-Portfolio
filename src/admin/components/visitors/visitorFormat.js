@@ -35,10 +35,22 @@ export const countryFlag = (code) =>
     ? String.fromCodePoint(...[...code.toUpperCase()].map((c) => 127397 + c.charCodeAt(0)))
     : "🌐";
 
-export const formatLocation = (location) => {
-  if (!location?.country) return "Unknown location";
+// "Asia/Kathmandu" → "Kathmandu". Browser timezones are self-reported, so
+// this is only shown as an approximation when the IP couldn't be located.
+export const timezoneCity = (timezone) =>
+  timezone && timezone.includes("/") && !timezone.startsWith("Etc/")
+    ? timezone.split("/").pop().replace(/_/g, " ")
+    : null;
 
-  return [location.city, location.region, countryName(location.country)]
+export const formatLocation = (location, browserTimezone) => {
+  if (!location?.country) {
+    const approx = timezoneCity(browserTimezone);
+    return approx ? `≈ ${approx} (browser timezone)` : "Unknown location";
+  }
+
+  const region = location.regionName || location.region;
+
+  return [location.city, region !== location.city ? region : null, countryName(location.country)]
     .filter(Boolean)
     .join(", ");
 };
