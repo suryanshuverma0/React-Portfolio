@@ -9,6 +9,7 @@ import {
   Bot,
   Clock,
   Route as RouteIcon,
+  Download,
 } from "lucide-react";
 
 import {
@@ -16,9 +17,13 @@ import {
   getLiveVisitors,
   getJourneyInsights,
   getAudienceInsights,
+  exportAnalyticsCsv,
 } from "../services/analytics.service";
+import { saveBlob } from "../services/automation.service";
 import SkeletonCard from "../../components/common/SkeletonCard";
 import AudiencePanel from "../components/visitors/AudiencePanel";
+import CompaniesPanel from "../components/visitors/CompaniesPanel";
+import WorldMap from "../components/visitors/WorldMap";
 import {
   countryFlag,
   countryName,
@@ -45,6 +50,8 @@ const rangeOptions = [
 const TABS = [
   { id: "sessions", label: "Sessions" },
   { id: "audience", label: "Audience" },
+  { id: "map", label: "Map" },
+  { id: "companies", label: "Companies" },
   { id: "engagement", label: "Engagement" },
 ];
 
@@ -106,6 +113,59 @@ function BarList({ items, emptyLabel, formatValue = (v) => v }) {
           </div>
         </div>
       ))}
+    </div>
+  );
+}
+
+// Downloads sessions or raw events for the selected range as CSV.
+function ExportMenu({ range }) {
+  const [open, setOpen] = useState(false);
+  const [busy, setBusy] = useState(null);
+
+  const run = async (type) => {
+    try {
+      setBusy(type);
+      const { blob, filename } = await exportAnalyticsCsv({ type, range });
+      saveBlob(blob, filename);
+      setOpen(false);
+    } catch {
+      toast.error("Export failed");
+    } finally {
+      setBusy(null);
+    }
+  };
+
+  return (
+    <div className="relative">
+      <button
+        type="button"
+        onClick={() => setOpen((v) => !v)}
+        aria-expanded={open}
+        className="h-control px-4 rounded-control border border-border bg-surface text-small inline-flex items-center gap-2"
+      >
+        <Download size={15} /> Export CSV
+      </button>
+
+      {open && (
+        <div className="absolute right-0 z-20 mt-2 w-64 rounded-xl border border-border bg-[var(--color-card)] p-2 shadow-lg">
+          {[
+            ["sessions", "Sessions", "One row per visit — location, device, source, engagement"],
+            ["events", "Events", "Every page view, section, click and download"],
+          ].map(([type, label, hint]) => (
+            <button
+              key={type}
+              type="button"
+              disabled={Boolean(busy)}
+              onClick={() => run(type)}
+              className="w-full text-left rounded-control px-3 py-2 hover:bg-surface disabled:opacity-50"
+            >
+              <p className="text-small font-medium">{busy === type ? "Preparing…" : label}</p>
+              <p className="text-muted text-xs">{hint}</p>
+            </button>
+          ))}
+          <p className="text-muted text-[11px] px-3 pt-1">Uses the selected date range.</p>
+        </div>
+      )}
     </div>
   );
 }
@@ -702,6 +762,7 @@ function Visitors() {
         </div>
 
         <div className="flex flex-wrap gap-2">
+          <ExportMenu range={range} />
           {rangeOptions.map((option) => (
             <button
               key={option.value}
@@ -765,6 +826,14 @@ function Visitors() {
       {/* keyed by range so changing it starts again from page 1 */}
       {tab === "sessions" && <SessionsPanel key={range} range={range} />}
       {tab === "audience" && <AudiencePanel audience={audience} />}
+      {tab === "map" && (
+        <section className="card">
+          <h2 className="text-title mb-1">Where visitors are</h2>
+          <p className="text-muted text-xs mb-5">Sessions by country for the selected range · live visitors as dots</p>
+          {audience ? <WorldMap countryCounts={audience.countryMap || audience.countries} live={live} /> : <SkeletonCard />}
+        </section>
+      )}
+      {tab === "companies" && <CompaniesPanel range={range} />}
       {tab === "engagement" && <EngagementPanel insights={insights} />}
     </div>
   );

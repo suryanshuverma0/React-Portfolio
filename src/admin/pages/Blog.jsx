@@ -123,8 +123,14 @@ function Blog() {
                           : "bg-surface border border-border"
                       }`}
                     >
-                      {post.isVisible ? "Published" : "Draft"}
+                      {post.isVisible ? "Published" : post.scheduledAt ? "Scheduled" : "Draft"}
                     </span>
+
+                    {!post.isVisible && post.scheduledAt && (
+                      <span className="text-muted text-xs">
+                        Publishes {new Date(post.scheduledAt).toLocaleString(undefined, { dateStyle: "medium", timeStyle: "short" })}
+                      </span>
+                    )}
 
                     <span className="text-muted text-xs">
                       {formatDate(post.publishedAt || post.createdAt)}

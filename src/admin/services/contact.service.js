@@ -23,3 +23,9 @@ export const replyToMessage = async (id, message) => {
 
   return response.data.data;
 };
+
+export const setMessageArchived = async (id, archived) => {
+  const response = await api.put(`/contact/${id}/archive`, { archived });
+
+  return response.data.data;
+};

@@ -61,6 +61,9 @@ const Notes = lazy(() => import("./admin/pages/Notes"));
 const Automations = lazy(() => import("./admin/pages/Automations"));
 const BlogAnalytics = lazy(() => import("./admin/pages/BlogAnalytics"));
 const ExecutiveReport = lazy(() => import("./admin/pages/ExecutiveReport"));
+const Goals = lazy(() => import("./admin/pages/Goals"));
+const AuditLog = lazy(() => import("./admin/pages/AuditLog"));
+const SystemHealth = lazy(() => import("./admin/pages/SystemHealth"));
 
 /*
   Gates the public-facing portfolio pages only — login/register/dashboard
@@ -267,6 +270,9 @@ function App() {
                 <Route path="automations" element={<Automations />} />
                 <Route path="blog/analytics" element={<BlogAnalytics />} />
                 <Route path="report" element={<ExecutiveReport />} />
+                <Route path="goals" element={<Goals />} />
+                <Route path="audit" element={<AuditLog />} />
+                <Route path="system" element={<SystemHealth />} />
                 <Route path="settings" element={<Settings />} />
               </Route>
             </Routes>

@@ -5,6 +5,7 @@ import Sidebar from "./Sidebar";
 import Header from "./Header";
 import { getVisitorId } from "../../lib/visitorId";
 import { registerOwnerDevice } from "../services/automation.service";
+import CommandPalette from "../components/CommandPalette";
 
 const COLLAPSED_KEY = "admin:sidebar-collapsed";
 
@@ -19,6 +20,20 @@ const loadCollapsed = () => {
 function AdminLayout() {
   const [sidebarOpen, setSidebarOpen] = useState(false);
   const [collapsed, setCollapsed] = useState(loadCollapsed);
+  const [paletteOpen, setPaletteOpen] = useState(false);
+
+  // Ctrl/⌘+K opens the command palette from anywhere in the admin.
+  useEffect(() => {
+    const onKeyDown = (event) => {
+      if ((event.ctrlKey || event.metaKey) && event.key.toLowerCase() === "k") {
+        event.preventDefault();
+        setPaletteOpen((open) => !open);
+      }
+    };
+
+    window.addEventListener("keydown", onKeyDown);
+    return () => window.removeEventListener("keydown", onKeyDown);
+  }, []);
 
   const toggleCollapsed = () =>
     setCollapsed((value) => {
@@ -44,7 +59,12 @@ function AdminLayout() {
       <Sidebar sidebarOpen={sidebarOpen} setSidebarOpen={setSidebarOpen} collapsed={collapsed} />
 
       <div className="flex-1 flex flex-col min-w-0">
-        <Header setSidebarOpen={setSidebarOpen} collapsed={collapsed} onToggleCollapsed={toggleCollapsed} />
+        <Header
+          setSidebarOpen={setSidebarOpen}
+          collapsed={collapsed}
+          onToggleCollapsed={toggleCollapsed}
+          onOpenSearch={() => setPaletteOpen(true)}
+        />
 
         <main
           className={
@@ -56,6 +76,8 @@ function AdminLayout() {
           <Outlet />
         </main>
       </div>
+
+      {paletteOpen && <CommandPalette onClose={() => setPaletteOpen(false)} />}
     </div>
   );
 }

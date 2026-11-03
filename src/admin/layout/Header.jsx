@@ -1,11 +1,11 @@
-import { Menu, PanelLeftClose, PanelLeftOpen } from "lucide-react";
+import { Menu, PanelLeftClose, PanelLeftOpen, Search } from "lucide-react";
 import { useLocation } from "react-router-dom";
 
 import ThemeToggle from "../../components/ui/ThemeToggle";
 import { useAuth } from "../../contexts/AuthContext";
 import NotificationBell from "../components/NotificationBell";
 
-function Header({ setSidebarOpen, collapsed, onToggleCollapsed }) {
+function Header({ setSidebarOpen, collapsed, onToggleCollapsed, onOpenSearch }) {
   const location = useLocation();
 
   const { user } = useAuth();
@@ -23,6 +23,9 @@ function Header({ setSidebarOpen, collapsed, onToggleCollapsed }) {
     if (path.includes("/certificates")) return "Certificates";
     if (path.includes("/skill")) return "Skills";
     if (path.includes("/blog/analytics")) return "Blog Analytics";
+    if (path.includes("/goals")) return "Goals & Funnels";
+    if (path.includes("/audit")) return "Audit Log";
+    if (path.includes("/system")) return "System Health";
     if (path.includes("/analytics")) return "Analytics";
     if (path.includes("/visitors")) return "Visitors";
     if (path.includes("/notes")) return "Notes";
@@ -130,6 +133,18 @@ function Header({ setSidebarOpen, collapsed, onToggleCollapsed }) {
           gap-3
         "
       >
+        <button
+          type="button"
+          onClick={onOpenSearch}
+          aria-label="Search (Ctrl+K)"
+          title="Search (Ctrl+K)"
+          className="h-10 inline-flex items-center gap-2 rounded-control bg-surface border border-border px-3 text-small text-muted hover:opacity-80 transition"
+        >
+          <Search size={16} />
+          <span className="hidden md:inline">Search</span>
+          <kbd className="hidden md:inline rounded border border-border px-1.5 text-[11px]">Ctrl K</kbd>
+        </button>
+
         <NotificationBell />
 
         <ThemeToggle />

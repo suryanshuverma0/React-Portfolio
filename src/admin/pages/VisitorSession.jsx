@@ -1,11 +1,13 @@
 import { useEffect, useMemo, useState } from "react";
 import { Link, useNavigate, useParams } from "react-router-dom";
 import { toast } from "react-toastify";
-import { ArrowLeft, Trash2, Copy, MapPin, Bot } from "lucide-react";
+import { ArrowLeft, Trash2, Copy, MapPin, Bot, Ban, UserCheck } from "lucide-react";
 
 import { getVisitorSession, deleteVisitorSession } from "../services/analytics.service";
 import SkeletonCard from "../../components/common/SkeletonCard";
 import ConfirmModal from "../components/ui/ConfirmModal";
+import { blockIp } from "../services/blocklist.service";
+import { registerOwnerDevice } from "../services/automation.service";
 import {
   countryFlag,
   countryName,
@@ -21,6 +23,7 @@ import {
   eventMeta,
   DEVICE_ICONS,
   SECTION_ORDER,
+  ORG_TYPES,
 } from "../components/visitors/visitorFormat";
 
 const TONE_CLASSES = {
@@ -246,6 +249,7 @@ function VisitorSession() {
   const [loaded, setLoaded] = useState({ sessionId: null, data: null, notFound: false });
   const [confirmOpen, setConfirmOpen] = useState(false);
   const [deleting, setDeleting] = useState(false);
+  const [blockOpen, setBlockOpen] = useState(false);
 
   useEffect(() => {
     let cancelled = false;
@@ -278,6 +282,26 @@ function VisitorSession() {
     } finally {
       setDeleting(false);
       setConfirmOpen(false);
+    }
+  };
+
+  const markAsMe = async () => {
+    try {
+      await registerOwnerDevice(data.session.visitorId);
+      toast.success("Marked as your device — its future visits won't be tracked. Clear past ones under Automations.");
+    } catch {
+      toast.error("Couldn't mark this device");
+    }
+  };
+
+  const handleBlock = async () => {
+    try {
+      await blockIp(data.session.ip, `Blocked from session ${sessionId.slice(0, 8)}`);
+      toast.success(`${data.session.ip} blocked from forms, comments and tracking`);
+    } catch (error) {
+      toast.error(error.response?.data?.message || "Couldn't block this IP");
+    } finally {
+      setBlockOpen(false);
     }
   };
 
@@ -354,13 +378,34 @@ function VisitorSession() {
           </div>
         </div>
 
-        <button
-          type="button"
-          onClick={() => setConfirmOpen(true)}
-          className="h-control px-4 rounded-control border border-border bg-surface text-small inline-flex items-center gap-2"
-        >
-          <Trash2 size={15} /> Delete session
-        </button>
+        <div className="flex flex-wrap gap-2">
+          <button
+            type="button"
+            onClick={markAsMe}
+            title="This visit was you — exclude this device from analytics"
+            className="h-control px-4 rounded-control border border-border bg-surface text-small inline-flex items-center gap-2"
+          >
+            <UserCheck size={15} /> This is me
+          </button>
+
+          {session.ip && (
+            <button
+              type="button"
+              onClick={() => setBlockOpen(true)}
+              className="h-control px-4 rounded-control border border-border bg-surface text-small inline-flex items-center gap-2"
+            >
+              <Ban size={15} /> Block IP
+            </button>
+          )}
+
+          <button
+            type="button"
+            onClick={() => setConfirmOpen(true)}
+            className="h-control px-4 rounded-control border border-border bg-surface text-small inline-flex items-center gap-2"
+          >
+            <Trash2 size={15} /> Delete session
+          </button>
+        </div>
       </section>
 
       <section className="grid gap-4 grid-cols-2 md:grid-cols-5">
@@ -427,6 +472,7 @@ function VisitorSession() {
                 ) : undefined,
               },
               { label: "ISP / network", value: session.network?.org },
+              { label: "Network type", value: ORG_TYPES[session.network?.type]?.label },
               { label: "ASN", value: session.network?.asn, mono: true },
               { label: "Connection", value: session.connection },
               { label: "Visitor ID", value: session.visitorId, mono: true },
@@ -514,6 +560,15 @@ function VisitorSession() {
         loading={deleting}
         onConfirm={handleDelete}
         onCancel={() => setConfirmOpen(false)}
+      />
+
+      <ConfirmModal
+        isOpen={blockOpen}
+        title={`Block ${session.ip}?`}
+        message="Requests from this IP will be refused on the contact form and blog comments, and its visits won't be tracked. You can unblock it under Security."
+        confirmText="Block IP"
+        onConfirm={handleBlock}
+        onCancel={() => setBlockOpen(false)}
       />
     </div>
   );

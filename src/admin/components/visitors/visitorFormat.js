@@ -12,6 +12,11 @@ import {
   Monitor,
   Smartphone,
   Tablet,
+  Building2,
+  GraduationCap,
+  Landmark,
+  Wifi,
+  Server,
 } from "lucide-react";
 
 const REGION_NAMES =
@@ -141,6 +146,15 @@ export const DEVICE_ICONS = {
   desktop: Monitor,
   mobile: Smartphone,
   tablet: Tablet,
+};
+
+// Network owner classes from the backend's IP lookup (network.type).
+export const ORG_TYPES = {
+  company: { label: "Company", icon: Building2 },
+  education: { label: "University / school", icon: GraduationCap },
+  government: { label: "Government", icon: Landmark },
+  isp: { label: "Home / mobile ISP", icon: Wifi },
+  hosting: { label: "Cloud / VPN", icon: Server },
 };
 
 export const describeReferrer = (session) => {

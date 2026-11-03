@@ -21,6 +21,9 @@ import {
   Workflow,
   FileBarChart,
   ChartNoAxesCombined,
+  Target,
+  ScrollText,
+  HeartPulse,
 } from "lucide-react";
 
 export const sidebarLinks = [
@@ -108,6 +111,11 @@ export const sidebarLinks = [
         icon: Footprints,
       },
       {
+        label: "Goals & Funnels",
+        path: "/dashboard/goals",
+        icon: Target,
+      },
+      {
         label: "NFC Card",
         path: "/dashboard/card",
         icon: Nfc,
@@ -127,6 +135,16 @@ export const sidebarLinks = [
         label: "Security",
         path: "/dashboard/security",
         icon: ShieldCheck,
+      },
+      {
+        label: "Audit Log",
+        path: "/dashboard/audit",
+        icon: ScrollText,
+      },
+      {
+        label: "System Health",
+        path: "/dashboard/system",
+        icon: HeartPulse,
       },
       {
         label: "Automations",

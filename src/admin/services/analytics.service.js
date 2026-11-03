@@ -86,6 +86,34 @@ export const getGeoDebug = async () => {
   return response.data.data;
 };
 
+export const getCompanies = async (rangeDays, includeAll = false) => {
+  const response = await api.get("/analytics/companies", {
+    params: { range: rangeDays, all: includeAll ? "true" : undefined },
+  });
+
+  return response.data.data;
+};
+
+// Streams the CSV through axios (auth cookie) and hands back a Blob.
+export const exportAnalyticsCsv = async ({ type, range, bots }) => {
+  const response = await api.get("/analytics/export", {
+    params: { type, range, bots: bots ? "true" : undefined },
+    responseType: "blob",
+    timeout: 120000,
+  });
+
+  const disposition = response.headers["content-disposition"] || "";
+  const filename = /filename="([^"]+)"/.exec(disposition)?.[1] || `portfolio-${type}.csv`;
+
+  return { blob: response.data, filename };
+};
+
+export const purgeOwnerData = async () => {
+  const response = await api.post("/analytics/owner-data/purge");
+
+  return response.data.data;
+};
+
 export const getRecentActivity = async (limit = 12) => {
   const response = await api.get("/analytics/recent-activity", {
     params: { limit },

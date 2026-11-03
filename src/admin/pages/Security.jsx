@@ -13,6 +13,7 @@ import {
 import AdminInput from "../components/form/AdminInput";
 import SkeletonCard from "../../components/common/SkeletonCard";
 import ConfirmModal from "../components/ui/ConfirmModal";
+import BlocklistCard from "../components/security/BlocklistCard";
 
 function Security() {
   const [passkeys, setPasskeys] = useState([]);
@@ -307,6 +308,8 @@ function Security() {
           </table>
         )}
       </div>
+
+      <BlocklistCard />
 
       <ConfirmModal
         isOpen={Boolean(passkeyToDelete)}

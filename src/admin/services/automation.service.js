@@ -13,6 +13,8 @@ export const getAlertSettings = async () => data(await api.get("/alerts/settings
 export const updateAlertSettings = async (body) => data(await api.put("/alerts/settings", body));
 export const sendTestAlert = async () => data(await api.post("/alerts/test"));
 export const registerOwnerDevice = async (visitorId) => data(await api.post("/alerts/owner-device", { visitorId }));
+export const addOwnerIp = async () => data(await api.post("/alerts/owner-ip"));
+export const removeOwner = async (body) => data(await api.post("/alerts/owner/remove", body));
 
 /* ---------- backups ---------- */
 

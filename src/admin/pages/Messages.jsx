@@ -1,12 +1,14 @@
 import { useEffect, useMemo, useState } from "react";
+import { useSearchParams } from "react-router-dom";
 import { toast } from "react-toastify";
-import { Reply, Check, Trash2 } from "lucide-react";
+import { Reply, Check, Trash2, Archive, ArchiveRestore, Search, BookmarkPlus, X } from "lucide-react";
 
 import {
   getMessages,
   markMessageRead,
   deleteMessage,
   replyToMessage,
+  setMessageArchived,
 } from "../services/contact.service";
 import SkeletonCard from "../../components/common/SkeletonCard";
 import ConfirmModal from "../components/ui/ConfirmModal";
@@ -22,8 +24,61 @@ const formatDate = (date) =>
 
 const filters = [
   { label: "Unread", value: "unread" },
+  { label: "Needs reply", value: "pending" },
+  { label: "Replied", value: "replied" },
   { label: "All", value: "all" },
+  { label: "Archived", value: "archived" },
 ];
+
+const FILTERS = {
+  unread: (m) => !m.archived && !m.isRead,
+  pending: (m) => !m.archived && !m.repliedAt,
+  replied: (m) => !m.archived && Boolean(m.repliedAt),
+  all: (m) => !m.archived,
+  archived: (m) => m.archived,
+};
+
+const EMPTY_LABELS = {
+  unread: "No unread messages.",
+  pending: "Everything has a reply.",
+  replied: "No replies sent yet.",
+  all: "No messages yet.",
+  archived: "Nothing archived.",
+};
+
+/* ---------- saved reply templates (this browser) ---------- */
+
+const TEMPLATES_KEY = "admin:reply-templates";
+
+const DEFAULT_TEMPLATES = [
+  {
+    name: "Thanks — will get back",
+    text: "Hi {name},\n\nThanks for reaching out! I've read your message and will get back to you with details within a couple of days.\n\nBest,\nSuryanshu",
+  },
+  {
+    name: "Happy to chat",
+    text: "Hi {name},\n\nThanks for getting in touch — I'd be happy to talk. Could you share a couple of times that work for you this week?\n\nBest,\nSuryanshu",
+  },
+];
+
+const loadTemplates = () => {
+  try {
+    const saved = JSON.parse(localStorage.getItem(TEMPLATES_KEY));
+    return Array.isArray(saved) ? saved : DEFAULT_TEMPLATES;
+  } catch {
+    return DEFAULT_TEMPLATES;
+  }
+};
+
+const storeTemplates = (templates) => {
+  try {
+    localStorage.setItem(TEMPLATES_KEY, JSON.stringify(templates));
+  } catch {
+    /* storage unavailable — templates last for this visit only */
+  }
+};
+
+const firstName = (name) => (name || "").trim().split(/\s+/)[0] || "there";
 
 /* ========================================
    REPLY MODAL
@@ -31,8 +86,30 @@ const filters = [
 
 function ReplyModal({ target, onSend, onCancel, sending }) {
   const [text, setText] = useState("");
+  const [templates, setTemplates] = useState(loadTemplates);
 
   if (!target) return null;
+
+  const applyTemplate = (template) => setText(template.text.replace(/\{name\}/g, firstName(target.name)));
+
+  const saveTemplate = () => {
+    const name = window.prompt("Template name");
+    if (!name?.trim() || !text.trim()) return;
+
+    // Stored with a {name} placeholder so it fits the next person too.
+    const generic = text.split(firstName(target.name)).join("{name}");
+    const next = [...templates.filter((t) => t.name !== name.trim()), { name: name.trim().slice(0, 60), text: generic }];
+
+    setTemplates(next);
+    storeTemplates(next);
+    toast.success("Template saved");
+  };
+
+  const removeTemplate = (name) => {
+    const next = templates.filter((t) => t.name !== name);
+    setTemplates(next);
+    storeTemplates(next);
+  };
 
   const handleSend = () => {
     if (!text.trim()) {
@@ -63,6 +140,26 @@ function ReplyModal({ target, onSend, onCancel, sending }) {
           </p>
         </div>
 
+        {templates.length > 0 && (
+          <div className="flex flex-wrap gap-2">
+            {templates.map((template) => (
+              <span key={template.name} className="inline-flex items-center rounded-full border border-border bg-surface text-xs">
+                <button type="button" onClick={() => applyTemplate(template)} className="pl-3 pr-1.5 py-1 hover:text-primary">
+                  {template.name}
+                </button>
+                <button
+                  type="button"
+                  onClick={() => removeTemplate(template.name)}
+                  className="pr-2 py-1 text-muted hover:text-primary"
+                  aria-label={`Remove template ${template.name}`}
+                >
+                  <X size={12} />
+                </button>
+              </span>
+            ))}
+          </div>
+        )}
+
         <textarea
           autoFocus
           value={text}
@@ -72,7 +169,16 @@ function ReplyModal({ target, onSend, onCancel, sending }) {
           className="w-full p-5 rounded-3xl bg-surface border border-border outline-none resize-none transition focus:border-primary"
         />
 
-        <div className="flex justify-end gap-3">
+        <div className="flex flex-wrap justify-end gap-3">
+          <button
+            type="button"
+            onClick={saveTemplate}
+            disabled={!text.trim()}
+            className="h-control px-4 mr-auto rounded-control border border-border text-small inline-flex items-center gap-2 disabled:opacity-50"
+          >
+            <BookmarkPlus size={15} /> Save as template
+          </button>
+
           <button
             type="button"
             onClick={onCancel}
@@ -99,7 +205,9 @@ function ReplyModal({ target, onSend, onCancel, sending }) {
 function Messages() {
   const [messages, setMessages] = useState([]);
   const [loading, setLoading] = useState(true);
-  const [filter, setFilter] = useState("unread");
+  const [searchParams] = useSearchParams();
+  const [filter, setFilter] = useState(searchParams.get("q") ? "all" : "unread");
+  const [query, setQuery] = useState(searchParams.get("q") || "");
   const [busyId, setBusyId] = useState(null);
   const [deleteId, setDeleteId] = useState(null);
   const [deleting, setDeleting] = useState(false);
@@ -123,11 +231,36 @@ function Messages() {
   }, []);
 
   const visibleMessages = useMemo(() => {
-    if (filter === "unread") return messages.filter((m) => !m.isRead);
-    return messages;
-  }, [messages, filter]);
+    const text = query.trim().toLowerCase();
 
-  const unreadCount = messages.filter((m) => !m.isRead).length;
+    return messages
+      .filter(FILTERS[filter] || FILTERS.all)
+      .filter(
+        (m) =>
+          !text ||
+          [m.name, m.email, m.subject, m.message, m.adminReply].some((field) => field?.toLowerCase().includes(text)),
+      );
+  }, [messages, filter, query]);
+
+  const counts = useMemo(
+    () => Object.fromEntries(Object.entries(FILTERS).map(([key, test]) => [key, messages.filter(test).length])),
+    [messages],
+  );
+
+  const unreadCount = counts.unread;
+
+  const handleArchive = async (item) => {
+    try {
+      setBusyId(item._id);
+      const updated = await setMessageArchived(item._id, !item.archived);
+      setMessages((prev) => prev.map((m) => (m._id === updated._id ? updated : m)));
+      toast.success(updated.archived ? "Archived" : "Moved back to inbox");
+    } catch {
+      toast.error("Couldn't update the message");
+    } finally {
+      setBusyId(null);
+    }
+  };
 
   const handleMarkRead = async (id) => {
     try {
@@ -197,7 +330,18 @@ function Messages() {
         </p>
       </div>
 
-      <div className="flex gap-2">
+      <div className="flex flex-wrap items-center gap-2">
+        <label className="relative mr-auto">
+          <Search size={15} className="absolute left-3 top-1/2 -translate-y-1/2 text-muted" />
+          <input
+            type="search"
+            value={query}
+            onChange={(e) => setQuery(e.target.value)}
+            placeholder="Search name, email, text…"
+            className="h-control pl-9 pr-3 rounded-control border border-border bg-surface text-small w-64 max-w-full"
+          />
+        </label>
+
         {filters.map((item) => (
           <button
             key={item.value}
@@ -209,7 +353,7 @@ function Messages() {
                 : "border-border bg-surface"
             }`}
           >
-            {item.label}
+            {item.label} <span className="tabular-nums opacity-70">{counts[item.value]}</span>
           </button>
         ))}
       </div>
@@ -217,7 +361,7 @@ function Messages() {
       <div className="space-y-4">
         {visibleMessages.length === 0 ? (
           <div className="card text-center text-small py-16">
-            {filter === "unread" ? "No unread messages." : "No messages yet."}
+            {query.trim() ? `No messages match “${query.trim()}”.` : EMPTY_LABELS[filter]}
           </div>
         ) : (
           visibleMessages.map((item) => (
@@ -275,6 +419,16 @@ function Messages() {
                       Mark read
                     </button>
                   )}
+
+                  <button
+                    type="button"
+                    onClick={() => handleArchive(item)}
+                    disabled={busyId === item._id}
+                    className="h-9 px-3 rounded-control border border-border text-small inline-flex items-center gap-1.5 transition hover:border-primary disabled:opacity-50"
+                  >
+                    {item.archived ? <ArchiveRestore size={14} /> : <Archive size={14} />}
+                    {item.archived ? "Unarchive" : "Archive"}
+                  </button>
 
                   <button
                     type="button"

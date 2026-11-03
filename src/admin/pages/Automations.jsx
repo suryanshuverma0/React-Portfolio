@@ -19,12 +19,18 @@ import {
   Copy,
   BarChart3,
   Workflow,
+  UserX,
+  Trash2,
+  Wifi,
+  MonitorSmartphone,
 } from "lucide-react";
 
 import AdminSwitch from "../components/form/AdminSwitch";
 import ConfirmModal from "../components/ui/ConfirmModal";
 import SkeletonCard from "../../components/common/SkeletonCard";
 import * as api from "../services/automation.service";
+import { purgeOwnerData } from "../services/analytics.service";
+import { getVisitorId } from "../../lib/visitorId";
 
 /* ========================================
    AUTOMATIONS — visitor alerts, weekly
@@ -151,6 +157,18 @@ function AlertsCard() {
           <AdminSwitch label="Include NFC card visits" checked={settings.longVisit.includeCard} onChange={(v) => save({ longVisit: { includeCard: v } })} />
 
           <div className="space-y-1">
+            <AdminSwitch
+              label="Alert me when a company visits"
+              checked={settings.companyVisit?.enabled ?? true}
+              onChange={(v) => save({ companyVisit: { enabled: v } })}
+            />
+            <p className="text-xs text-muted">
+              When a visitor&apos;s network belongs to a company, university or government (not a home ISP). At most once
+              per organisation every 12 hours.
+            </p>
+          </div>
+
+          <div className="space-y-1">
             <AdminSwitch label="Ignore my own devices" checked={settings.ignoreOwner} onChange={(v) => save({ ignoreOwner: v })} />
             <p className="text-xs text-muted">
               {settings.ownerVisitorIds?.length || 0} device{settings.ownerVisitorIds?.length === 1 ? "" : "s"} recognised as yours (any browser
@@ -180,6 +198,138 @@ function AlertsCard() {
           )}
         </div>
       </div>
+    </SectionCard>
+  );
+}
+
+/* ---------- my own visits ---------- */
+
+function OwnerCard() {
+  const [settings, setSettings] = useState(null);
+  const [busy, setBusy] = useState(false);
+  const [purgeOpen, setPurgeOpen] = useState(false);
+  const thisDevice = getVisitorId();
+
+  useEffect(() => {
+    api.getAlertSettings().then(setSettings).catch(() => {});
+  }, []);
+
+  const apply = (saved) => setSettings((s) => ({ ...s, ...saved }));
+
+  const toggle = async (value) => {
+    setSettings((s) => ({ ...s, excludeOwnerFromAnalytics: value }));
+    try {
+      apply(await api.updateAlertSettings({ excludeOwnerFromAnalytics: value }));
+    } catch {
+      toast.error("Couldn't save");
+    }
+  };
+
+  const addIp = async () => {
+    try {
+      setBusy(true);
+      const saved = await api.addOwnerIp();
+      apply(saved);
+      toast.success("This network is now recognised as yours");
+    } catch {
+      toast.error("Couldn't add this network");
+    } finally {
+      setBusy(false);
+    }
+  };
+
+  const remove = async (body) => {
+    try {
+      apply(await api.removeOwner(body));
+    } catch {
+      toast.error("Couldn't remove");
+    }
+  };
+
+  const purge = async () => {
+    try {
+      setBusy(true);
+      const result = await purgeOwnerData();
+      toast.success(`Removed ${result.sessions} session${result.sessions === 1 ? "" : "s"} and ${result.events} events of your own visits`);
+    } catch {
+      toast.error("Couldn't remove past visits");
+    } finally {
+      setBusy(false);
+      setPurgeOpen(false);
+    }
+  };
+
+  if (!settings) return <SkeletonCard />;
+
+  const devices = settings.ownerVisitorIds || [];
+  const ips = settings.ownerIps || [];
+
+  return (
+    <SectionCard
+      icon={UserX}
+      title="My visits"
+      subtitle="Keep your own browsing and testing out of the analytics, so numbers reflect real visitors."
+      right={
+        <button type="button" onClick={() => setPurgeOpen(true)} disabled={busy || (!devices.length && !ips.length)} className={buttonClass}>
+          <Trash2 size={15} /> Remove my past visits
+        </button>
+      }
+    >
+      <AdminSwitch label="Don't record my visits in analytics" checked={settings.excludeOwnerFromAnalytics ?? true} onChange={toggle} />
+
+      <div className="grid gap-6 md:grid-cols-2">
+        <div className="space-y-3">
+          <p className="text-label inline-flex items-center gap-2">
+            <MonitorSmartphone size={15} /> My devices ({devices.length})
+          </p>
+          <p className="text-xs text-muted">Added automatically whenever you open this admin panel in a browser, or with &quot;This is me&quot; on a visitor session.</p>
+          <ul className="space-y-1.5">
+            {devices.map((id) => (
+              <li key={id} className="flex items-center justify-between gap-3 rounded-control border border-border bg-surface px-3 py-2 text-xs">
+                <span className="font-mono truncate">
+                  {id}
+                  {id === thisDevice && <span className="ml-2 font-sans text-emerald-600 dark:text-emerald-400">this browser</span>}
+                </span>
+                <button type="button" onClick={() => remove({ visitorId: id })} className="text-muted hover:text-primary" aria-label="Remove device">
+                  <XCircle size={14} />
+                </button>
+              </li>
+            ))}
+          </ul>
+        </div>
+
+        <div className="space-y-3">
+          <div className="flex items-center justify-between gap-3">
+            <p className="text-label inline-flex items-center gap-2">
+              <Wifi size={15} /> My networks ({ips.length})
+            </p>
+            <button type="button" onClick={addIp} disabled={busy} className={buttonClass}>
+              Add current network
+            </button>
+          </div>
+          <p className="text-xs text-muted">Covers phones and laptops that never open the admin — e.g. your home Wi-Fi. Mobile data IPs change often.</p>
+          <ul className="space-y-1.5">
+            {ips.map((ip) => (
+              <li key={ip} className="flex items-center justify-between gap-3 rounded-control border border-border bg-surface px-3 py-2 text-xs">
+                <span className="font-mono truncate">{ip}</span>
+                <button type="button" onClick={() => remove({ ip })} className="text-muted hover:text-primary" aria-label="Remove network">
+                  <XCircle size={14} />
+                </button>
+              </li>
+            ))}
+          </ul>
+        </div>
+      </div>
+
+      <ConfirmModal
+        isOpen={purgeOpen}
+        title="Remove your past visits?"
+        message="Every session, event and page view already recorded from your devices and networks will be permanently deleted from analytics."
+        confirmText="Remove"
+        loading={busy}
+        onConfirm={purge}
+        onCancel={() => setPurgeOpen(false)}
+      />
     </SectionCard>
   );
 }
@@ -566,6 +716,7 @@ function Automations() {
         <p className="text-body mt-3">Alerts, reports and backups that run on their own.</p>
       </section>
       <AlertsCard />
+      <OwnerCard />
       <ReportCard />
       <BackupsCard />
     </div>

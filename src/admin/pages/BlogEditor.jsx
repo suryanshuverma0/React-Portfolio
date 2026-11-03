@@ -1,6 +1,7 @@
 import { useEffect, useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 import { toast } from "react-toastify";
+import { CalendarClock } from "lucide-react";
 
 import AdminInput from "../components/form/AdminInput";
 import AdminTextarea from "../components/form/AdminTextarea";
@@ -20,6 +21,13 @@ const slugify = (text) =>
     .replace(/[^a-z0-9]+/g, "-")
     .replace(/(^-|-$)/g, "");
 
+// Date | ISO string → "YYYY-MM-DDTHH:mm" in local time, for datetime-local.
+const toLocalInput = (value) => {
+  if (!value) return "";
+  const date = new Date(value);
+  return new Date(date.getTime() - date.getTimezoneOffset() * 60000).toISOString().slice(0, 16);
+};
+
 function BlogEditor() {
   const { id } = useParams();
   const navigate = useNavigate();
@@ -37,6 +45,8 @@ function BlogEditor() {
 
   const [tags, setTags] = useState([]);
   const [isVisible, setIsVisible] = useState(false);
+  // datetime-local value ("YYYY-MM-DDTHH:mm", local time) or "".
+  const [scheduledAt, setScheduledAt] = useState("");
 
   const [coverImage, setCoverImage] = useState(null);
   const [coverImagePreview, setCoverImagePreview] = useState(null);
@@ -58,6 +68,7 @@ function BlogEditor() {
 
         setTags(post.tags || []);
         setIsVisible(post.isVisible ?? false);
+        setScheduledAt(toLocalInput(post.scheduledAt));
 
         setCoverImage(post.coverImage || null);
         setCoverImagePreview(post.coverImage?.url || null);
@@ -138,21 +149,36 @@ function BlogEditor() {
     try {
       setSaving(true);
 
+      const schedule = !isVisible && scheduledAt ? new Date(scheduledAt) : null;
+
+      if (schedule && schedule <= new Date()) {
+        toast.error("Pick a schedule time in the future");
+        setSaving(false);
+        return;
+      }
+
       const payload = {
         ...formData,
         slug,
         tags,
         isVisible,
+        scheduledAt: schedule ? schedule.toISOString() : null,
         ...(coverImage ? { coverImage } : {}),
       };
 
       if (isEditing) {
         await updatePost(id, payload);
-        toast.success("Post updated");
       } else {
         await createPost(payload);
-        toast.success(isVisible ? "Post published" : "Draft saved");
       }
+
+      toast.success(
+        isVisible
+          ? isEditing ? "Post updated" : "Post published"
+          : schedule
+            ? `Scheduled for ${schedule.toLocaleString(undefined, { dateStyle: "medium", timeStyle: "short" })}`
+            : isEditing ? "Post updated" : "Draft saved",
+      );
 
       navigate("/dashboard/blog");
     } catch (error) {
@@ -241,6 +267,42 @@ function BlogEditor() {
         <AdminSwitch checked={isVisible} onChange={setIsVisible} />
       </div>
 
+      {!isVisible && (
+        <div className="card flex flex-wrap items-center justify-between gap-4">
+          <div>
+            <h3 className="text-label inline-flex items-center gap-2">
+              <CalendarClock size={16} /> Schedule
+            </h3>
+
+            <p className="text-small mt-1">
+              {scheduledAt
+                ? `Publishes automatically on ${new Date(scheduledAt).toLocaleString(undefined, { dateStyle: "full", timeStyle: "short" })}.`
+                : "Pick a date and time and the draft publishes itself."}
+            </p>
+          </div>
+
+          <div className="flex items-center gap-2">
+            <input
+              type="datetime-local"
+              value={scheduledAt}
+              min={toLocalInput(new Date())}
+              onChange={(e) => setScheduledAt(e.target.value)}
+              className="h-control px-3 rounded-control bg-surface border border-border text-small"
+              aria-label="Publish at"
+            />
+            {scheduledAt && (
+              <button
+                type="button"
+                onClick={() => setScheduledAt("")}
+                className="h-control px-4 rounded-control border border-border text-small"
+              >
+                Clear
+              </button>
+            )}
+          </div>
+        </div>
+      )}
+
       <div className="flex justify-end gap-3">
         <button
           type="button"
@@ -256,7 +318,7 @@ function BlogEditor() {
           disabled={saving || uploadingCover}
           className="h-control px-6 rounded-control bg-primary text-background text-label transition hover:opacity-90 disabled:opacity-50"
         >
-          {saving ? "Saving..." : isEditing ? "Update Post" : "Save Post"}
+          {saving ? "Saving..." : !isVisible && scheduledAt ? "Schedule Post" : isEditing ? "Update Post" : "Save Post"}
         </button>
       </div>
     </div>
