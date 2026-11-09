@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 
 import { Link, useLocation } from "react-router-dom";
 
@@ -18,8 +18,13 @@ import NavItem from "./NavItem";
 
 import { navbarContent } from "../content/navbarContent";
 
+import { arrangeNavItems, useAppearance } from "../../lib/appearance";
+
 function Navbar() {
-  const navItems = navbarContent;
+  // Section links follow the order/visibility set in admin → Appearance.
+  const { sections } = useAppearance();
+
+  const navItems = useMemo(() => arrangeNavItems(navbarContent, sections), [sections]);
 
   const desktopItems = navItems.filter((item) => item.desktop !== false);
 
@@ -279,7 +284,7 @@ function Navbar() {
 
                   overflow-y-auto
 
-                  rounded-[28px]
+                  rounded-[calc(28px*var(--radius-scale))]
 
                   border
                   border-border

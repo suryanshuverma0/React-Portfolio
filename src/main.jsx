@@ -20,6 +20,14 @@ import { GoogleOAuthProvider } from "@react-oauth/google";
 
 import { MotionConfig } from "framer-motion";
 
+import api from "./lib/axios";
+
+import { initAppearance } from "./lib/appearance";
+
+// Paint the site's customized look (cached) before React renders, then
+// refresh it from the server.
+initAppearance(api);
+
 
 /*
   index.html ships static head tags for crawlers that don't run JS. Once

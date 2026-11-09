@@ -23,7 +23,7 @@ function MaintenanceScreen() {
           w-full
           max-w-[420px]
 
-          rounded-[32px]
+          rounded-[calc(32px*var(--radius-scale))]
 
           p-8
 

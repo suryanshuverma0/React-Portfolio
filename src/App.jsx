@@ -17,6 +17,7 @@ import ProtectedRoute from "./components/routes/ProtectedRoute";
 import MaintenanceScreen from "./components/common/MaintenanceScreen";
 import { getPublicSettings } from "./services/public.settings.service";
 import usePageTracking from "./hooks/usePageTracking";
+import { setAppearanceScope } from "./lib/appearance";
 import {
   AdminLayout,
   Dashboard,
@@ -47,6 +48,7 @@ import {
   Goals,
   AuditLog,
   SystemHealth,
+  Appearance,
 } from "./admin/adminPages";
 
 /*
@@ -103,6 +105,11 @@ function App() {
   const { authLoading } = useAuth();
 
   usePageTracking();
+
+  // Custom appearance styles the public site; the admin keeps the built-in look.
+  useEffect(() => {
+    setAppearanceScope(location.pathname);
+  }, [location.pathname]);
 
   useEffect(() => {
     const timer = setTimeout(() => {
@@ -306,6 +313,7 @@ function App() {
                 <Route path="audit" element={<AuditLog />} />
                 <Route path="system" element={<SystemHealth />} />
                 <Route path="settings" element={<Settings />} />
+                <Route path="appearance" element={<Appearance />} />
               </Route>
             </Routes>
           </AnimatePresence>

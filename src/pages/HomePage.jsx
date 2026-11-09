@@ -36,6 +36,29 @@ import SEO from "../components/common/SEO";
 
 import { getPublicSettings } from "../services/public.settings.service";
 
+import { useAppearance } from "../lib/appearance";
+
+import { SectionIndexContext } from "../components/ui/sectionIndex";
+
+// Homepage sections by id. Order and visibility come from
+// admin → Appearance (see SECTION_DEFS in lib/appearance.js).
+const SECTIONS = {
+  marquee: TechMarquee,
+  research: Research,
+  about: About,
+  experience: Experience,
+  projects: Projects,
+  skills: Skills,
+  services: Services,
+  certificates: Certificates,
+  "coding-activity": CodingActivity,
+  faq: FAQ,
+  contact: Contact,
+};
+
+// Sections without a numbered heading.
+const UNNUMBERED = new Set(["marquee"]);
+
 // Kept in step with the static <head> in index.html.
 const DEFAULT_TITLE =
   "Suryanshu Verma — Blockchain Engineer, Researcher & Full-Stack Developer";
@@ -46,6 +69,16 @@ const DEFAULT_KEYWORDS =
 
 function HomePage() {
   const [settings, setSettings] = useState(null);
+
+  const { sections, effects } = useAppearance();
+
+  // Visible sections in order, each with its heading number (01, 02…).
+  const visibleSections = sections
+    .filter((section) => section.visible && SECTIONS[section.id])
+    .reduce((list, { id }) => {
+      const numbered = list.filter((item) => item.index).length;
+      return [...list, { id, index: UNNUMBERED.has(id) ? null : numbered + 1 }];
+    }, []);
 
   useEffect(() => {
     const loadSettings = async () => {
@@ -79,39 +112,26 @@ function HomePage() {
     <>
       {seo}
 
-      <SmoothScroll />
+      {effects.smoothScroll && <SmoothScroll />}
 
-      <Cursor />
+      {effects.cursor && <Cursor />}
 
-      <div aria-hidden="true" className="grain" />
+      {effects.grain && <div aria-hidden="true" className="grain" />}
 
       <Navbar />
 
       <main>
         <Hero />
 
-        <TechMarquee />
+        {visibleSections.map(({ id, index }) => {
+          const Section = SECTIONS[id];
 
-        {/* Research leads — it's the strongest proof of depth */}
-        <Research />
-
-        <About />
-
-        <Experience />
-
-        <Projects />
-
-        <Skills />
-
-        <Services />
-
-        <Certificates />
-
-        <CodingActivity />
-
-        <FAQ />
-
-        <Contact />
+          return (
+            <SectionIndexContext.Provider key={id} value={index}>
+              <Section />
+            </SectionIndexContext.Provider>
+          );
+        })}
       </main>
 
       <Footer />

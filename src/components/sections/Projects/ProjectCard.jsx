@@ -79,7 +79,7 @@ function ProjectCard({ project, index, lead = false }) {
 
           overflow-hidden
 
-          rounded-[20px]
+          rounded-[calc(20px*var(--radius-scale))]
 
           border
           border-border

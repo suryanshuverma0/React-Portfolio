@@ -16,6 +16,7 @@ import { iconMap } from "../constants/iconMap";
 import { getPublicProfile } from "../../services/public.profile.service";
 import { getPublicSettings } from "../../services/public.settings.service";
 import { socialsObjectToArray } from "../../lib/socials";
+import { firstVisibleAnchor, isSectionVisible, useAppearance } from "../../lib/appearance";
 
 const EASE = [0.22, 1, 0.36, 1];
 
@@ -84,6 +85,12 @@ NameLine.propTypes = {
 };
 
 function Hero() {
+  // The hero links into Research and Contact — keep them pointing at
+  // something real when those sections are hidden in admin → Appearance.
+  const { sections } = useAppearance();
+  const showResearch = isSectionVisible(sections, "research");
+  const showContact = isSectionVisible(sections, "contact");
+
   const [profile, setProfile] = useState(null);
   const [settings, setSettings] = useState(null);
 
@@ -179,7 +186,7 @@ function Hero() {
       <Container>
         {/* ANNOUNCEMENT — the paper is the headline news */}
 
-        {featuredPaper && (
+        {featuredPaper && showResearch && (
           <motion.a
             href="#research"
             {...fadeUp(0)}
@@ -344,17 +351,19 @@ function Hero() {
               "
             >
               <Magnetic>
-                <a href="#research" className="btn btn-primary">
-                  Read the research
+                <a href={showResearch ? "#research" : firstVisibleAnchor(sections)} className="btn btn-primary">
+                  {showResearch ? "Read the research" : "Explore"}
                   <ArrowDown size={15} aria-hidden="true" />
                 </a>
               </Magnetic>
 
-              <Magnetic>
-                <a href="#contact" className="btn btn-outline">
-                  Get in touch
-                </a>
-              </Magnetic>
+              {showContact && (
+                <Magnetic>
+                  <a href="#contact" className="btn btn-outline">
+                    Get in touch
+                  </a>
+                </Magnetic>
+              )}
 
               <span aria-hidden="true" className="hidden sm:block mx-1 h-6 w-px bg-border" />
 
@@ -422,7 +431,7 @@ function Hero() {
               shadow-[0_40px_80px_-40px_rgba(0,0,0,0.35)]
             "
           >
-            <div className="overflow-hidden rounded-[21px] bg-surface">
+            <div className="overflow-hidden rounded-[calc(21px*var(--radius-scale))] bg-surface">
               <img
                 src={imageSrc}
                 alt={data.name}

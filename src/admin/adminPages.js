@@ -43,6 +43,7 @@ const loaders = {
   "/dashboard/audit": () => import("./pages/AuditLog"),
   "/dashboard/system": () => import("./pages/SystemHealth"),
   "/dashboard/settings": () => import("./pages/Settings"),
+  "/dashboard/appearance": () => import("./pages/Appearance"),
 };
 
 // A failed preload (offline, deploy swapped chunks) must not stay cached as
@@ -95,6 +96,7 @@ export const Goals = page("/dashboard/goals");
 export const AuditLog = page("/dashboard/audit");
 export const SystemHealth = page("/dashboard/system");
 export const Settings = page("/dashboard/settings");
+export const Appearance = page("/dashboard/appearance");
 
 // Preload the chunk behind a sidebar link (exact path match).
 export const preloadAdminPage = (path) => {

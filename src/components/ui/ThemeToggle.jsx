@@ -3,29 +3,18 @@ import { useEffect, useState } from "react";
 
 // `round` is the borderless circle used inside the public navbar pill.
 function ThemeToggle({ round = false }) {
-  const [darkMode, setDarkMode] = useState(false);
+  // The pre-paint script in index.html (and the site's default mode from
+  // admin → Appearance) already set <html class="dark">. Read that rather
+  // than recomputing it, and follow it if something else changes it.
+  const [darkMode, setDarkMode] = useState(() =>
+    document.documentElement.classList.contains("dark"),
+  );
 
-  // INITIALIZE THEME
   useEffect(() => {
-    const savedTheme = localStorage.getItem("theme");
-
-    if (savedTheme) {
-      const isDark = savedTheme === "dark";
-
-      setDarkMode(isDark);
-
-      document.documentElement.classList.toggle("dark", isDark);
-
-      return;
-    }
-
-    const prefersDark = window.matchMedia(
-      "(prefers-color-scheme: dark)",
-    ).matches;
-
-    setDarkMode(prefersDark);
-
-    document.documentElement.classList.toggle("dark", prefersDark);
+    const root = document.documentElement;
+    const observer = new MutationObserver(() => setDarkMode(root.classList.contains("dark")));
+    observer.observe(root, { attributes: true, attributeFilter: ["class"] });
+    return () => observer.disconnect();
   }, []);
 
   // TOGGLE THEME
@@ -36,7 +25,11 @@ function ThemeToggle({ round = false }) {
 
     document.documentElement.classList.toggle("dark", newTheme);
 
-    localStorage.setItem("theme", newTheme ? "dark" : "light");
+    try {
+      localStorage.setItem("theme", newTheme ? "dark" : "light");
+    } catch {
+      /* private mode — the toggle still works for this visit */
+    }
   };
 
   return (

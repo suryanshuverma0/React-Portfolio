@@ -24,6 +24,7 @@ import {
   Target,
   ScrollText,
   HeartPulse,
+  Paintbrush,
 } from "lucide-react";
 
 export const sidebarLinks = [
@@ -155,6 +156,11 @@ export const sidebarLinks = [
         label: "Storage",
         path: "/dashboard/storage",
         icon: Database,
+      },
+      {
+        label: "Appearance",
+        path: "/dashboard/appearance",
+        icon: Paintbrush,
       },
       {
         label: "Settings",

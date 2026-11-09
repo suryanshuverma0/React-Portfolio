@@ -60,7 +60,7 @@ function Certificates() {
               onMouseMove={trackPointer}
               className="panel panel-hover spotlight group p-3 flex flex-col"
             >
-              <div className="overflow-hidden rounded-[20px] border border-border bg-surface">
+              <div className="overflow-hidden rounded-[calc(20px*var(--radius-scale))] border border-border bg-surface">
                 <img
                   src={item.image?.url || item.image}
                   alt={item.title}

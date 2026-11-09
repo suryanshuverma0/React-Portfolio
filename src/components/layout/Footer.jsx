@@ -5,6 +5,7 @@ import Container from "../ui/Container";
 import { getPublicSettings } from "../../services/public.settings.service";
 import { socialsObjectToArray } from "../../lib/socials";
 import { navbarContent } from "../content/navbarContent";
+import { arrangeNavItems, useAppearance } from "../../lib/appearance";
 import { contactContent } from "../content/contactContent";
 
 const SOCIAL_LABELS = {
@@ -16,6 +17,10 @@ const SOCIAL_LABELS = {
 };
 
 function Footer() {
+  // Same order/visibility as the navbar (admin → Appearance → Sections).
+  const { sections } = useAppearance();
+  const footerLinks = arrangeNavItems(navbarContent, sections);
+
   const year = new Date().getFullYear();
   const [settings, setSettings] = useState(null);
 
@@ -83,7 +88,7 @@ function Footer() {
             <p className="text-eyebrow mb-5">Navigate</p>
 
             <ul className="grid grid-cols-2 gap-x-6 gap-y-3">
-              {navbarContent.map((item) => (
+              {footerLinks.map((item) => (
                 <li key={item.label}>{renderLink(item)}</li>
               ))}
             </ul>

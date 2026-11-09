@@ -2,6 +2,12 @@ import PropTypes from "prop-types";
 
 import { motion } from "framer-motion";
 
+import { useContext } from "react";
+
+import { SectionIndexContext } from "./sectionIndex";
+
+import { useAppearance } from "../../lib/appearance";
+
 /*
   Editorial section header: a hairline rule carrying the section number
   and name, then the heading with its description set beside it on wide
@@ -17,6 +23,16 @@ function SectionTitle({
   large = false,
 }) {
   const centered = align === "center";
+
+  // On the homepage the number comes from the section's position (so it
+  // follows the admin's custom order); elsewhere the `index` prop is used.
+  const position = useContext(SectionIndexContext);
+  const { effects } = useAppearance();
+  const number = effects.sectionNumbers
+    ? position
+      ? String(position).padStart(2, "0")
+      : index
+    : null;
 
   return (
     <motion.header
@@ -39,7 +55,7 @@ function SectionTitle({
           `}
         >
           <span className="text-eyebrow text-primary!">
-            {index && <span className="text-muted mr-3">{index}</span>}
+            {number && <span className="text-muted mr-3">{number}</span>}
             {eyebrow}
           </span>
 

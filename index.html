@@ -6,7 +6,17 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
 
     <script>
-      const theme = localStorage.getItem("theme");
+      // A visitor's own toggle wins; otherwise the site default chosen in
+      // admin → Appearance (cached by src/lib/appearance.js); else the OS.
+      // The admin dashboard ignores the site default.
+      let theme = null;
+      try {
+        theme = localStorage.getItem("theme");
+        if (!theme && !location.pathname.startsWith("/dashboard")) {
+          const mode = localStorage.getItem("appearance:mode");
+          if (mode === "light" || mode === "dark") theme = mode;
+        }
+      } catch (e) {}
 
       const isDark =
         theme === "dark" ||

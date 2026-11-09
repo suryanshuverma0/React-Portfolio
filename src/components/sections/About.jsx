@@ -145,7 +145,7 @@ function About() {
 
               overflow-hidden
 
-              rounded-[28px]
+              rounded-[calc(28px*var(--radius-scale))]
 
               border
               border-border

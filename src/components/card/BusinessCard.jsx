@@ -146,7 +146,7 @@ const embossed = (ink) => ({
 function CardFace({ children, surface, back = false }) {
   return (
     <div
-      className="absolute inset-0 overflow-hidden rounded-[18px] ring-1 ring-white/10"
+      className="absolute inset-0 overflow-hidden rounded-[calc(18px*var(--radius-scale))] ring-1 ring-white/10"
       style={{
         background: surface.background,
         color: surface.ink,

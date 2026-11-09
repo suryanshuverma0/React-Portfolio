@@ -174,7 +174,7 @@ function ResearchCard({ paper, index = 0 }) {
       whileInView={{ opacity: 1, y: 0 }}
       viewport={{ once: true, margin: "-60px" }}
       transition={{ duration: 0.7, delay: index * 0.06, ease: EASE }}
-      className="beam rounded-[32px]"
+      className="beam rounded-[calc(32px*var(--radius-scale))]"
     >
       <div
         onMouseMove={trackPointer}
@@ -182,7 +182,7 @@ function ResearchCard({ paper, index = 0 }) {
           panel
           spotlight
 
-          rounded-[32px]
+          rounded-[calc(32px*var(--radius-scale))]
 
           overflow-hidden
 
