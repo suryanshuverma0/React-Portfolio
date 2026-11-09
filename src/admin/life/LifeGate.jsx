@@ -30,7 +30,8 @@ function PassInput({ value, onChange, placeholder, autoFocus, name = "passphrase
         autoFocus={autoFocus}
         onChange={(e) => onChange(e.target.value)}
         placeholder={placeholder}
-        className="h-12 min-w-0 flex-1 bg-transparent px-2.5 text-[15px] outline-none focus-visible:outline-none"
+        className="h-12 min-w-0 flex-1 bg-transparent px-2.5 text-[15px] outline-none"
+        style={{ outline: "none" }}
       />
       <button type="button" onClick={() => setShow((s) => !s)} className="p-1 text-muted hover:text-primary" aria-label={show ? "Hide passphrase" : "Show passphrase"}>
         {show ? <EyeOff size={16} /> : <Eye size={16} />}
