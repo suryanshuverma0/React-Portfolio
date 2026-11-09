@@ -33,7 +33,9 @@ import {
 import { getPublicSettings } from "../../../services/public.settings.service";
 import { socialsObjectToArray } from "../../../lib/socials";
 import { sendMessage } from "../../../services/public.contact.service";
+import useBotTrap from "../../../hooks/useBotTrap";
 import { trackEvent } from "../../../lib/tracker";
+import { gaEvent } from "../../../lib/ga";
 import Magnetic from "../../motion/Magnetic";
 
 function Contact() {
@@ -48,6 +50,7 @@ function Contact() {
   });
 
   const [sending, setSending] = useState(false);
+  const { honeypotProps, trapFields, resetTrap } = useBotTrap();
   const [copied, setCopied] = useState(false);
   const [sent, setSent] = useState(false);
 
@@ -68,7 +71,7 @@ function Contact() {
     try {
       setSending(true);
 
-      await sendMessage(formData);
+      await sendMessage({ ...formData, ...trapFields() });
 
       trackEvent("form_submit", {
         label: "Contact form",
@@ -80,8 +83,12 @@ function Contact() {
         },
       });
 
+      // No personal data goes to Google — just that a lead came in.
+      gaEvent("generate_lead", { form_name: "contact", section: "contact" });
+
       setSent(true);
       setFormData({ name: "", email: "", subject: "", message: "" });
+      resetTrap();
       toast.success("Message sent — thanks for reaching out!");
     } catch (error) {
       if (error.response?.status === 429) {
@@ -361,7 +368,9 @@ function Contact() {
                 </button>
               </div>
             ) : (
-              <form onSubmit={handleSubmit} className="flex flex-col gap-5">
+              <form onSubmit={handleSubmit} className="relative flex flex-col gap-5">
+                <input {...honeypotProps} />
+
                 <p className="text-eyebrow text-primary! mb-1">Send a message</p>
 
                 <div className="grid grid-cols-1 sm:grid-cols-2 gap-5">

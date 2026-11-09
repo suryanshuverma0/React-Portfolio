@@ -57,7 +57,19 @@ Use the same client ID for `VITE_GOOGLE_CLIENT_ID` (frontend) and `GOOGLE_CLIENT
 
 ---
 
-## 5. Verify the deployment
+## 5. Google Analytics 4
+
+`src/lib/ga.js` loads GA4 (`G-0B78W40WRH`) next to the first-party tracker. It only runs in production builds on `suryanshuverma.com.np` / `www.suryanshuverma.com.np`. To use a different property, set `VITE_GA_MEASUREMENT_ID` in Vercel and redeploy (Vite bakes it in at build time).
+
+1. In the same data stream → *Enhanced measurement* → gear icon → turn **off** "Page changes based on browser history events". The app sends its own `page_view` on each route change; leaving this on counts every navigation twice. Leave scrolls, outbound clicks and file downloads on.
+2. *Admin → Events* → mark `generate_lead` (contact form sent) as a **key event**.
+3. *Admin → Product links → Search Console links* → link the Search Console property.
+
+Not sent to GA: `/dashboard/*`, `/reset-password/*`, `/link-passkey/*`, `/card?preview=1`, and any browser where an admin has signed in (it stays opted out via `localStorage.ga_opt_out`). Delete that key to start counting that browser again.
+
+---
+
+## 6. Verify the deployment
 
 - [ ] Home page loads and all sections render data.
 - [ ] Refreshing `/blog` or `/projects/<slug>` doesn't 404.
