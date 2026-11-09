@@ -26,7 +26,8 @@ const MAX_AGE_MS = 60 * 1000;
 const NAVIGATION_WINDOW_MS = 1500;
 const MAX_ENTRIES = 150;
 
-const NEVER_CACHE = /\/auth\/|\/google-auth\/|\/passkey\//;
+// /life/ = the locked personal side: never kept in memory.
+const NEVER_CACHE = /\/auth\/|\/google-auth\/|\/passkey\/|\/life\//;
 
 const cache = new Map(); // key -> { at, response }
 const inflight = new Map(); // key -> Promise<response>

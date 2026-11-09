@@ -31,6 +31,8 @@ import {
   FlaskConical,
   Package,
   LayoutList,
+  LockKeyhole,
+  Heart,
 } from "lucide-react";
 
 /*
@@ -85,9 +87,10 @@ export const sidebarLinks = [
   },
   {
     id: "personal",
-    section: "Personal",
-    icon: NotebookPen,
+    section: "Life · locked",
+    icon: LockKeyhole,
     items: [
+      { label: "Life dashboard", path: "/dashboard/life", icon: Heart, keywords: "personal life kpi overview lock passphrase" },
       { label: "Notes", path: "/dashboard/notes", icon: NotebookPen, keywords: "write ink pen" },
     ],
   },

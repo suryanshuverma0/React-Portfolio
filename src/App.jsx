@@ -43,6 +43,7 @@ import {
   Storage,
   CardAdmin,
   Notes,
+  LifeDashboard,
   Automations,
   BlogAnalytics,
   ExecutiveReport,
@@ -56,6 +57,7 @@ import {
   ResearchAdmin,
   ProductsAdmin,
 } from "./admin/adminPages";
+import LifeGate from "./admin/life/LifeGate";
 
 /*
   Everything except the homepage is split into its own chunk: visitors
@@ -319,7 +321,15 @@ function App() {
                 <Route path="security" element={<Security />} />
                 <Route path="storage" element={<Storage />} />
                 <Route path="card" element={<CardAdmin />} />
-                <Route path="notes" element={<Notes />} />
+                <Route path="life" element={<LifeDashboard />} />
+                <Route
+                  path="notes"
+                  element={
+                    <LifeGate bleed>
+                      <Notes />
+                    </LifeGate>
+                  }
+                />
                 <Route path="automations" element={<Automations />} />
                 <Route path="blog/analytics" element={<BlogAnalytics />} />
                 <Route path="report" element={<ExecutiveReport />} />

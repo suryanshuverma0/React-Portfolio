@@ -73,6 +73,11 @@ api.interceptors.response.use(
   async (error) => {
     const { config, response } = error;
 
+    // 423 = the life lock is closed (or not set up yet).
+    if (response?.status === 423 && typeof window !== "undefined") {
+      window.dispatchEvent(new CustomEvent("life:locked", { detail: response.data?.code }));
+    }
+
     if (
       response?.status !== 401 ||
       !config ||
