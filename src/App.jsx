@@ -54,6 +54,7 @@ import {
   QrStudio,
   ResumeBuilder,
   ResearchAdmin,
+  ProductsAdmin,
 } from "./admin/adminPages";
 
 /*
@@ -331,6 +332,7 @@ function App() {
                 <Route path="qr" element={<QrStudio />} />
                 <Route path="resume" element={<ResumeBuilder />} />
                 <Route path="research" element={<ResearchAdmin />} />
+                <Route path="products" element={<ProductsAdmin />} />
               </Route>
             </Routes>
           </AnimatePresence>

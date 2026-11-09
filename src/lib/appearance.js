@@ -34,6 +34,7 @@ export const SECTION_DEFS = [
   { id: "about", label: "About", hint: "Bio and background", anchor: "about" },
   { id: "experience", label: "Experience", hint: "Work history timeline", anchor: "experience" },
   { id: "projects", label: "Projects", hint: "Featured and other projects", anchor: "projects" },
+  { id: "products", label: "Products", hint: "Live products and apps (shows once you add one)", anchor: "products" },
   { id: "skills", label: "Skills", hint: "Technologies and tools", anchor: "skills" },
   { id: "services", label: "Services", hint: "What you offer", anchor: "services" },
   { id: "certificates", label: "Certificates", hint: "Certifications gallery", anchor: "certificates" },

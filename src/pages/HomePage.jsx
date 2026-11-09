@@ -22,6 +22,8 @@ import Services from "../components/sections/Services/Services";
 
 import Projects from "../components/sections/Projects/Projects";
 
+import Products from "../components/sections/Products/Products";
+
 import Research from "../components/sections/Research/Research";
 
 import Certificates from "../components/sections/Certificates/Certificates";
@@ -40,6 +42,8 @@ import { useAppearance } from "../lib/appearance";
 
 import { SectionIndexContext } from "../components/ui/sectionIndex";
 
+import { useProducts } from "../hooks/useProducts";
+
 // Homepage sections by id. Order and visibility come from
 // admin → Appearance (see SECTION_DEFS in lib/appearance.js).
 const SECTIONS = {
@@ -48,6 +52,7 @@ const SECTIONS = {
   about: About,
   experience: Experience,
   projects: Projects,
+  products: Products,
   skills: Skills,
   services: Services,
   certificates: Certificates,
@@ -72,9 +77,12 @@ function HomePage() {
 
   const { sections, effects } = useAppearance();
 
+  // Products only takes a slot (and a number) once there is one to show.
+  const hasProducts = useProducts().length > 0;
+
   // Visible sections in order, each with its heading number (01, 02…).
   const visibleSections = sections
-    .filter((section) => section.visible && SECTIONS[section.id])
+    .filter((section) => section.visible && SECTIONS[section.id] && (section.id !== "products" || hasProducts))
     .reduce((list, { id }) => {
       const numbered = list.filter((item) => item.index).length;
       return [...list, { id, index: UNNUMBERED.has(id) ? null : numbered + 1 }];

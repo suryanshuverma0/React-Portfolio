@@ -47,6 +47,16 @@ export const navbarContent = [
   },
 
   {
+    label: "Products",
+
+    mobileLabel: "Products",
+
+    href: "#products",
+
+    desktop: false,
+  },
+
+  {
     label: "Skills",
 
     mobileLabel: "Skills",

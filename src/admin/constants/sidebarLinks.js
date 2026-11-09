@@ -29,6 +29,7 @@ import {
   QrCode,
   Smartphone,
   FlaskConical,
+  Package,
 } from "lucide-react";
 
 /*
@@ -59,6 +60,7 @@ export const sidebarLinks = [
       { label: "Education", path: "/dashboard/education", icon: School, keywords: "degree college school" },
       { label: "Projects", path: "/dashboard/projects", icon: FolderKanban, keywords: "work case study github" },
       { label: "Research", path: "/dashboard/research", icon: FlaskConical, keywords: "papers publications conference journal" },
+      { label: "Products", path: "/dashboard/products", icon: Package, keywords: "saas apps live shipped website mobile" },
       { label: "Skills", path: "/dashboard/skill", icon: Brain, keywords: "technologies tools" },
       { label: "Services", path: "/dashboard/services", icon: Layers3, keywords: "offer freelance" },
       { label: "Certificates", path: "/dashboard/certificates", icon: Award, keywords: "courses certifications" },

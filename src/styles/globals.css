@@ -966,3 +966,7 @@ input:-webkit-autofill {
     filter: opacity(1);
   }
 }
+@keyframes fade-in-soft {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
