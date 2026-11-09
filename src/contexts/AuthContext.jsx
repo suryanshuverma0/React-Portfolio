@@ -3,7 +3,7 @@ import { startAuthentication, startRegistration } from "@simplewebauthn/browser"
 
 const AuthContext = createContext();
 
-import api from "../lib/axios";
+import api, { markSignedIn, markSignedOut } from "../lib/axios";
 import {
   getAuthenticationOptions,
   verifyAuthentication,
@@ -19,6 +19,20 @@ export function AuthProvider({ children }) {
 
   const [loading, setLoading] = useState(false);
   const [authLoading, setAuthLoading] = useState(true);
+
+  // Remember that this browser has a session, so expired access tokens are
+  // refreshed instead of looking like a sign-out.
+  useEffect(() => {
+    if (user) markSignedIn();
+  }, [user]);
+
+  // The API couldn't refresh the session (ended remotely, revoked, expired).
+  useEffect(() => {
+    const onExpired = () => setUser(null);
+
+    window.addEventListener("auth:expired", onExpired);
+    return () => window.removeEventListener("auth:expired", onExpired);
+  }, []);
 
   /* ========================================
      LOGIN
@@ -171,6 +185,7 @@ export function AuthProvider({ children }) {
     try {
       await api.post("/auth/logout");
 
+      markSignedOut();
       setUser(null);
     } catch (error) {
       console.error(error);

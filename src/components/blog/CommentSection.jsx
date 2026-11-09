@@ -3,6 +3,7 @@ import { toast } from "react-toastify";
 import { MessageCircle } from "lucide-react";
 
 import { getPostComments, submitComment } from "../../services/public.blog.service";
+import useBotTrap from "../../hooks/useBotTrap";
 
 const formatDate = (date) =>
   new Date(date).toLocaleDateString("en-US", {
@@ -26,6 +27,7 @@ function CommentSection({ slug }) {
   const [form, setForm] = useState({ name: "", email: "", content: "" });
   const [submitting, setSubmitting] = useState(false);
   const [submitted, setSubmitted] = useState(false);
+  const { honeypotProps, trapFields } = useBotTrap();
 
   const loadComments = async () => {
     try {
@@ -61,7 +63,7 @@ function CommentSection({ slug }) {
     try {
       setSubmitting(true);
 
-      await submitComment(slug, form);
+      await submitComment(slug, { ...form, ...trapFields() });
 
       setSubmitted(true);
       setForm({ name: "", email: "", content: "" });
@@ -136,7 +138,9 @@ function CommentSection({ slug }) {
             it's approved.
           </p>
         ) : (
-          <form onSubmit={handleSubmit} className="space-y-4">
+          <form onSubmit={handleSubmit} className="relative space-y-4">
+            <input {...honeypotProps} />
+
             <div className="grid sm:grid-cols-2 gap-4">
               <input
                 name="name"
