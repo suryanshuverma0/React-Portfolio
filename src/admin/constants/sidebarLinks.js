@@ -164,3 +164,26 @@ export const sidebarLinks = [
     ],
   },
 ];
+
+
+// Screens reached from inside a page rather than the sidebar.
+const EXTRA_TITLES = [
+  { path: "/dashboard/blog/comments", label: "Blog Comments" },
+  { path: "/dashboard/blog/new", label: "New Post" },
+  { path: "/dashboard/visitors/", label: "Visitor Session" },
+];
+
+const EDIT_POST = /^\/dashboard\/blog\/[^/]+\/edit$/;
+
+// Title for any admin path: the longest sidebar (or extra) path it sits under.
+export const getAdminTitle = (pathname) => {
+  if (EDIT_POST.test(pathname)) return "Edit Post";
+
+  const candidates = [...sidebarLinks.flatMap((section) => section.items), ...EXTRA_TITLES];
+
+  const match = candidates
+    .filter(({ path }) => pathname === path || pathname.startsWith(path.endsWith("/") ? path : `${path}/`))
+    .sort((a, b) => b.path.length - a.path.length)[0];
+
+  return match?.label || "Admin";
+};

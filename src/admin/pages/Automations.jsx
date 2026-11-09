@@ -261,8 +261,9 @@ function OwnerCard() {
 
   if (!settings) return <SkeletonCard />;
 
-  const devices = settings.ownerVisitorIds || [];
-  const ips = settings.ownerIps || [];
+  // Older data can hold the same id twice (a since-fixed race) — show each once.
+  const devices = [...new Set(settings.ownerVisitorIds || [])];
+  const ips = [...new Set(settings.ownerIps || [])];
 
   return (
     <SectionCard

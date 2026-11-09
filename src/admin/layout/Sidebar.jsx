@@ -25,9 +25,14 @@ function Sidebar({ sidebarOpen, setSidebarOpen, collapsed = false }) {
   return (
     <>
       {/* Mobile overlay */}
-      {sidebarOpen && (
-        <div onClick={() => setSidebarOpen(false)} className="fixed inset-0 bg-black/50 z-40 lg:hidden" aria-hidden />
-      )}
+      {/* Always mounted so it can fade in and out with the drawer */}
+      <div
+        onClick={() => setSidebarOpen(false)}
+        className={`fixed inset-0 z-40 bg-black/50 backdrop-blur-[2px] lg:hidden transition-opacity duration-300 ${
+          sidebarOpen ? "opacity-100" : "opacity-0 pointer-events-none"
+        }`}
+        aria-hidden
+      />
 
       <aside
         className={`
@@ -35,7 +40,8 @@ function Sidebar({ sidebarOpen, setSidebarOpen, collapsed = false }) {
           h-screen overflow-y-auto overflow-x-hidden
           bg-card border-r border-border
           flex flex-col
-          transition-[transform,width,padding] duration-300
+          transition-[transform,width,padding] duration-300 ease-[cubic-bezier(0.22,1,0.36,1)]
+          admin-scroll
           w-70 p-4
           ${collapsed ? "lg:w-20 lg:px-3" : ""}
           lg:translate-x-0

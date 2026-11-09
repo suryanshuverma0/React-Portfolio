@@ -1,6 +1,6 @@
 import { useCallback, useEffect, useRef, useState } from "react";
 import { useNavigate } from "react-router-dom";
-import { Bell, Eye, AlertTriangle, CheckCheck, Settings2 } from "lucide-react";
+import { Bell, Eye, AlertTriangle, CheckCheck, Settings2, Building2, ShieldAlert } from "lucide-react";
 
 import { getAlerts, markAlertRead, markAllAlertsRead } from "../services/automation.service";
 
@@ -12,7 +12,13 @@ import { getAlerts, markAlertRead, markAllAlertsRead } from "../services/automat
 
 const POLL_MS = 60 * 1000;
 
-const ICONS = { long_visit: Eye, backup_failed: AlertTriangle, test: Bell };
+const ICONS = {
+  long_visit: Eye,
+  company_visit: Building2,
+  security: ShieldAlert,
+  backup_failed: AlertTriangle,
+  test: Bell,
+};
 
 const timeAgo = (date) => {
   const s = Math.round((Date.now() - new Date(date)) / 1000);

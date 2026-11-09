@@ -17,15 +17,50 @@ import ProtectedRoute from "./components/routes/ProtectedRoute";
 import MaintenanceScreen from "./components/common/MaintenanceScreen";
 import { getPublicSettings } from "./services/public.settings.service";
 import usePageTracking from "./hooks/usePageTracking";
+import {
+  AdminLayout,
+  Dashboard,
+  Profile,
+  Education,
+  Stats,
+  Experience,
+  Services,
+  Projects,
+  Certificates,
+  Skills,
+  Analytics,
+  Settings,
+  Users,
+  AdminBlog,
+  BlogEditor,
+  BlogComments,
+  Messages,
+  Security,
+  Visitors,
+  VisitorSession,
+  Storage,
+  CardAdmin,
+  Notes,
+  Automations,
+  BlogAnalytics,
+  ExecutiveReport,
+  Goals,
+  AuditLog,
+  SystemHealth,
+} from "./admin/adminPages";
 
 /*
   Everything except the homepage is split into its own chunk: visitors
   never download the admin dashboard, the auth screens or the ethers-based
   verify page unless they open them.
 */
-const ProjectDetails = lazy(() => import("./pages/ProjectDetails"));
-const Blog = lazy(() => import("./pages/Blog"));
-const BlogPost = lazy(() => import("./pages/BlogPost"));
+const loadProjectDetails = () => import("./pages/ProjectDetails");
+const loadBlog = () => import("./pages/Blog");
+const loadBlogPost = () => import("./pages/BlogPost");
+
+const ProjectDetails = lazy(loadProjectDetails);
+const Blog = lazy(loadBlog);
+const BlogPost = lazy(loadBlogPost);
 const NotFound = lazy(() => import("./pages/NotFound"));
 const VerifyPage = lazy(() => import("./pages/VerifyPage"));
 const Login = lazy(() => import("./pages/Login"));
@@ -34,36 +69,17 @@ const ForgotPassword = lazy(() => import("./pages/ForgotPassword"));
 const ResetPassword = lazy(() => import("./pages/ResetPassword"));
 const UserAccess = lazy(() => import("./pages/UserAccess"));
 const LinkPasskey = lazy(() => import("./pages/LinkPasskey"));
-const AdminLayout = lazy(() => import("./admin/layout/AdminLayout"));
-const Dashboard = lazy(() => import("./admin/pages/Dashboard"));
-const Profile = lazy(() => import("./admin/pages/Profile"));
-const Education = lazy(() => import("./admin/pages/Education"));
-const Stats = lazy(() => import("./admin/pages/Stats"));
-const Experience = lazy(() => import("./admin/pages/Experience"));
-const Services = lazy(() => import("./admin/pages/Services"));
-const Projects = lazy(() => import("./admin/pages/Projects"));
-const Certificates = lazy(() => import("./admin/pages/Certificates"));
-const Skills = lazy(() => import("./admin/pages/Skills"));
-const Analytics = lazy(() => import("./admin/pages/Analytics"));
-const Settings = lazy(() => import("./admin/pages/Settings"));
-const Users = lazy(() => import("./admin/pages/Users"));
-const AdminBlog = lazy(() => import("./admin/pages/Blog"));
-const BlogEditor = lazy(() => import("./admin/pages/BlogEditor"));
-const BlogComments = lazy(() => import("./admin/pages/BlogComments"));
-const Messages = lazy(() => import("./admin/pages/Messages"));
-const Security = lazy(() => import("./admin/pages/Security"));
-const Visitors = lazy(() => import("./admin/pages/Visitors"));
-const VisitorSession = lazy(() => import("./admin/pages/VisitorSession"));
-const Storage = lazy(() => import("./admin/pages/Storage"));
 const CardPage = lazy(() => import("./pages/Card"));
-const CardAdmin = lazy(() => import("./admin/pages/CardAdmin"));
-const Notes = lazy(() => import("./admin/pages/Notes"));
-const Automations = lazy(() => import("./admin/pages/Automations"));
-const BlogAnalytics = lazy(() => import("./admin/pages/BlogAnalytics"));
-const ExecutiveReport = lazy(() => import("./admin/pages/ExecutiveReport"));
-const Goals = lazy(() => import("./admin/pages/Goals"));
-const AuditLog = lazy(() => import("./admin/pages/AuditLog"));
-const SystemHealth = lazy(() => import("./admin/pages/SystemHealth"));
+
+/*
+  Every route under /dashboard shares one key, so navigating inside the
+  admin keeps AdminLayout (sidebar, header, bell) mounted and only swaps
+  the page in its <Outlet />. Keying by full pathname remounted the whole
+  shell on every click — the "page refresh" blink. Public pages keep the
+  per-path key so their enter/exit transition still plays.
+*/
+const routeKey = (pathname) =>
+  pathname === "/dashboard" || pathname.startsWith("/dashboard/") ? "/dashboard" : pathname;
 
 /*
   Gates the public-facing portfolio pages only — login/register/dashboard
@@ -96,6 +112,22 @@ function App() {
     return () => clearTimeout(timer);
   }, []);
 
+  // Warm the public page chunks once the homepage has settled, so opening
+  // a project or the blog never waits on a download (no blank frame).
+  useEffect(() => {
+    const warm = () => {
+      [loadBlog, loadBlogPost, loadProjectDetails].forEach((load) => load().catch(() => {}));
+    };
+
+    const id =
+      "requestIdleCallback" in window
+        ? window.requestIdleCallback(warm, { timeout: 5000 })
+        : setTimeout(warm, 3000);
+
+    return () =>
+      "cancelIdleCallback" in window ? window.cancelIdleCallback(id) : clearTimeout(id);
+  }, []);
+
   useEffect(() => {
     const loadMaintenanceStatus = async () => {
       try {
@@ -125,7 +157,7 @@ function App() {
           <Suspense fallback={null}>
           <AnimatePresence mode="wait">
             <ScrollToHash />
-            <Routes location={location} key={location.pathname}>
+            <Routes location={location} key={routeKey(location.pathname)}>
               <Route
                 path="/"
                 element={

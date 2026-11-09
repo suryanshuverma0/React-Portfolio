@@ -1,4 +1,5 @@
 import axios from "axios";
+import { installAdminCache } from "./adminCache";
 
 const api = axios.create({
   baseURL: "https://portfolio-backend-uy0a.onrender.com/api/v1",
@@ -9,6 +10,9 @@ const api = axios.create({
     "Content-Type": "application/json",
   },
 });
+
+// Instant revisits inside the admin dashboard (see adminCache.js).
+installAdminCache(api);
 
 /* ========================================
    RESPONSE INTERCEPTOR

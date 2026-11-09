@@ -1,5 +1,8 @@
 import { Menu, PanelLeftClose, PanelLeftOpen, Search } from "lucide-react";
 import { useLocation } from "react-router-dom";
+import { AnimatePresence, motion } from "framer-motion";
+
+import { getAdminTitle } from "../constants/sidebarLinks";
 
 import ThemeToggle from "../../components/ui/ThemeToggle";
 import { useAuth } from "../../contexts/AuthContext";
@@ -10,37 +13,7 @@ function Header({ setSidebarOpen, collapsed, onToggleCollapsed, onOpenSearch }) 
 
   const { user } = useAuth();
 
-  const getTitle = () => {
-    const path = location.pathname;
-
-    if (path === "/dashboard") return "Dashboard";
-    if (path.includes("/profile")) return "Profile";
-    if (path.includes("/education")) return "Education";
-    if (path.includes("/stats")) return "Stats";
-    if (path.includes("/experience")) return "Experience";
-    if (path.includes("/services")) return "Services";
-    if (path.includes("/projects")) return "Projects";
-    if (path.includes("/certificates")) return "Certificates";
-    if (path.includes("/skill")) return "Skills";
-    if (path.includes("/blog/analytics")) return "Blog Analytics";
-    if (path.includes("/goals")) return "Goals & Funnels";
-    if (path.includes("/audit")) return "Audit Log";
-    if (path.includes("/system")) return "System Health";
-    if (path.includes("/analytics")) return "Analytics";
-    if (path.includes("/visitors")) return "Visitors";
-    if (path.includes("/notes")) return "Notes";
-    if (path.includes("/card")) return "NFC Card";
-    if (path.includes("/report")) return "Executive Report";
-    if (path.includes("/automations")) return "Automations";
-    if (path.includes("/storage")) return "Storage";
-    if (path.includes("/blog")) return "Blog";
-    if (path.includes("/messages")) return "Messages";
-    if (path.includes("/users")) return "Users";
-    if (path.includes("/security")) return "Security";
-    if (path.includes("/settings")) return "Settings";
-
-    return "Admin";
-  };
+  const title = getAdminTitle(location.pathname);
 
   const getInitials = () => {
     if (!user?.email) return "A";
@@ -119,9 +92,20 @@ function Header({ setSidebarOpen, collapsed, onToggleCollapsed, onOpenSearch }) 
           {collapsed ? <PanelLeftOpen size={18} /> : <PanelLeftClose size={18} />}
         </button>
 
-        <h1 className="text-title">
-          {getTitle()}
-        </h1>
+        <div className="relative min-w-0 overflow-hidden">
+          <AnimatePresence mode="popLayout" initial={false}>
+            <motion.h1
+              key={title}
+              className="text-title truncate"
+              initial={{ opacity: 0, y: 8 }}
+              animate={{ opacity: 1, y: 0 }}
+              exit={{ opacity: 0, y: -8 }}
+              transition={{ duration: 0.2, ease: [0.22, 1, 0.36, 1] }}
+            >
+              {title}
+            </motion.h1>
+          </AnimatePresence>
+        </div>
       </div>
 
       {/* RIGHT */}
