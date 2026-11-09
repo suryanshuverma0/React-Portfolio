@@ -35,6 +35,8 @@ const NO_REFRESH_PATHS = [
   "/auth/register",
   "/google-auth/login",
   "/passkey/authentication",
+  "/account/mfa/verify",
+  "/account/qr/redeem",
 ];
 
 export const markSignedIn = () => {

@@ -15,6 +15,7 @@ import SkeletonCard from "../../components/common/SkeletonCard";
 import ConfirmModal from "../components/ui/ConfirmModal";
 import BlocklistCard from "../components/security/BlocklistCard";
 import ChangePasswordCard from "../components/security/ChangePasswordCard";
+import MfaCard from "../components/security/MfaCard";
 
 function Security() {
   const [passkeys, setPasskeys] = useState([]);
@@ -164,6 +165,8 @@ function Security() {
           of them at any time.
         </p>
       </section>
+
+      <MfaCard />
 
       <ChangePasswordCard />
 

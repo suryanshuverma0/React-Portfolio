@@ -1,4 +1,5 @@
 import { Link } from "react-router-dom";
+import MfaStep from "../components/auth/MfaStep";
 
 import { useForm } from "react-hook-form";
 
@@ -68,6 +69,9 @@ function Login() {
     },
   });
 
+  // Set when the account has two-factor sign-in on (second step).
+  const [mfaChallenge, setMfaChallenge] = useState(null);
+
   /* ========================================
      SUBMIT
   ========================================= */
@@ -75,6 +79,11 @@ function Login() {
   const onSubmit = async (data) => {
     try {
       const loggedInUser = await login(data);
+
+      if (loggedInUser?.mfaRequired) {
+        setMfaChallenge(loggedInUser.challenge);
+        return;
+      }
 
       toast.success("Logged in successfully");
       navigate(loggedInUser?.role === "admin" ? "/dashboard" : "/account");
@@ -120,6 +129,11 @@ function Login() {
   const handleGoogleSuccess = async (credential) => {
     try {
       const loggedInUser = await loginWithGoogle(credential);
+
+      if (loggedInUser?.mfaRequired) {
+        setMfaChallenge(loggedInUser.challenge);
+        return;
+      }
 
       toast.success("Logged in successfully");
       navigate(loggedInUser?.role === "admin" ? "/dashboard" : "/account");
@@ -225,6 +239,19 @@ function Login() {
   };
 
   return (
+    <>
+      {mfaChallenge && (
+        <MfaStep
+          challenge={mfaChallenge}
+          onCancel={() => setMfaChallenge(null)}
+          onDone={(u) => {
+            setMfaChallenge(null);
+            toast.success("Logged in successfully");
+            navigate(u?.role === "admin" ? "/dashboard" : "/account");
+          }}
+        />
+      )}
+
     <AuthLayout
       title="Welcome back"
       subtitle="
@@ -386,6 +413,7 @@ function Login() {
         </p>
       </div>
     </AuthLayout>
+    </>
   );
 }
 

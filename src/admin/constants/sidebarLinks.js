@@ -30,165 +30,77 @@ import {
   Smartphone,
 } from "lucide-react";
 
+/*
+  Grouped navigation. Each group has an id (remembered open/closed state),
+  an icon (shown in the collapsed rail) and items; `keywords` help the
+  sidebar filter and the Ctrl+K palette find a page by what it does.
+*/
 export const sidebarLinks = [
   {
-    section: "MAIN",
+    id: "overview",
+    section: "Overview",
+    icon: LayoutDashboard,
     items: [
-      {
-        label: "Dashboard",
-        path: "/dashboard",
-        icon: LayoutDashboard,
-      },
-      {
-        label: "Executive Report",
-        path: "/dashboard/report",
-        icon: FileBarChart,
-      },
-      {
-        label: "Notes",
-        path: "/dashboard/notes",
-        icon: NotebookPen,
-      },
-      {
-        label: "Profile",
-        path: "/dashboard/profile",
-        icon: User,
-      },
-      {
-        label: "Education",
-        path: "/dashboard/education",
-        icon: School,
-      },
-      {
-        label: "Stats",
-        path: "/dashboard/stats",
-        icon: Activity,
-      },
-      {
-        label: "Experience",
-        path: "/dashboard/experience",
-        icon: Briefcase,
-      },
-       {
-        label: "Services",
-        path: "/dashboard/services",
-        icon: Layers3,
-      },
-      {
-        label: "Projects",
-        path: "/dashboard/projects",
-        icon: FolderKanban,
-      },
-      {
-        label: "Certificates",
-        path: "/dashboard/certificates",
-        icon: Award,
-      },
-      {
-        label: "Skills",
-        path: "/dashboard/skill",
-        icon: Brain,
-      },
-      {
-        label: "Blog",
-        path: "/dashboard/blog",
-        icon: Newspaper,
-      },
-      {
-        label: "Blog Analytics",
-        path: "/dashboard/blog/analytics",
-        icon: ChartNoAxesCombined,
-      },
-      {
-        label: "Messages",
-        path: "/dashboard/messages",
-        icon: Mail,
-      },
-      {
-        label: "Analytics",
-        path: "/dashboard/analytics",
-        icon: BarChart3,
-      },
-      {
-        label: "Visitors",
-        path: "/dashboard/visitors",
-        icon: Footprints,
-      },
-      {
-        label: "Goals & Funnels",
-        path: "/dashboard/goals",
-        icon: Target,
-      },
-      {
-        label: "NFC Card",
-        path: "/dashboard/card",
-        icon: Nfc,
-      },
-      {
-        label: "Resume Builder",
-        path: "/dashboard/resume",
-        icon: FileUser,
-      },
-      {
-        label: "QR Studio",
-        path: "/dashboard/qr",
-        icon: QrCode,
-      },
+      { label: "Dashboard", path: "/dashboard", icon: LayoutDashboard, keywords: "home overview kpi" },
+      { label: "Executive Report", path: "/dashboard/report", icon: FileBarChart, keywords: "weekly summary score" },
+      { label: "Analytics", path: "/dashboard/analytics", icon: BarChart3, keywords: "traffic views visitors charts" },
+      { label: "Visitors", path: "/dashboard/visitors", icon: Footprints, keywords: "sessions journeys live map companies" },
+      { label: "Goals & Funnels", path: "/dashboard/goals", icon: Target, keywords: "conversion funnel" },
     ],
   },
-
   {
-    section: "SYSTEM",
+    id: "portfolio",
+    section: "Portfolio",
+    icon: Briefcase,
     items: [
-      {
-        label: "Users",
-        path: "/dashboard/users",
-        icon: UsersIcon,
-      },
-      {
-        label: "Security",
-        path: "/dashboard/security",
-        icon: ShieldCheck,
-      },
-      {
-        label: "Devices",
-        path: "/dashboard/devices",
-        icon: Smartphone,
-      },
-      {
-        label: "Audit Log",
-        path: "/dashboard/audit",
-        icon: ScrollText,
-      },
-      {
-        label: "System Health",
-        path: "/dashboard/system",
-        icon: HeartPulse,
-      },
-      {
-        label: "Automations",
-        path: "/dashboard/automations",
-        icon: Workflow,
-      },
-      {
-        label: "Storage",
-        path: "/dashboard/storage",
-        icon: Database,
-      },
-      {
-        label: "Appearance",
-        path: "/dashboard/appearance",
-        icon: Paintbrush,
-      },
-      {
-        label: "Settings",
-        path: "/dashboard/settings",
-        icon: Settings,
-      },
+      { label: "Profile", path: "/dashboard/profile", icon: User, keywords: "name headline about photo" },
+      { label: "Experience", path: "/dashboard/experience", icon: Briefcase, keywords: "jobs work internship" },
+      { label: "Education", path: "/dashboard/education", icon: School, keywords: "degree college school" },
+      { label: "Projects", path: "/dashboard/projects", icon: FolderKanban, keywords: "work case study github" },
+      { label: "Skills", path: "/dashboard/skill", icon: Brain, keywords: "technologies tools" },
+      { label: "Services", path: "/dashboard/services", icon: Layers3, keywords: "offer freelance" },
+      { label: "Certificates", path: "/dashboard/certificates", icon: Award, keywords: "courses certifications" },
+      { label: "Stats", path: "/dashboard/stats", icon: Activity, keywords: "numbers counters" },
+    ],
+  },
+  {
+    id: "content",
+    section: "Content & sharing",
+    icon: Newspaper,
+    items: [
+      { label: "Blog", path: "/dashboard/blog", icon: Newspaper, keywords: "posts articles write" },
+      { label: "Blog Analytics", path: "/dashboard/blog/analytics", icon: ChartNoAxesCombined, keywords: "readers comments" },
+      { label: "Messages", path: "/dashboard/messages", icon: Mail, keywords: "contact inbox email" },
+      { label: "Appearance", path: "/dashboard/appearance", icon: Paintbrush, keywords: "theme colours fonts sections order hide show" },
+      { label: "Resume Builder", path: "/dashboard/resume", icon: FileUser, keywords: "cv pdf ats" },
+      { label: "QR Studio", path: "/dashboard/qr", icon: QrCode, keywords: "qr code share print" },
+      { label: "NFC Card", path: "/dashboard/card", icon: Nfc, keywords: "business card tap" },
+    ],
+  },
+  {
+    id: "personal",
+    section: "Personal",
+    icon: NotebookPen,
+    items: [
+      { label: "Notes", path: "/dashboard/notes", icon: NotebookPen, keywords: "write ink pen" },
+    ],
+  },
+  {
+    id: "system",
+    section: "System",
+    icon: Settings,
+    items: [
+      { label: "Security", path: "/dashboard/security", icon: ShieldCheck, keywords: "password passkey mfa blocklist" },
+      { label: "Devices", path: "/dashboard/devices", icon: Smartphone, keywords: "sessions install app push qr sign in" },
+      { label: "Users", path: "/dashboard/users", icon: UsersIcon, keywords: "accounts" },
+      { label: "Audit Log", path: "/dashboard/audit", icon: ScrollText, keywords: "history actions logins" },
+      { label: "System Health", path: "/dashboard/system", icon: HeartPulse, keywords: "status uptime database redis" },
+      { label: "Automations", path: "/dashboard/automations", icon: Workflow, keywords: "alerts backups email" },
+      { label: "Storage", path: "/dashboard/storage", icon: Database, keywords: "files images cloudinary" },
+      { label: "Settings", path: "/dashboard/settings", icon: Settings, keywords: "site seo contact socials maintenance" },
     ],
   },
 ];
-
 
 // Screens reached from inside a page rather than the sidebar.
 const EXTRA_TITLES = [

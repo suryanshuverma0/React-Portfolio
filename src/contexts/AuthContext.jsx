@@ -45,10 +45,14 @@ export function AuthProvider({ children }) {
       // API CALL LATER
 
       const response = await api.post("/auth/login", data);
+      const result = response.data.data;
 
-      setUser(response.data.data);
+      // Two-factor on: the caller asks for a code, then calls verifyMfa().
+      if (result?.mfaRequired) return result;
 
-      return response.data.data;
+      setUser(result);
+
+      return result;
     } catch (error) {
       console.error(error);
 
@@ -56,6 +60,17 @@ export function AuthProvider({ children }) {
     } finally {
       setLoading(false);
     }
+  };
+
+  /* ========================================
+     MFA — second step of a password/Google
+     sign-in (authenticator or backup code)
+  ========================================= */
+
+  const verifyMfa = async (challenge, code) => {
+    const response = await api.post("/account/mfa/verify", { challenge, code });
+    setUser(response.data.data);
+    return response.data.data;
   };
 
   /* ========================================
@@ -67,10 +82,13 @@ export function AuthProvider({ children }) {
       setLoading(true);
 
       const response = await api.post("/google-auth/login", { credential });
+      const result = response.data.data;
 
-      setUser(response.data.data);
+      if (result?.mfaRequired) return result;
 
-      return response.data.data;
+      setUser(result);
+
+      return result;
     } catch (error) {
       console.error(error);
 
@@ -247,6 +265,8 @@ export function AuthProvider({ children }) {
         login,
 
         loginWithGoogle,
+
+        verifyMfa,
 
         loginWithPasskey,
 
