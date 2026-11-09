@@ -481,7 +481,7 @@ function Preview({ draft, mode, setMode, device, setDevice }) {
 
 /* ---------- page ---------- */
 
-function Appearance() {
+function Appearance({ initialTab = "theme" }) {
   const [saved, setSaved] = useState(null);
   const [draft, setDraft] = useState(null);
   const [meta, setMeta] = useState({ customized: false, updatedAt: null, updatedBy: "", history: [] });
@@ -492,7 +492,7 @@ function Appearance() {
   }, []);
   const [loadError, setLoadError] = useState(false);
   const [busy, setBusy] = useState(false);
-  const [tab, setTab] = useState("theme");
+  const [tab, setTab] = useState(initialTab);
   const [editMode, setEditMode] = useState("light");
   const [previewMode, setPreviewMode] = useState("light");
   const [device, setDevice] = useState("desktop");

@@ -30,6 +30,7 @@ import {
   Smartphone,
   FlaskConical,
   Package,
+  LayoutList,
 } from "lucide-react";
 
 /*
@@ -75,6 +76,7 @@ export const sidebarLinks = [
       { label: "Blog", path: "/dashboard/blog", icon: Newspaper, keywords: "posts articles write" },
       { label: "Blog Analytics", path: "/dashboard/blog/analytics", icon: ChartNoAxesCombined, keywords: "readers comments" },
       { label: "Messages", path: "/dashboard/messages", icon: Mail, keywords: "contact inbox email" },
+      { label: "Homepage sections", path: "/dashboard/sections", icon: LayoutList, keywords: "show hide enable disable reorder sections homepage order" },
       { label: "Appearance", path: "/dashboard/appearance", icon: Paintbrush, keywords: "theme colours fonts sections order hide show" },
       { label: "Resume Builder", path: "/dashboard/resume", icon: FileUser, keywords: "cv pdf ats" },
       { label: "QR Studio", path: "/dashboard/qr", icon: QrCode, keywords: "qr code share print" },

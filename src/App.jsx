@@ -328,6 +328,7 @@ function App() {
                 <Route path="system" element={<SystemHealth />} />
                 <Route path="settings" element={<Settings />} />
                 <Route path="appearance" element={<Appearance />} />
+                <Route path="sections" element={<Appearance key="sections" initialTab="layout" />} />
                 <Route path="devices" element={<Devices />} />
                 <Route path="qr" element={<QrStudio />} />
                 <Route path="resume" element={<ResumeBuilder />} />

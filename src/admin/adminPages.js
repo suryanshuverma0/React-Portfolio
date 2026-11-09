@@ -44,6 +44,7 @@ const loaders = {
   "/dashboard/system": () => import("./pages/SystemHealth"),
   "/dashboard/settings": () => import("./pages/Settings"),
   "/dashboard/appearance": () => import("./pages/Appearance"),
+  "/dashboard/sections": () => import("./pages/Appearance"),
   "/dashboard/devices": () => import("./pages/Devices"),
   "/dashboard/qr": () => import("./pages/QrStudio"),
   "/dashboard/resume": () => import("./pages/ResumeBuilder"),
