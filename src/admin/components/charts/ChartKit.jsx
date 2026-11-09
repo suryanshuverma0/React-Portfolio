@@ -67,7 +67,7 @@ export function Donut({ data, colorFor, totalLabel = "total", size = 140 }) {
   const total = data.reduce((t, d) => t + d.count, 0);
   if (!total) return <Empty />;
   return (
-    <div className="flex items-center gap-5">
+    <div className="flex flex-wrap items-center justify-center gap-5">
       <div className="relative shrink-0" style={{ width: size, height: size }}>
         <ResponsiveContainer width="100%" height="100%">
           <PieChart>
@@ -93,7 +93,7 @@ export function Donut({ data, colorFor, totalLabel = "total", size = 140 }) {
           <span className="text-[11px] text-muted">{totalLabel}</span>
         </div>
       </div>
-      <ul className="min-w-0 flex-1 space-y-2">
+      <ul className="min-w-[150px] flex-1 space-y-2">
         {data.map((d, i) => (
           <li key={d.label} className="flex items-center gap-2 text-small">
             <span className="h-2.5 w-2.5 shrink-0 rounded-full" style={{ backgroundColor: colorFor(d, i) }} />

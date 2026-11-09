@@ -1,5 +1,5 @@
 import { useEffect, useMemo, useState } from "react";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { toast } from "react-toastify";
 import {
   ResponsiveContainer,
@@ -11,6 +11,10 @@ import {
   YAxis,
   CartesianGrid,
   Tooltip,
+  ScatterChart,
+  Scatter,
+  ZAxis,
+  LabelList,
 } from "recharts";
 import {
   Newspaper,
@@ -33,6 +37,7 @@ import TrendDelta from "../components/ui/TrendDelta";
 import { Panel, Legend, ChartTooltip, Donut, RankBars, WeekHourHeatmap, Empty } from "../components/charts/ChartKit";
 import { AXIS_TICK, GRID, SERIES, MUTED, formatDay } from "../components/charts/chartTokens";
 import { getBlogAnalytics } from "../services/automation.service";
+import { KpiCard, RangeTabs } from "../components/charts/Visuals";
 import { countryFlag, countryName, formatDuration, compactNumber } from "../components/dashboard/format";
 
 /* ========================================
@@ -44,10 +49,10 @@ import { countryFlag, countryName, formatDuration, compactNumber } from "../comp
 ========================================= */
 
 const RANGES = [
-  { label: "7 Days", value: 7 },
-  { label: "30 Days", value: 30 },
-  { label: "90 Days", value: 90 },
-  { label: "1 Year", value: 365 },
+  { label: "7 days", value: 7 },
+  { label: "30 days", value: 30 },
+  { label: "90 days", value: 90 },
+  { label: "1 year", value: 365 },
 ];
 
 const SOURCE_COLORS = { Direct: SERIES[0], Search: SERIES[1], Social: SERIES[2], Referral: SERIES[3], Card: MUTED };
@@ -65,24 +70,6 @@ const COLUMNS = [
   ["comments", "Comments"],
   ["engagementRate", "Comments / 100 views"],
 ];
-
-function Kpi({ icon: Icon, label, value, change, hint, accent = SERIES[0] }) {
-  return (
-    <div className="card glass-hover space-y-3">
-      <span className="h-9 w-9 rounded-xl flex items-center justify-center" style={{ backgroundColor: `color-mix(in srgb, ${accent} 16%, transparent)`, color: accent }}>
-        <Icon size={16} />
-      </span>
-      <div>
-        <p className="text-small">{label}</p>
-        <p className="text-heading mt-1 tabular-nums">{value}</p>
-      </div>
-      <div className="flex flex-wrap items-center gap-x-2 gap-y-1">
-        {change !== undefined && <TrendDelta percent={change} label="vs prev." />}
-        {hint && <span className="text-xs text-muted">{hint}</span>}
-      </div>
-    </div>
-  );
-}
 
 const toCsv = (rows) => {
   const header = ["Title", "Slug", "Status", "Published", "Words", "Views", "Views change %", "Readers", "Avg time (s)", "Read ratio %", "Avg scroll %", "Completion %", "Clicks", "Comments", "Pending", "Comments per 100 views", "Tags"];
@@ -188,7 +175,65 @@ function PostsTable({ posts }) {
   );
 }
 
+/* ---------- post performance (bubble) ---------- */
+
+function BubbleTooltip({ active, payload }) {
+  if (!active || !payload?.length) return null;
+  const p = payload[0].payload;
+  return (
+    <div className="max-w-64 space-y-1 rounded-xl border border-border bg-card px-3 py-2 text-xs shadow-xl">
+      <p className="font-medium leading-snug">{p.title}</p>
+      <p className="flex justify-between gap-4"><span className="text-muted">Views</span><span className="tabular-nums">{p.views}</span></p>
+      <p className="flex justify-between gap-4"><span className="text-muted">Read to the end</span><span className="tabular-nums">{p.completionRate}%</span></p>
+      <p className="flex justify-between gap-4"><span className="text-muted">Avg scroll</span><span className="tabular-nums">{p.avgScroll}%</span></p>
+      <p className="flex justify-between gap-4"><span className="text-muted">Length</span><span className="tabular-nums">{p.words.toLocaleString()} words</span></p>
+    </div>
+  );
+}
+
+// Reach (x) against depth (y): top-right posts are both found and finished;
+// top-left ones deserve more promotion, bottom-right ones a rewrite.
+function PostPerformance({ posts }) {
+  const points = posts
+    .filter((p) => p.views > 0)
+    .map((p) => ({ ...p, words: p.words || 0, short: p.title.length > 26 ? `${p.title.slice(0, 25)}…` : p.title }));
+  return (
+    <Panel
+      title="Post performance map"
+      subtitle="Reach vs. how far people read · bubble size = post length · hover for details"
+    >
+      {!points.length ? (
+        <Empty>Posts appear here once they get views in this period.</Empty>
+      ) : (
+        <>
+          <div className="h-72">
+            <ResponsiveContainer width="100%" height="100%">
+              <ScatterChart margin={{ top: 12, right: 16, left: -12, bottom: 4 }}>
+                <CartesianGrid strokeDasharray="3 3" stroke={GRID} />
+                <XAxis type="number" dataKey="views" name="Views" tick={AXIS_TICK} axisLine={false} tickLine={false} allowDecimals={false} label={{ value: "Views →", position: "insideBottomRight", offset: -2, fill: "var(--color-muted)", fontSize: 11 }} />
+                <YAxis type="number" dataKey="completionRate" name="Read to the end" domain={[0, 100]} tick={AXIS_TICK} tickFormatter={(v) => `${v}%`} axisLine={false} tickLine={false} />
+                <ZAxis type="number" dataKey="words" range={[120, 900]} name="Words" />
+                <Tooltip content={<BubbleTooltip />} cursor={{ strokeDasharray: "3 3", stroke: "var(--color-border-strong)" }} />
+                <Scatter data={points} fill={SERIES[0]} fillOpacity={0.55} stroke={SERIES[0]} strokeWidth={2}>
+                  {/* Direct labels while there are few enough posts to read them */}
+                  {points.length <= 8 && <LabelList dataKey="short" position="right" offset={12} style={{ fill: "var(--color-secondary)", fontSize: 11 }} />}
+                </Scatter>
+              </ScatterChart>
+            </ResponsiveContainer>
+          </div>
+          <div className="mt-3 grid gap-2 text-xs text-muted sm:grid-cols-3">
+            <p><span className="font-medium text-primary">Top right</span> — found and finished. Your best work.</p>
+            <p><span className="font-medium text-primary">Top left</span> — finished by few. Worth promoting.</p>
+            <p><span className="font-medium text-primary">Bottom right</span> — clicked, then left. Tighten the intro.</p>
+          </div>
+        </>
+      )}
+    </Panel>
+  );
+}
+
 function BlogAnalytics() {
+  const navigate = useNavigate();
   const [range, setRange] = useState(30);
   const [data, setData] = useState(null);
 
@@ -204,6 +249,7 @@ function BlogAnalytics() {
 
   if (!data) return <SkeletonCard />;
   const t = data.totals;
+  const vsLabel = `vs prev. ${range === 365 ? "year" : `${range}d`}`;
   const topPosts = data.posts.filter((p) => p.views).slice(0, 8);
   const quality = data.posts.filter((p) => p.readers).slice(0, 8);
 
@@ -217,29 +263,28 @@ function BlogAnalytics() {
           <p className="text-body mt-3">How your writing is read, shared and discussed.</p>
         </div>
         <div className="flex flex-wrap gap-2">
-          {RANGES.map((r) => (
-            <button
-              key={r.value}
-              type="button"
-              onClick={() => setRange(r.value)}
-              className={`h-control px-4 rounded-control border border-border text-small transition ${range === r.value ? "bg-primary text-background" : "bg-surface"}`}
-            >
-              {r.label}
-            </button>
-          ))}
+          <RangeTabs value={range} onChange={setRange} options={RANGES} />
         </div>
       </section>
 
       {/* KPIs */}
-      <section className="grid gap-4 grid-cols-2 lg:grid-cols-4">
-        <Kpi icon={Eye} label="Post views" value={compactNumber(t.views)} change={t.viewsChange} hint={`+${t.indexViews} on /blog`} />
-        <Kpi icon={Users} label="Readers" value={compactNumber(t.readers)} hint={`${t.newReaderShare}% new`} accent={SERIES[2]} />
-        <Kpi icon={Timer} label="Avg. read time" value={formatDuration(t.avgTimeMs)} hint={`posts average ${t.avgReadingTime} min`} accent={SERIES[1]} />
-        <Kpi icon={ScrollText} label="Read to the end" value={`${t.completionRate}%`} hint={`avg scroll ${t.avgScroll}%`} accent={SERIES[3]} />
-        <Kpi icon={MessageSquare} label="Comments" value={t.commentsInRange} change={t.commentsChange} hint={`${t.comments} all time`} />
-        <Kpi icon={Clock3} label="Awaiting approval" value={t.pending} hint={t.pending ? "needs moderation" : "all caught up"} accent={t.pending ? "#d97706" : SERIES[2]} />
-        <Kpi icon={CheckCircle2} label="Approval rate" value={`${t.approvalRate}%`} hint={`${t.commenters} commenters`} accent={SERIES[2]} />
-        <Kpi icon={Percent} label="Comments / 100 views" value={t.commentsPer100Views} hint={`avg ${t.avgCommentWords} words each`} accent={SERIES[1]} />
+      <section className="grid gap-4 sm:grid-cols-2 xl:grid-cols-4">
+        <KpiCard index={0} icon={Eye} label="Post views" value={t.views} delta={t.viewsChange} deltaLabel={vsLabel} accent={SERIES[0]} hint={`Plus ${t.indexViews} views of the /blog index`} />
+        <KpiCard index={1} icon={Users} label="Readers" value={t.readers} accent={SERIES[2]} hint={`${t.newReaderShare}% are new readers`} />
+        <KpiCard index={2} icon={Timer} label="Avg. read time" value={t.avgTimeMs} format={formatDuration} accent={SERIES[1]} hint={`Posts average ${t.avgReadingTime} min to read`} />
+        <KpiCard index={3} icon={ScrollText} label="Read to the end" value={t.completionRate} format={(v) => `${Math.round(v)}%`} gauge={t.completionRate} accent={SERIES[3]} hint={`Average scroll ${t.avgScroll}%`} />
+        <KpiCard index={4} icon={MessageSquare} label="Comments" value={t.commentsInRange} delta={t.commentsChange} deltaLabel={vsLabel} spark={data.daily} sparkKey="comments" accent={SERIES[0]} hint={`${t.comments} all time`} />
+        <KpiCard
+          index={5}
+          icon={Clock3}
+          label="Awaiting approval"
+          value={t.pending}
+          accent={t.pending ? "#d97706" : SERIES[2]}
+          hint={t.pending ? "Needs moderation" : "All caught up"}
+          onClick={t.pending ? () => navigate("/dashboard/blog/comments") : undefined}
+        />
+        <KpiCard index={6} icon={CheckCircle2} label="Approval rate" value={t.approvalRate} format={(v) => `${Math.round(v)}%`} gauge={t.approvalRate} accent={SERIES[2]} hint={`${t.commenters} commenters`} />
+        <KpiCard index={7} icon={Percent} label="Comments / 100 views" value={Number(t.commentsPer100Views) || 0} format={(v) => (Math.round(v * 10) / 10).toFixed(1)} accent={SERIES[1]} hint={`About ${t.avgCommentWords} words each`} />
       </section>
 
       {/* Content inventory */}
@@ -348,6 +393,8 @@ function BlogAnalytics() {
           </div>
         )}
       </Panel>
+
+      <PostPerformance posts={data.posts} />
 
       {/* Audience */}
       <section className="grid gap-6 lg:grid-cols-3">

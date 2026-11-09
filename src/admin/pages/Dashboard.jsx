@@ -21,7 +21,6 @@ import {
 
 import { getDashboardSummary, getRecentActivity, getDashboardInsights } from "../services/analytics.service";
 import {
-  Sparkline,
   TrafficChart,
   SourcesCard,
   AudienceCard,
@@ -32,7 +31,7 @@ import {
 import { formatDuration } from "../components/dashboard/format";
 import ReportSummaryCard from "../components/dashboard/ReportSummaryCard";
 import SkeletonCard from "../../components/common/SkeletonCard";
-import TrendDelta from "../components/ui/TrendDelta";
+import { KpiCard } from "../components/charts/Visuals";
 
 /* ========================================
    Reuses the same fixed chart palette as
@@ -79,51 +78,6 @@ const formatRelativeTime = (dateString) => {
 /* ========================================
    KPI CARD
 ========================================= */
-
-function KpiCard({ icon: Icon, label, value, accent, trendPercent, trendLabel, live, onClick, spark, sparkKey, hint }) {
-  const Wrapper = onClick ? "button" : "div";
-
-  return (
-    <Wrapper
-      type={onClick ? "button" : undefined}
-      onClick={onClick}
-      className={`card glass-hover flex flex-col justify-start space-y-4 text-left w-full ${onClick ? "cursor-pointer" : ""}`}
-    >
-      <div className="flex items-center justify-between">
-        <span
-          className="h-10 w-10 rounded-2xl flex items-center justify-center shrink-0"
-          style={{
-            backgroundColor: `color-mix(in srgb, ${accent} 16%, transparent)`,
-            color: accent,
-          }}
-        >
-          <Icon size={18} strokeWidth={2} />
-        </span>
-
-        {live && (
-          <span className="relative flex h-2.5 w-2.5">
-            <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-500 opacity-75" />
-            <span className="relative inline-flex rounded-full h-2.5 w-2.5 bg-emerald-500" />
-          </span>
-        )}
-      </div>
-
-      <div>
-        <p className="text-small">{label}</p>
-        <h2 className="text-heading mt-1">{value}</h2>
-      </div>
-
-      {(trendPercent !== undefined || hint) && (
-        <div className="flex flex-wrap items-center gap-x-2 gap-y-1">
-          {trendPercent !== undefined && <TrendDelta percent={trendPercent} label={trendLabel} />}
-          {hint && <span className="text-xs text-muted">{hint}</span>}
-        </div>
-      )}
-
-      {spark?.length > 1 && <Sparkline data={spark} dataKey={sparkKey} color={accent} />}
-    </Wrapper>
-  );
-}
 
 /* ========================================
    ATTENTION CARD
@@ -280,8 +234,8 @@ function Dashboard() {
           label="Views (30d)"
           value={summary?.totalViews ?? 0}
           accent={ACCENTS.blue}
-          trendPercent={summary?.trend?.viewsChangePercent}
-          trendLabel="vs prev. 30d"
+          delta={summary?.trend?.viewsChangePercent}
+          deltaLabel="vs prev. 30d"
           spark={summary?.viewsByDay}
           sparkKey="count"
           onClick={() => navigate("/dashboard/analytics")}
@@ -292,8 +246,8 @@ function Dashboard() {
           label="Unique Visitors (30d)"
           value={summary?.uniqueVisitors ?? 0}
           accent={ACCENTS.aqua}
-          trendPercent={summary?.trend?.visitorsChangePercent}
-          trendLabel="vs prev. 30d"
+          delta={summary?.trend?.visitorsChangePercent}
+          deltaLabel="vs prev. 30d"
           spark={v?.daily}
           sparkKey="visitors"
           onClick={() => navigate("/dashboard/analytics")}
@@ -326,8 +280,8 @@ function Dashboard() {
             label="Sessions Today"
             value={v.sessionsToday}
             accent={ACCENTS.blue}
-            trendPercent={v.sessionsTodayChange}
-            trendLabel="vs yesterday"
+            delta={v.sessionsTodayChange}
+            deltaLabel="vs yesterday"
             spark={v.daily.slice(-14)}
             sparkKey="sessions"
             onClick={() => navigate("/dashboard/visitors")}
@@ -336,10 +290,11 @@ function Dashboard() {
           <KpiCard
             icon={Timer}
             label="Avg. Time on Site (7d)"
-            value={formatDuration(v.avgDurationMs)}
+            value={v.avgDurationMs}
+            format={formatDuration}
             accent={ACCENTS.aqua}
-            trendPercent={v.avgDurationChange}
-            trendLabel="vs prev. 7d"
+            delta={v.avgDurationChange}
+            deltaLabel="vs prev. 7d"
             spark={v.daily.slice(-14)}
             sparkKey="avgDurationMs"
             onClick={() => navigate("/dashboard/analytics")}
@@ -348,10 +303,12 @@ function Dashboard() {
           <KpiCard
             icon={LogOut}
             label="Bounce Rate (7d)"
-            value={`${v.bounceRate}%`}
+            value={Number(v.bounceRate) || 0}
+            format={(x) => `${(Math.round(x * 10) / 10).toFixed(1)}%`}
+            deltaUnit=" pts"
             accent={ACCENTS.orange}
-            trendPercent={v.bounceRateDelta}
-            trendLabel="pts better vs prev. 7d"
+            delta={v.bounceRateDelta}
+            deltaLabel="pts better vs prev. 7d"
             spark={v.daily.slice(-14).map((d) => ({ ...d, bounceRate: d.bounceRate ?? 0 }))}
             sparkKey="bounceRate"
             onClick={() => navigate("/dashboard/analytics")}
@@ -362,8 +319,8 @@ function Dashboard() {
             label="Card Opens (7d)"
             value={insights.card.opens7d}
             accent={ACCENTS.yellow}
-            trendPercent={insights.card.opensChange}
-            trendLabel="vs prev. 7d"
+            delta={insights.card.opensChange}
+            deltaLabel="vs prev. 7d"
             hint={`${insights.card.saves7d} saved contact`}
             spark={insights.card.daily}
             sparkKey="opens"

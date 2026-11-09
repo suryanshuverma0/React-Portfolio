@@ -10,6 +10,11 @@ import {
   Clock,
   Route as RouteIcon,
   Download,
+  Activity,
+  Timer,
+  Layers,
+  ScrollText,
+  LogOut,
 } from "lucide-react";
 
 import {
@@ -17,8 +22,12 @@ import {
   getLiveVisitors,
   getJourneyInsights,
   getAudienceInsights,
+  getAdvancedInsights,
   exportAnalyticsCsv,
 } from "../services/analytics.service";
+import { KpiCard, RangeTabs } from "../components/charts/Visuals";
+import { SERIES } from "../components/charts/chartTokens";
+import { splitPeriods, sum, weightedAvg, pctChange } from "../components/charts/periodMath";
 import { saveBlob } from "../services/automation.service";
 import SkeletonCard from "../../components/common/SkeletonCard";
 import AudiencePanel from "../components/visitors/AudiencePanel";
@@ -40,11 +49,11 @@ import {
 } from "../components/visitors/visitorFormat";
 
 const rangeOptions = [
-  { label: "24 Hours", value: 1 },
-  { label: "7 Days", value: 7 },
-  { label: "30 Days", value: 30 },
-  { label: "90 Days", value: 90 },
-  { label: "All Time", value: 3650 },
+  { label: "24h", value: 1 },
+  { label: "7 days", value: 7 },
+  { label: "30 days", value: 30 },
+  { label: "90 days", value: 90 },
+  { label: "All time", value: 3650 },
 ];
 
 const TABS = [
@@ -63,16 +72,6 @@ const DAY_NAMES = ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"];
 /* ========================================
    SMALL BUILDING BLOCKS
 ========================================= */
-
-function StatTile({ label, value, hint }) {
-  return (
-    <div className="card glass-hover space-y-2">
-      <p className="text-small">{label}</p>
-      <h2 className="text-heading tabular-nums">{value}</h2>
-      {hint && <p className="text-muted text-xs">{hint}</p>}
-    </div>
-  );
-}
 
 function LiveDot() {
   return (
@@ -700,9 +699,16 @@ function Visitors() {
   const [audience, setAudience] = useState(null);
   const [live, setLive] = useState([]);
   const [refreshingLive, setRefreshingLive] = useState(false);
+  const [trend, setTrend] = useState(null);
 
   useEffect(() => {
     let cancelled = false;
+
+    // Daily series for sparklines (≥ 14 days of context) and the previous
+    // period comparison — optional, the tiles work without it.
+    getAdvancedInsights(Math.min(365, Math.max(range * 2, 28)))
+      .then((data) => !cancelled && setTrend(data))
+      .catch(() => !cancelled && setTrend(null));
 
     getJourneyInsights(range)
       .then((data) => !cancelled && setInsights(data))
@@ -748,6 +754,24 @@ function Visitors() {
 
   const totals = insights?.totals;
 
+  const trendModel = useMemo(() => {
+    const daily = trend?.daily || [];
+    if (!daily.length) return { spark: [], sessionsDelta: null, durationDelta: null };
+
+    const spark = daily.slice(-Math.min(daily.length, Math.max(range, 14))).map((d) => ({ ...d, pps: d.sessions ? d.views / d.sessions : 0 }));
+    const { current, previous } = splitPeriods(daily, range);
+    // Only compare when a full previous period exists and was tracked.
+    const tracked = range <= 182 && previous.length === range && sum(previous, "sessions") > 0;
+
+    return {
+      spark,
+      sessionsDelta: tracked ? pctChange(sum(current, "sessions"), sum(previous, "sessions")) : null,
+      durationDelta: tracked ? pctChange(weightedAvg(current, "avgDurationMs", "sessions"), weightedAvg(previous, "avgDurationMs", "sessions")) : null,
+    };
+  }, [trend, range]);
+
+  const vsLabel = range === 1 ? "vs previous day" : range > 365 ? "" : `vs prev. ${range}d`;
+
   return (
     <div className="max-w-6xl mx-auto w-full space-y-8">
       <section className="flex flex-wrap items-center justify-between gap-4">
@@ -763,43 +787,72 @@ function Visitors() {
 
         <div className="flex flex-wrap gap-2">
           <ExportMenu range={range} />
-          {rangeOptions.map((option) => (
-            <button
-              key={option.value}
-              type="button"
-              onClick={() => setRange(option.value)}
-              className={`h-control px-4 rounded-control border border-border text-small transition ${
-                range === option.value ? "bg-primary text-background" : "bg-surface"
-              }`}
-            >
-              {option.label}
-            </button>
-          ))}
+          <RangeTabs value={range} onChange={setRange} options={rangeOptions} />
         </div>
       </section>
 
-      <section className="grid gap-4 grid-cols-2 lg:grid-cols-5">
-        <StatTile
+      {/* 3 + 2 on medium screens (spans keep rows full), 5 across on wide */}
+      <section className="grid gap-4 sm:grid-cols-2 lg:grid-cols-6 xl:grid-cols-5">
+        <KpiCard
+          index={0}
+          className="lg:col-span-2 xl:col-span-1"
+          icon={Activity}
           label="Sessions"
-          value={totals?.sessions ?? "—"}
+          value={totals?.sessions ?? 0}
+          delta={trendModel.sessionsDelta}
+          deltaLabel={vsLabel}
+          spark={trendModel.spark}
+          sparkKey="sessions"
+          accent={SERIES[0]}
           hint={totals ? `${totals.visitors} unique visitors` : undefined}
         />
-        <StatTile
+        <KpiCard
+          index={1}
+          className="lg:col-span-2 xl:col-span-1"
+          icon={Timer}
           label="Avg time on site"
-          value={totals ? formatDuration(totals.avgDurationMs) : "—"}
+          value={totals?.avgDurationMs ?? 0}
+          format={formatDuration}
+          delta={trendModel.durationDelta}
+          deltaLabel={vsLabel}
+          spark={trendModel.spark}
+          sparkKey="avgDurationMs"
+          accent={SERIES[2]}
           hint={totals ? `${formatDuration(totals.avgActiveTimeMs)} actively viewing` : undefined}
         />
-        <StatTile
+        <KpiCard
+          index={2}
+          className="lg:col-span-2 xl:col-span-1"
+          icon={Layers}
           label="Pages / session"
-          value={totals?.avgPageViews ?? "—"}
+          value={Number(totals?.avgPageViews) || 0}
+          format={(v) => (Math.round(v * 10) / 10).toFixed(1)}
+          spark={trendModel.spark}
+          sparkKey="pps"
+          sparkFormat={(v) => (Math.round(v * 10) / 10).toFixed(1)}
+          accent={SERIES[1]}
         />
-        <StatTile
+        <KpiCard
+          index={3}
+          className="lg:col-span-3 xl:col-span-1"
+          icon={ScrollText}
           label="Avg scroll depth"
-          value={totals ? `${totals.avgScrollDepth}%` : "—"}
+          value={totals?.avgScrollDepth ?? 0}
+          format={(v) => `${Math.round(v)}%`}
+          gauge={totals?.avgScrollDepth ?? 0}
+          accent={SERIES[3]}
+          hint="How far down pages people get"
         />
-        <StatTile
+        <KpiCard
+          index={4}
+          className="lg:col-span-3 xl:col-span-1"
+          icon={LogOut}
           label="Bounce rate"
-          value={totals ? `${totals.bounceRate}%` : "—"}
+          value={totals?.bounceRate ?? 0}
+          format={(v) => `${(Math.round(v * 10) / 10).toFixed(1)}%`}
+          gauge={totals?.bounceRate ?? 0}
+          goodWhen="down"
+          accent={SERIES[1]}
           hint="1 page, under 10s"
         />
       </section>
