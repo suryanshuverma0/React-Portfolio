@@ -28,6 +28,7 @@ import {
   FileUser,
   QrCode,
   Smartphone,
+  FlaskConical,
 } from "lucide-react";
 
 /*
@@ -57,6 +58,7 @@ export const sidebarLinks = [
       { label: "Experience", path: "/dashboard/experience", icon: Briefcase, keywords: "jobs work internship" },
       { label: "Education", path: "/dashboard/education", icon: School, keywords: "degree college school" },
       { label: "Projects", path: "/dashboard/projects", icon: FolderKanban, keywords: "work case study github" },
+      { label: "Research", path: "/dashboard/research", icon: FlaskConical, keywords: "papers publications conference journal" },
       { label: "Skills", path: "/dashboard/skill", icon: Brain, keywords: "technologies tools" },
       { label: "Services", path: "/dashboard/services", icon: Layers3, keywords: "offer freelance" },
       { label: "Certificates", path: "/dashboard/certificates", icon: Award, keywords: "courses certifications" },

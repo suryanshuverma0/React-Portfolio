@@ -47,6 +47,7 @@ const loaders = {
   "/dashboard/devices": () => import("./pages/Devices"),
   "/dashboard/qr": () => import("./pages/QrStudio"),
   "/dashboard/resume": () => import("./pages/ResumeBuilder"),
+  "/dashboard/research": () => import("./pages/ResearchAdmin"),
 };
 
 // A failed preload (offline, deploy swapped chunks) must not stay cached as
@@ -103,6 +104,7 @@ export const Appearance = page("/dashboard/appearance");
 export const Devices = page("/dashboard/devices");
 export const QrStudio = page("/dashboard/qr");
 export const ResumeBuilder = page("/dashboard/resume");
+export const ResearchAdmin = page("/dashboard/research");
 
 // Preload the chunk behind a sidebar link (exact path match).
 export const preloadAdminPage = (path) => {

@@ -1,15 +1,16 @@
-import { researchContent } from "../content/researchContent";
+import { useResearch } from "../../hooks/useResearch";
 import { servicesContent } from "../content/servicesContent";
 
-// The stack named across the research and services — deduplicated, in order.
-const STACK = [
-  ...new Set([
-    ...researchContent.flatMap((paper) => paper.technologies),
-    ...servicesContent.flatMap((service) => service.technologies),
-  ]),
-];
-
 function TechMarquee() {
+  // The stack named across the research and services — deduplicated, in order.
+  const papers = useResearch();
+  const STACK = [
+    ...new Set([
+      ...papers.flatMap((paper) => paper.technologies || []),
+      ...servicesContent.flatMap((service) => service.technologies),
+    ]),
+  ];
+
   // Rendered twice so the -50% translate loops without a visible seam.
   const track = [...STACK, ...STACK];
 

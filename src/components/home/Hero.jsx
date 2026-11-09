@@ -11,7 +11,7 @@ import { ArrowDown, ArrowRight } from "lucide-react";
 import Container from "../ui/Container";
 import Magnetic from "../motion/Magnetic";
 import { heroContent } from "../content/heroContent";
-import { researchContent } from "../content/researchContent";
+import { useResearch, featuredPaperOf } from "../../hooks/useResearch";
 import { iconMap } from "../constants/iconMap";
 import { getPublicProfile } from "../../services/public.profile.service";
 import { getPublicSettings } from "../../services/public.settings.service";
@@ -20,7 +20,6 @@ import { firstVisibleAnchor, isSectionVisible, useAppearance } from "../../lib/a
 
 const EASE = [0.22, 1, 0.36, 1];
 
-const featuredPaper = researchContent[0];
 
 /* Cycles through roles with a vertical slide — quieter than a typewriter. */
 function RoleRotator({ roles }) {
@@ -90,6 +89,9 @@ function Hero() {
   const { sections } = useAppearance();
   const showResearch = isSectionVisible(sections, "research");
   const showContact = isSectionVisible(sections, "contact");
+
+  // The announced paper comes from admin → Research (featured first).
+  const featuredPaper = featuredPaperOf(useResearch());
 
   const [profile, setProfile] = useState(null);
   const [settings, setSettings] = useState(null);

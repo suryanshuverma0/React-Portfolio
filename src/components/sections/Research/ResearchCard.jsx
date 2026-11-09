@@ -161,7 +161,13 @@ BulletList.propTypes = {
   title, authors, abstract and headline results. Architecture,
   contributions, gas figures and scope sit behind the details toggle.
 */
-function ResearchCard({ paper, index = 0 }) {
+// Papers from the admin may leave sections empty — normalise so every
+// list is an array and each detail block only renders when it has content.
+const LISTS = ["authors", "highlights", "contracts", "contributions", "gas", "evaluationNotes", "limitations", "technologies"];
+const normalise = (paper) => ({ ...paper, ...Object.fromEntries(LISTS.map((key) => [key, Array.isArray(paper[key]) ? paper[key] : []])) });
+
+function ResearchCard({ paper: input, index = 0 }) {
+  const paper = normalise(input);
   const [expanded, setExpanded] = useState(false);
 
   const reduceMotion = useReducedMotion();
@@ -216,8 +222,8 @@ function ResearchCard({ paper, index = 0 }) {
           <div className="flex items-center gap-2.5 text-eyebrow">
             <FileText size={13} aria-hidden="true" />
             {paper.paperId && <span>Paper {paper.paperId}</span>}
-            <span aria-hidden="true">/</span>
-            <span className="text-primary">{paper.venue}</span>
+            {paper.paperId && paper.venue && <span aria-hidden="true">/</span>}
+            {paper.venue && <span className="text-primary">{paper.venue}</span>}
           </div>
 
           <div className="flex flex-wrap items-center gap-3">
@@ -303,6 +309,7 @@ function ResearchCard({ paper, index = 0 }) {
 
           {/* RESULTS */}
 
+          {paper.highlights.length > 0 && (
           <div className="p-5 sm:p-8 md:p-10 bg-surface/40 border-t border-border lg:border-t-0">
             <p className="text-eyebrow text-primary! mb-7">Headline results</p>
 
@@ -380,6 +387,7 @@ function ResearchCard({ paper, index = 0 }) {
               ))}
             </div>
           </div>
+          )}
         </div>
 
         {/* DETAILS */}
@@ -396,23 +404,34 @@ function ResearchCard({ paper, index = 0 }) {
               className="overflow-hidden"
             >
               <div className="border-t border-border p-5 sm:p-8 md:p-10 flex flex-col gap-12">
-                <section>
-                  <DetailHeading note="3 contracts">Architecture</DetailHeading>
-                  <ArchitectureDiagram contracts={paper.contracts} />
-                </section>
+                {paper.contracts.length > 0 && (
+                  <section>
+                    <DetailHeading note={paper.architectureNote ?? `${paper.contracts.length} components`}>
+                      {paper.architectureTitle || "Architecture"}
+                    </DetailHeading>
+                    <ArchitectureDiagram contracts={paper.contracts} />
+                  </section>
+                )}
 
+                {(paper.contributions.length > 0 || paper.gas.length > 0) && (
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-12">
+                  {paper.contributions.length > 0 && (
                   <section>
                     <DetailHeading>Contributions</DetailHeading>
                     <BulletList items={paper.contributions} numbered />
                   </section>
+                  )}
 
+                  {paper.gas.length > 0 && (
                   <section>
-                    <DetailHeading note="Sepolia · 10 runs">Average gas</DetailHeading>
+                    <DetailHeading note={paper.metricsNote || undefined}>{paper.metricsTitle || "Key measurements"}</DetailHeading>
                     <GasChart rows={paper.gas} />
                   </section>
+                  )}
                 </div>
+                )}
 
+                {paper.technologies.length > 0 && (
                 <section>
                   <DetailHeading>Stack</DetailHeading>
 
@@ -424,18 +443,25 @@ function ResearchCard({ paper, index = 0 }) {
                     ))}
                   </div>
                 </section>
+                )}
 
+                {(paper.evaluationNotes.length > 0 || paper.limitations.length > 0) && (
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-12">
+                  {paper.evaluationNotes.length > 0 && (
                   <section>
                     <DetailHeading>Evaluation notes</DetailHeading>
                     <BulletList items={paper.evaluationNotes} />
                   </section>
+                  )}
 
+                  {paper.limitations.length > 0 && (
                   <section>
                     <DetailHeading>Scope &amp; limitations</DetailHeading>
                     <BulletList items={paper.limitations} />
                   </section>
+                  )}
                 </div>
+                )}
               </div>
             </motion.div>
           )}
@@ -487,6 +513,20 @@ function ResearchCard({ paper, index = 0 }) {
               </Link>
             )}
 
+            {paper.paperUrl && (
+              <a href={paper.paperUrl} target="_blank" rel="noreferrer" className="btn btn-outline" aria-label="Read the paper (opens in a new tab)">
+                Read the paper
+                <ArrowUpRight size={15} aria-hidden="true" />
+              </a>
+            )}
+
+            {paper.doiUrl && (
+              <a href={paper.doiUrl} target="_blank" rel="noreferrer" className="btn btn-outline" aria-label="DOI (opens in a new tab)">
+                DOI
+                <ArrowUpRight size={15} aria-hidden="true" />
+              </a>
+            )}
+
             {paper.githubUrl && (
               <a
                 href={paper.githubUrl}
@@ -518,16 +558,18 @@ ResearchCard.propTypes = {
         name: PropTypes.string.isRequired,
         self: PropTypes.bool,
       }),
-    ).isRequired,
+    ),
     summary: PropTypes.string,
-    highlights: PropTypes.array.isRequired,
-    contracts: PropTypes.array.isRequired,
-    contributions: PropTypes.array.isRequired,
-    gas: PropTypes.array.isRequired,
-    evaluationNotes: PropTypes.array.isRequired,
-    limitations: PropTypes.array.isRequired,
-    technologies: PropTypes.array.isRequired,
+    highlights: PropTypes.array,
+    contracts: PropTypes.array,
+    contributions: PropTypes.array,
+    gas: PropTypes.array,
+    evaluationNotes: PropTypes.array,
+    limitations: PropTypes.array,
+    technologies: PropTypes.array,
     githubUrl: PropTypes.string,
+    paperUrl: PropTypes.string,
+    doiUrl: PropTypes.string,
     projectSlug: PropTypes.string,
   }).isRequired,
   index: PropTypes.number,

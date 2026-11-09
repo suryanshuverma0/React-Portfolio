@@ -64,6 +64,10 @@ export const researchContent = [
       },
     ],
 
+    architectureTitle: "Architecture",
+
+    architectureNote: "3 contracts",
+
     contracts: [
       {
         name: "UserRegistry",
@@ -89,6 +93,10 @@ export const researchContent = [
     ],
 
     // Average gas per operation, measured on Sepolia (10 runs each).
+    metricsTitle: "Average gas",
+
+    metricsNote: "Sepolia · 10 runs",
+
     gas: [
       { label: "Batch registration", value: "955,113" },
       { label: "Product registration", value: "765,600" },

@@ -1,9 +1,12 @@
 import Container from "../../ui/Container";
 import SectionTitle from "../../ui/SectionTitle";
 import ResearchCard from "./ResearchCard";
-import { researchContent } from "../../content/researchContent";
+import { useResearch } from "../../../hooks/useResearch";
 
 function Research() {
+  // Papers from admin → Research (falls back to the built-in paper).
+  const papers = useResearch();
+
   return (
     <section id="research" className="section relative">
       <Container>
@@ -20,7 +23,7 @@ function Research() {
         />
 
         <div className="flex flex-col gap-10">
-          {researchContent.map((paper, index) => (
+          {papers.map((paper, index) => (
             <ResearchCard key={paper.id} paper={paper} index={index} />
           ))}
         </div>

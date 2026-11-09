@@ -53,6 +53,7 @@ import {
   Devices,
   QrStudio,
   ResumeBuilder,
+  ResearchAdmin,
 } from "./admin/adminPages";
 
 /*
@@ -329,6 +330,7 @@ function App() {
                 <Route path="devices" element={<Devices />} />
                 <Route path="qr" element={<QrStudio />} />
                 <Route path="resume" element={<ResumeBuilder />} />
+                <Route path="research" element={<ResearchAdmin />} />
               </Route>
             </Routes>
           </AnimatePresence>
