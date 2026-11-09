@@ -110,13 +110,7 @@ function Header({ setSidebarOpen, collapsed, onToggleCollapsed, onOpenSearch }) 
 
       {/* RIGHT */}
 
-      <div
-        className="
-          flex
-          items-center
-          gap-3
-        "
-      >
+      <div className="flex shrink-0 items-center gap-2 sm:gap-3">
         <button
           type="button"
           onClick={onOpenSearch}
@@ -131,10 +125,15 @@ function Header({ setSidebarOpen, collapsed, onToggleCollapsed, onOpenSearch }) 
 
         <NotificationBell />
 
-        <ThemeToggle />
+        {/* Phones: theme lives in the menu drawer, avatar is hidden */}
+        <span className="hidden sm:block">
+          <ThemeToggle />
+        </span>
 
         <div
           className="
+            hidden
+            sm:flex
             h-10
             w-10
 
@@ -145,7 +144,6 @@ function Header({ setSidebarOpen, collapsed, onToggleCollapsed, onOpenSearch }) 
             border
             border-border
 
-            flex
             items-center
             justify-center
 

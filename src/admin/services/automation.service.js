@@ -7,6 +7,8 @@ const tz = () => Intl.DateTimeFormat().resolvedOptions().timeZone;
 
 export const getAlerts = async (limit = 30) => data(await api.get("/alerts", { params: { limit } }));
 export const markAlertRead = async (id) => data(await api.post(`/alerts/${id}/read`));
+export const markAlertUnread = async (id) => data(await api.post(`/alerts/${id}/unread`));
+export const deleteAlert = async (id) => data(await api.delete(`/alerts/${id}`));
 export const markAllAlertsRead = async () => data(await api.post("/alerts/read-all"));
 export const clearAlerts = async () => data(await api.delete("/alerts"));
 export const getAlertSettings = async () => data(await api.get("/alerts/settings"));

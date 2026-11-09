@@ -25,6 +25,9 @@ import {
   ScrollText,
   HeartPulse,
   Paintbrush,
+  FileUser,
+  QrCode,
+  Smartphone,
 } from "lucide-react";
 
 export const sidebarLinks = [
@@ -121,6 +124,16 @@ export const sidebarLinks = [
         path: "/dashboard/card",
         icon: Nfc,
       },
+      {
+        label: "Resume Builder",
+        path: "/dashboard/resume",
+        icon: FileUser,
+      },
+      {
+        label: "QR Studio",
+        path: "/dashboard/qr",
+        icon: QrCode,
+      },
     ],
   },
 
@@ -136,6 +149,11 @@ export const sidebarLinks = [
         label: "Security",
         path: "/dashboard/security",
         icon: ShieldCheck,
+      },
+      {
+        label: "Devices",
+        path: "/dashboard/devices",
+        icon: Smartphone,
       },
       {
         label: "Audit Log",

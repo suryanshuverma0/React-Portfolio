@@ -18,6 +18,7 @@ import MaintenanceScreen from "./components/common/MaintenanceScreen";
 import { getPublicSettings } from "./services/public.settings.service";
 import usePageTracking from "./hooks/usePageTracking";
 import { setAppearanceScope } from "./lib/appearance";
+import { syncAppShell } from "./lib/pwa";
 import {
   AdminLayout,
   Dashboard,
@@ -49,6 +50,9 @@ import {
   AuditLog,
   SystemHealth,
   Appearance,
+  Devices,
+  QrStudio,
+  ResumeBuilder,
 } from "./admin/adminPages";
 
 /*
@@ -72,6 +76,8 @@ const ResetPassword = lazy(() => import("./pages/ResetPassword"));
 const UserAccess = lazy(() => import("./pages/UserAccess"));
 const LinkPasskey = lazy(() => import("./pages/LinkPasskey"));
 const CardPage = lazy(() => import("./pages/Card"));
+const ResumePublic = lazy(() => import("./pages/ResumePublic"));
+const LinkDevice = lazy(() => import("./pages/LinkDevice"));
 
 /*
   Every route under /dashboard shares one key, so navigating inside the
@@ -109,6 +115,8 @@ function App() {
   // Custom appearance styles the public site; the admin keeps the built-in look.
   useEffect(() => {
     setAppearanceScope(location.pathname);
+    // Admin app mode: manifest + service worker on admin/sign-in pages only.
+    syncAppShell(location.pathname);
   }, [location.pathname]);
 
   useEffect(() => {
@@ -208,6 +216,10 @@ function App() {
               {/* NFC business card — deliberately outside PublicGate so a
                   tap still works while the portfolio is in maintenance. */}
               <Route path="/card" element={<CardPage />} />
+              {/* Shared resumes and QR device sign-in work even in maintenance mode. */}
+              <Route path="/resume" element={<ResumePublic />} />
+              <Route path="/resume/:slug" element={<ResumePublic />} />
+              <Route path="/link-device" element={<LinkDevice />} />
               <Route
                 path="*"
                 element={
@@ -314,6 +326,9 @@ function App() {
                 <Route path="system" element={<SystemHealth />} />
                 <Route path="settings" element={<Settings />} />
                 <Route path="appearance" element={<Appearance />} />
+                <Route path="devices" element={<Devices />} />
+                <Route path="qr" element={<QrStudio />} />
+                <Route path="resume" element={<ResumeBuilder />} />
               </Route>
             </Routes>
           </AnimatePresence>

@@ -44,6 +44,9 @@ const loaders = {
   "/dashboard/system": () => import("./pages/SystemHealth"),
   "/dashboard/settings": () => import("./pages/Settings"),
   "/dashboard/appearance": () => import("./pages/Appearance"),
+  "/dashboard/devices": () => import("./pages/Devices"),
+  "/dashboard/qr": () => import("./pages/QrStudio"),
+  "/dashboard/resume": () => import("./pages/ResumeBuilder"),
 };
 
 // A failed preload (offline, deploy swapped chunks) must not stay cached as
@@ -97,6 +100,9 @@ export const AuditLog = page("/dashboard/audit");
 export const SystemHealth = page("/dashboard/system");
 export const Settings = page("/dashboard/settings");
 export const Appearance = page("/dashboard/appearance");
+export const Devices = page("/dashboard/devices");
+export const QrStudio = page("/dashboard/qr");
+export const ResumeBuilder = page("/dashboard/resume");
 
 // Preload the chunk behind a sidebar link (exact path match).
 export const preloadAdminPage = (path) => {

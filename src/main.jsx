@@ -24,6 +24,11 @@ import api from "./lib/axios";
 
 import { initAppearance } from "./lib/appearance";
 
+import { initAppMode } from "./lib/pwa";
+
+// Capture the "install app" prompt early (admin app mode).
+initAppMode();
+
 // Paint the site's customized look (cached) before React renders, then
 // refresh it from the server.
 initAppearance(api);

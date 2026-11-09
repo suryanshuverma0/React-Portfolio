@@ -32,7 +32,7 @@ const MEASUREMENT_ID =
 const SITE_HOST = new URL(SITE_URL).hostname.replace(/^www\./, "");
 
 // /reset-password/:token and /link-passkey/:token carry secrets in the URL.
-const IGNORED_PATH_PREFIXES = ["/dashboard", "/reset-password", "/link-passkey"];
+const IGNORED_PATH_PREFIXES = ["/dashboard", "/reset-password", "/link-passkey", "/link-device"];
 
 const OPT_OUT_KEY = "ga_opt_out";
 

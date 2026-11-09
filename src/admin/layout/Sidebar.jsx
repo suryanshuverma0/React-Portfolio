@@ -1,5 +1,8 @@
-import { LogOut, X } from "lucide-react";
+import { LogOut, X, Download } from "lucide-react";
 import { useNavigate } from "react-router-dom";
+
+import ThemeToggle from "../../components/ui/ThemeToggle";
+import { isStandalone } from "../../lib/pwa";
 
 import { useAuth } from "../../contexts/AuthContext";
 import SidebarItem from "../components/SidebarItem";
@@ -90,6 +93,23 @@ function Sidebar({ sidebarOpen, setSidebarOpen, collapsed = false }) {
 
         {/* Footer */}
         <div className="mt-auto pt-6">
+          {/* Phones: theme switch + install shortcut live here (header is compact) */}
+          <div className="mb-3 flex items-center gap-2 sm:hidden">
+            <ThemeToggle />
+            {!isStandalone() && (
+              <button
+                type="button"
+                onClick={() => {
+                  setSidebarOpen(false);
+                  navigate("/dashboard/devices");
+                }}
+                className="flex h-control flex-1 items-center justify-center gap-2 rounded-control border border-border bg-surface text-small"
+              >
+                <Download size={16} /> Install app
+              </button>
+            )}
+          </div>
+
           <div className={`card mb-4 ${collapsed ? "lg:hidden" : ""}`}>
             <p className="text-small truncate">{user?.email}</p>
           </div>

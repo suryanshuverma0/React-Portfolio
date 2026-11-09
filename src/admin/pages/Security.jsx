@@ -14,6 +14,7 @@ import AdminInput from "../components/form/AdminInput";
 import SkeletonCard from "../../components/common/SkeletonCard";
 import ConfirmModal from "../components/ui/ConfirmModal";
 import BlocklistCard from "../components/security/BlocklistCard";
+import ChangePasswordCard from "../components/security/ChangePasswordCard";
 
 function Security() {
   const [passkeys, setPasskeys] = useState([]);
@@ -163,6 +164,8 @@ function Security() {
           of them at any time.
         </p>
       </section>
+
+      <ChangePasswordCard />
 
       <div className="card space-y-4">
         <h2 className="text-title">Add a passkey</h2>

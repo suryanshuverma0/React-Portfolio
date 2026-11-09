@@ -26,7 +26,7 @@ const MIN_SECTION_DWELL_MS = 1000;
 const SCROLL_MILESTONES = [25, 50, 75, 90, 100];
 
 // Admin panel usage is not part of the visitor journey.
-const IGNORED_PATH_PREFIXES = ["/dashboard"];
+const IGNORED_PATH_PREFIXES = ["/dashboard", "/link-device"];
 
 const endpoint = () => `${api.defaults.baseURL}/analytics/collect`;
 
