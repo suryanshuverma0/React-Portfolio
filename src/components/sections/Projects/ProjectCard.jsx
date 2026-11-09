@@ -9,6 +9,7 @@ import { FaGithub } from "react-icons/fa";
 import { Link } from "react-router-dom";
 
 import { trackPointer } from "../../../lib/pointer";
+import { useReadyImage } from "../Products/productMedia";
 
 const iconLinkClass = `
   h-10
@@ -39,6 +40,7 @@ const iconLinkClass = `
 */
 function ProjectCard({ project, index, lead = false }) {
   const technologies = project.technologies || [];
+  const cover = useReadyImage(project.thumbnail || "");
 
   return (
     <motion.article
@@ -70,12 +72,16 @@ function ProjectCard({ project, index, lead = false }) {
         to={`/projects/${project.slug}`}
         tabIndex={-1}
         aria-hidden="true"
-        className="
+        className={`
           relative
 
           block
 
+          w-full
+
           self-start
+
+          ${lead ? "aspect-[16/10]" : "aspect-[16/9]"}
 
           overflow-hidden
 
@@ -85,19 +91,23 @@ function ProjectCard({ project, index, lead = false }) {
           border-border
 
           bg-surface
-        "
+        `}
       >
+        {cover ? (
         <img
-          src={project.thumbnail}
+          src={cover}
           alt=""
           loading="lazy"
           decoding="async"
           className={`
+            absolute
+            inset-0
+
+            h-full
             w-full
 
-            ${lead ? "aspect-[16/10]" : "aspect-[16/9]"}
-
             object-cover
+            object-top
 
             transition-transform
             duration-700
@@ -106,6 +116,9 @@ function ProjectCard({ project, index, lead = false }) {
             group-hover:scale-[1.03]
           `}
         />
+        ) : (
+          <span className="absolute inset-0 animate-pulse bg-surface" aria-hidden="true" />
+        )}
 
         <span
           className="

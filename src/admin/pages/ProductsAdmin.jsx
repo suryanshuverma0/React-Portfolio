@@ -192,8 +192,8 @@ function Editor({ initial, onClose, onSaved }) {
             <div className="space-y-2">
               {(p.stats || []).map((s, i) => (
                 <div key={i} className="flex gap-2">
-                  <input className={`${field} w-28 shrink-0`} value={s.value || ""} onChange={(e) => set({ stats: p.stats.map((x, j) => (j === i ? { ...x, value: e.target.value } : x)) })} placeholder="10k+" />
-                  <input className={field} value={s.label || ""} onChange={(e) => set({ stats: p.stats.map((x, j) => (j === i ? { ...x, label: e.target.value } : x)) })} placeholder="QR codes created" />
+                  <input className={`${field} w-28! shrink-0`} value={s.value || ""} onChange={(e) => set({ stats: p.stats.map((x, j) => (j === i ? { ...x, value: e.target.value } : x)) })} placeholder="10k+" />
+                  <input className={`${field} min-w-0 flex-1`} value={s.label || ""} onChange={(e) => set({ stats: p.stats.map((x, j) => (j === i ? { ...x, label: e.target.value } : x)) })} placeholder="QR codes created" />
                   <button type="button" onClick={() => set({ stats: p.stats.filter((_, j) => j !== i) })} className="px-1 text-muted hover:text-red-500" aria-label="Remove">
                     <X size={15} />
                   </button>

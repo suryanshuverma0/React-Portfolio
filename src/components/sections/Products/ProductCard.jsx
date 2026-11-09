@@ -1,9 +1,9 @@
-import { useEffect, useRef, useState } from "react";
+import { useRef, useState } from "react";
 import { motion, useReducedMotion } from "framer-motion";
 import { ArrowUpRight, Star, Globe, Smartphone } from "lucide-react";
 import { FaGithub } from "react-icons/fa";
 
-import { screenshotUrl } from "./productMedia";
+import { screenshotUrl, useReadyImage } from "./productMedia";
 
 /* ========================================
    PRODUCT CARD — a live product in a device
@@ -23,37 +23,9 @@ const hostOf = (url) => {
   }
 };
 
-// mShots answers with a 400×300 "generating" placeholder until the real
-// screenshot is ready, so probe off-screen and only swap in a real one.
-function useLiveScreenshot(site, enabled) {
-  const [shot, setShot] = useState({ site: "", url: "" });
-  useEffect(() => {
-    if (!enabled || !site) return undefined;
-    let cancelled = false;
-    let tries = 0;
-    let timer;
-    const attempt = () => {
-      const url = tries ? `${screenshotUrl(site)}&r=${tries}` : screenshotUrl(site);
-      const img = new Image();
-      img.onload = () => {
-        if (cancelled) return;
-        if (img.naturalWidth > 400) setShot({ site, url });
-        else if (++tries < 8) timer = setTimeout(attempt, 3500);
-      };
-      img.src = url;
-    };
-    attempt();
-    return () => {
-      cancelled = true;
-      clearTimeout(timer);
-    };
-  }, [site, enabled]);
-  return shot.site === site ? shot.url : "";
-}
-
 function BrowserFrame({ product }) {
   const site = product.url || product.links?.website;
-  const live = useLiveScreenshot(site, product.useScreenshot !== false);
+  const live = useReadyImage(product.useScreenshot !== false && site ? screenshotUrl(site) : "");
   const [imageFailed, setImageFailed] = useState(false);
   const src = live || (!imageFailed && product.image) || "";
   return (
