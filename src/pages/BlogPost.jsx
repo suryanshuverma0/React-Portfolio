@@ -70,8 +70,8 @@ function BlogPost() {
   return (
     <main className="min-h-screen bg-background">
       <SEO
-        title={`${post.title} | Suryanshu Verma`}
-        description={post.excerpt || post.title}
+        title={`${post.seoTitle || post.title} | Suryanshu Verma`}
+        description={post.seoDescription || post.excerpt || post.title}
         keywords={`${post.title}, ${(post.tags || []).join(", ")}`}
         image={post.coverImage || "/og-image.png"}
         type="article"
@@ -79,7 +79,7 @@ function BlogPost() {
           "@context": "https://schema.org",
           "@type": "BlogPosting",
           headline: post.title,
-          description: post.excerpt || post.title,
+          description: post.seoDescription || post.excerpt || post.title,
           image: absoluteUrl(post.coverImage || "/og-image.png"),
           datePublished: post.publishedAt,
           dateModified: post.updatedAt || post.publishedAt,

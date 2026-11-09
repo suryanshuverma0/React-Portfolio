@@ -1,0 +1,140 @@
+/* ========================================
+   BLOG WRITING STUDIO
+   The editable surface reuses .prose-blog
+   (the public post styles), so what you type
+   looks like what readers get. These rules
+   only add what editing needs.
+======================================== */
+
+.blog-editor-prose {
+  min-height: 55vh;
+  padding-bottom: 30vh; /* room to write at a comfortable eye level */
+  caret-color: var(--color-primary);
+  font-size: 1.075rem;
+}
+
+.blog-editor-prose:focus {
+  outline: none;
+}
+
+/* Placeholder on the empty line you're on */
+.blog-editor-prose .is-empty::before {
+  content: attr(data-placeholder);
+  float: left;
+  height: 0;
+  pointer-events: none;
+  color: var(--color-muted);
+  opacity: 0.8;
+}
+
+/* Checklists */
+.blog-editor-prose ul[data-type="taskList"] {
+  list-style: none;
+  padding-left: 0.1em;
+}
+.blog-editor-prose ul[data-type="taskList"] li {
+  display: flex;
+  gap: 0.65em;
+  align-items: flex-start;
+}
+.blog-editor-prose ul[data-type="taskList"] li > label {
+  margin-top: 0.35em;
+  flex-shrink: 0;
+}
+.blog-editor-prose ul[data-type="taskList"] li > label input {
+  width: 1.05em;
+  height: 1.05em;
+  accent-color: var(--color-primary);
+  cursor: pointer;
+}
+.blog-editor-prose ul[data-type="taskList"] li > div {
+  flex: 1;
+}
+.blog-editor-prose ul[data-type="taskList"] li > div > p {
+  margin: 0;
+}
+.blog-editor-prose ul[data-type="taskList"] li[data-checked="true"] > div {
+  color: var(--color-muted);
+  text-decoration: line-through;
+}
+
+/* Images: selected, and still uploading (local preview) */
+.blog-editor-prose img {
+  transition: outline-color 0.15s ease, opacity 0.2s ease;
+  outline: 3px solid transparent;
+  outline-offset: 3px;
+  cursor: pointer;
+}
+.blog-editor-prose img.ProseMirror-selectednode {
+  outline-color: var(--color-primary);
+}
+.blog-editor-prose img[src^="blob:"] {
+  opacity: 0.55;
+  animation: blog-upload-pulse 1.2s ease-in-out infinite;
+}
+@keyframes blog-upload-pulse {
+  50% {
+    opacity: 0.35;
+  }
+}
+
+/* Divider and other atom blocks when selected */
+.blog-editor-prose hr.ProseMirror-selectednode {
+  border-color: var(--color-primary);
+}
+
+/* Tables */
+.blog-editor-prose .tableWrapper {
+  overflow-x: auto;
+  margin: 1.5em 0;
+}
+.blog-editor-prose table {
+  table-layout: fixed;
+  width: 100%;
+  margin: 0;
+}
+.blog-editor-prose td,
+.blog-editor-prose th {
+  position: relative;
+  min-width: 4em;
+  vertical-align: top;
+}
+.blog-editor-prose td > p,
+.blog-editor-prose th > p {
+  margin: 0;
+}
+.blog-editor-prose .selectedCell::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  background: color-mix(in srgb, var(--color-primary) 10%, transparent);
+}
+
+/* Links are edited, not followed */
+.blog-editor-prose a {
+  cursor: text;
+}
+
+/* Drop/gap cursor */
+.blog-editor-prose .ProseMirror-gapcursor::after {
+  border-top-color: var(--color-primary);
+}
+
+/* Bubble toolbar entrance */
+.blog-bubble {
+  animation: blog-bubble-in 0.14s ease-out;
+}
+@keyframes blog-bubble-in {
+  from {
+    opacity: 0;
+    transform: translateY(4px) scale(0.98);
+  }
+}
+
+/* Title / subtitle fields grow with their text */
+.blog-autosize {
+  field-sizing: content;
+  resize: none;
+  overflow: hidden;
+}
