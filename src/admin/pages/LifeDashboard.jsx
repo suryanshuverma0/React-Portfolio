@@ -2,7 +2,9 @@ import { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 import { toast } from "react-toastify";
 import { ResponsiveContainer, AreaChart, Area, XAxis, YAxis, CartesianGrid, Tooltip } from "recharts";
-import { Heart, NotebookPen, PenLine, Type, Pin, BookOpen, Lock, KeyRound, LifeBuoy, Timer, Fingerprint, Copy } from "lucide-react";
+import { Heart, NotebookPen, PenLine, Type, Pin, BookOpen, Lock, KeyRound, LifeBuoy, Timer, Fingerprint, Copy, CheckCircle2, Target, Flame, AlertTriangle } from "lucide-react";
+
+import { today } from "../planner/dates";
 
 import api from "../../lib/axios";
 import LifeGate from "../life/LifeGate";
@@ -120,7 +122,7 @@ function Overview() {
   useEffect(() => {
     let cancelled = false;
     api
-      .get("/life/overview", { params: { days } })
+      .get("/life/overview", { params: { days, today: today() } })
       .then((r) => !cancelled && setData(r.data.data))
       .catch((e) => e.response?.status !== 423 && toast.error("Couldn't load your overview"));
     return () => {
@@ -129,6 +131,7 @@ function Overview() {
   }, [days]);
 
   const notes = data?.notes;
+  const planner = data?.planner;
   const totals = notes?.activity.reduce((t, d) => ({ created: t.created + d.created, edits: t.edits + d.edits }), { created: 0, edits: 0 });
   const activeDays = notes?.activity.filter((d) => d.created || d.edits).length || 0;
   const spark = notes?.activity.map((d) => ({ v: d.created + d.edits })) || [];
@@ -155,6 +158,44 @@ function Overview() {
             <KpiCard index={2} icon={Type} label="Words written" value={notes.words} hint={`${notes.typed} typed · ${notes.handwritten} handwritten`} accent="var(--color-chart-3)" />
             <KpiCard index={3} icon={Pin} label="Active days" value={activeDays} hint={`of the last ${days} · ${notes.pinned} pinned notes`} accent="var(--color-chart-4)" gauge={Math.round((activeDays / days) * 100)} />
           </div>
+
+          {planner && (
+            <Panel
+              title="Planner"
+              subtitle={`Tasks and habits · last ${days} days`}
+              right={
+                <Link to="/dashboard/planner" className="text-xs text-muted hover:text-primary">
+                  Open planner →
+                </Link>
+              }
+            >
+              <div className="grid gap-4 sm:grid-cols-2 xl:grid-cols-4">
+                <KpiCard index={0} icon={CheckCircle2} label="Tasks done" value={planner.tasks.done} hint={`${planner.tasks.doneToday} today · ${planner.tasks.open} open`} spark={planner.daily} sparkKey="tasks" />
+                <KpiCard index={1} icon={Target} label="Habit completion" value={planner.habits.avgRate === null ? 0 : Math.round(planner.habits.avgRate * 100)} format={(v) => (planner.habits.avgRate === null ? "—" : `${Math.round(v)}%`)} accent="var(--color-chart-3)" hint={`${planner.habits.count} active habits`} />
+                <KpiCard index={2} icon={Flame} label="Best streak" value={planner.habits.bestStreak} accent="var(--color-chart-2)" hint={`${planner.habits.currentStreaks} on a streak now`} />
+                <KpiCard index={3} icon={AlertTriangle} label="Overdue" value={planner.tasks.overdue} accent="var(--color-chart-4)" hint={`${planner.tasks.dueToday} due today`} />
+              </div>
+              {planner.habits.rows.length > 0 && (
+                <div className="mt-5 grid gap-x-6 gap-y-3 sm:grid-cols-2">
+                  {planner.habits.rows.slice(0, 8).map((h) => (
+                    <div key={h.id} className="space-y-1">
+                      <div className="flex items-center gap-2 text-small">
+                        <span>{h.emoji}</span>
+                        <span className="min-w-0 flex-1 truncate">{h.name}</span>
+                        <span className="inline-flex items-center gap-0.5 text-xs text-muted">
+                          <Flame size={11} /> {h.streak}
+                        </span>
+                        <span className="w-10 text-right text-xs tabular-nums">{h.rate === null ? "—" : `${Math.round(h.rate * 100)}%`}</span>
+                      </div>
+                      <div className="h-1.5 overflow-hidden rounded-full bg-surface">
+                        <div className="h-full rounded-full" style={{ width: `${(h.rate || 0) * 100}%`, background: h.color }} />
+                      </div>
+                    </div>
+                  ))}
+                </div>
+              )}
+            </Panel>
+          )}
 
           <div className="grid gap-6 xl:grid-cols-[minmax(0,1.6fr)_minmax(0,1fr)]">
             <Panel title="Writing activity" subtitle="New notes and saved versions per day" right={<Legend items={[{ label: "New notes", color: SERIES.created, value: totals.created }, { label: "Saved versions", color: SERIES.edits, value: totals.edits }]} />}>

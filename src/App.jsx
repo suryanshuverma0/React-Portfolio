@@ -44,6 +44,7 @@ import {
   CardAdmin,
   Notes,
   LifeDashboard,
+  Planner,
   Automations,
   BlogAnalytics,
   ExecutiveReport,
@@ -322,6 +323,7 @@ function App() {
                 <Route path="storage" element={<Storage />} />
                 <Route path="card" element={<CardAdmin />} />
                 <Route path="life" element={<LifeDashboard />} />
+                <Route path="planner" element={<Planner />} />
                 <Route
                   path="notes"
                   element={
