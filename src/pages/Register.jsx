@@ -27,6 +27,7 @@ import AuthDivider from "../components/auth/AuthDivider";
 import { useNavigate } from "react-router-dom";
 
 import { useState } from "react";
+import { ArrowRight, Sparkles } from "lucide-react";
 
 function Register() {
   /* ========================================
@@ -207,122 +208,39 @@ function Register() {
   };
 
   return (
-    <AuthLayout
-      title="Create account"
-      subtitle="
-        Start building your
-        next big thing today.
-      "
-    >
-      <div
-        className="
-          space-y-5
-        "
-      >
-        {/* FORM */}
+    <AuthLayout mode="register" title="Create your account" subtitle="Use a passkey and skip passwords entirely — or pick email and password.">
+      <div className="space-y-6">
+        <GoogleAuthButton text="signup_with" onSuccess={handleGoogleSuccess} onError={handleGoogleError} />
 
-        <form
-          onSubmit={handleSubmit(onSubmit)}
-          className="
-            space-y-4
-          "
-        >
-          {/* EMAIL */}
+        <AuthDivider text="or with email" />
 
-          <AuthInput
-            label="Email"
-            type="email"
-            placeholder="
-              Enter your email
-            "
-            autoComplete="email"
-            error={errors.email?.message}
-            required
-            {...register("email")}
-          />
+        <form onSubmit={handleSubmit(onSubmit)} className="space-y-4" noValidate>
+          <AuthInput label="Email" type="email" placeholder="you@example.com" autoComplete="email" error={errors.email?.message} required {...register("email")} />
 
-          {/* PASSWORD */}
+          {/* PASSKEY SIGN-UP — uses the email above */}
+          <div className="rounded-2xl border border-border bg-surface/50 p-3.5">
+            <PasskeyLoginButton label="Sign up with a passkey" onClick={handlePasskeySignup} loading={passkeyLoading} />
+            <p className="mt-2.5 flex items-start gap-2 text-[12px] leading-relaxed text-muted">
+              <Sparkles size={13} className="mt-0.5 shrink-0" />
+              Recommended — your fingerprint, face or screen lock replaces the password. Nothing to remember or leak.
+            </p>
+          </div>
 
-          <PasswordInput
-            label="Password"
-            placeholder="
-              Create a password
-            "
-            autoComplete="
-              new-password
-            "
-            error={errors.password?.message}
-            required
-            {...register("password")}
-          />
+          <div className="flex items-center gap-3 pt-1 text-[12px] text-muted">
+            <span className="h-px flex-1 bg-border" /> or set a password <span className="h-px flex-1 bg-border" />
+          </div>
 
-          {/* CONFIRM PASSWORD */}
+          <PasswordInput label="Password" placeholder="At least 8 characters" autoComplete="new-password" error={errors.password?.message} required showStrength {...register("password")} />
+          <PasswordInput label="Confirm password" placeholder="Type it again" autoComplete="new-password" error={errors.confirmPassword?.message} required {...register("confirmPassword")} />
 
-          <PasswordInput
-            label="
-              Confirm password
-            "
-            placeholder="
-              Confirm your password
-            "
-            autoComplete="
-              new-password
-            "
-            error={errors.confirmPassword?.message}
-            required
-            {...register("confirmPassword")}
-          />
-
-          {/* SUBMIT */}
-
-          <AuthButton loading={isSubmitting}>Create Account</AuthButton>
+          <AuthButton loading={isSubmitting}>
+            Create account <ArrowRight size={17} className="transition-transform group-hover:translate-x-0.5" />
+          </AuthButton>
         </form>
 
-        {/* DIVIDER */}
-
-        <AuthDivider />
-
-        {/* GOOGLE */}
-
-        <GoogleAuthButton
-          text="signup_with"
-          onSuccess={handleGoogleSuccess}
-          onError={handleGoogleError}
-        />
-
-        {/* PASSKEY */}
-
-        <PasskeyLoginButton
-          label="Sign up with Passkey"
-          onClick={handlePasskeySignup}
-          loading={passkeyLoading}
-        />
-
         <p className="text-center text-small text-muted">
-          Enter your email above, then use your device&apos;s fingerprint,
-          face, or screen lock instead of a password.
-        </p>
-
-        {/* LOGIN */}
-
-        <p
-          className="
-            text-center
-
-            text-small
-          "
-        >
           Already have an account?{" "}
-          <Link
-            to="/login"
-            className="
-              text-primary
-
-              hover:opacity-70
-
-              transition-opacity
-            "
-          >
+          <Link to="/login" className="font-medium text-primary underline-offset-4 hover:underline">
             Sign in
           </Link>
         </p>

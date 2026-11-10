@@ -26,6 +26,7 @@ import PasskeyLoginButton from "../components/auth/PasskeyLoginButton";
 import AuthDivider from "../components/auth/AuthDivider";
 
 import { useState } from "react";
+import { ArrowRight, MailCheck, MonitorSmartphone, Send } from "lucide-react";
 
 import { useNavigate } from "react-router-dom";
 
@@ -252,163 +253,64 @@ function Login() {
         />
       )}
 
-    <AuthLayout
-      title="Welcome back"
-      subtitle="
-        Sign in to continue
-        building something great.
-      "
-    >
-      <div
-        className="
-          space-y-5
-        "
-      >
-        {/* FORM */}
+    <AuthLayout mode="login" title="Welcome back" subtitle="Sign in to your account — the fastest way is your fingerprint.">
+      <div className="space-y-6">
+        {/* ONE-TAP OPTIONS */}
+        <div className="space-y-3">
+          <PasskeyLoginButton onClick={handlePasskeyLogin} loading={passkeyLoading} label="Sign in with a passkey" />
+          <GoogleAuthButton text="continue_with" onSuccess={handleGoogleSuccess} onError={handleGoogleError} />
+        </div>
 
-        <form
-          onSubmit={handleSubmit(onSubmit)}
-          className="
-            space-y-4
-          "
-        >
-          {/* EMAIL */}
+        <AuthDivider text="or with email" />
 
-          <AuthInput
-            label="Email"
-            type="email"
-            placeholder="
-              Enter your email
-            "
-            autoComplete="email"
-            error={errors.email?.message}
-            required
-            {...register("email")}
-          />
-
-          {/* PASSWORD */}
-
-          <PasswordInput
-            label="Password"
-            placeholder="
-              Enter your password
-            "
-            autoComplete="
-              current-password
-            "
-            error={errors.password?.message}
-            required
-            {...register("password")}
-          />
-
-          {/* FORGOT PASSWORD */}
-
-          <div
-            className="
-              flex
-              justify-end
-            "
-          >
-            <Link
-              to="/forgot-password"
-              className="
-                text-sm
-
-                text-muted
-
-                hover:text-primary
-
-                transition-colors
-              "
-            >
-              Forgot password?
-            </Link>
+        {/* EMAIL + PASSWORD */}
+        <form onSubmit={handleSubmit(onSubmit)} className="space-y-4" noValidate>
+          <AuthInput label="Email" type="email" placeholder="you@example.com" autoComplete="username email" error={errors.email?.message} required {...register("email")} />
+          <div className="space-y-2">
+            <PasswordInput label="Password" placeholder="Your password" autoComplete="current-password" error={errors.password?.message} required {...register("password")} />
+            <div className="flex justify-end">
+              <Link to="/forgot-password" className="text-[13px] text-muted transition-colors hover:text-primary">
+                Forgot password?
+              </Link>
+            </div>
           </div>
-
-          {/* SUBMIT */}
-
-          <AuthButton loading={isSubmitting}>Sign In</AuthButton>
+          <AuthButton loading={isSubmitting}>
+            Sign in <ArrowRight size={17} className="transition-transform group-hover:translate-x-0.5" />
+          </AuthButton>
         </form>
 
-        {/* DIVIDER */}
-
-        <AuthDivider />
-
-        {/* GOOGLE */}
-
-        <GoogleAuthButton
-          text="continue_with"
-          onSuccess={handleGoogleSuccess}
-          onError={handleGoogleError}
-        />
-
-        {/* PASSKEY */}
-
-        <PasskeyLoginButton
-          onClick={handlePasskeyLogin}
-          loading={passkeyLoading}
-        />
-
         {/* LINK EXISTING ACCOUNT TO THIS DEVICE */}
-
-        {linkSent ? (
-          <p className="text-center text-small text-muted">
-            If an account exists for {linkEmail}, check your inbox for a link
-            to add this device.
-          </p>
-        ) : showLinkForm ? (
-          <div className="space-y-3">
-            <AuthInput
-              label="Email"
-              type="email"
-              placeholder="Enter the email on your existing account"
-              value={linkEmail}
-              onChange={(e) => setLinkEmail(e.target.value)}
-            />
-
-            <AuthButton
-              type="button"
-              onClick={handleSendLink}
-              loading={linkSending}
-              className="bg-surface text-primary border border-border hover:opacity-80"
-            >
-              Email me a link
-            </AuthButton>
-          </div>
-        ) : (
-          <p className="text-center text-small text-muted">
-            Already have an account on another device?{" "}
-            <button
-              type="button"
-              onClick={() => setShowLinkForm(true)}
-              className="text-primary hover:opacity-70 transition-opacity"
-            >
-              Add this device to it
+        <div className="rounded-2xl border border-dashed border-border p-4">
+          {linkSent ? (
+            <p className="flex items-start gap-2.5 text-small text-secondary">
+              <MailCheck size={18} className="mt-0.5 shrink-0 text-emerald-500" />
+              If an account exists for {linkEmail}, a link to add this device is on its way.
+            </p>
+          ) : showLinkForm ? (
+            <div className="space-y-3">
+              <AuthInput label="Email on your account" type="email" name="link-email" placeholder="you@example.com" value={linkEmail} onChange={(e) => setLinkEmail(e.target.value)} autoFocus />
+              <AuthButton type="button" onClick={handleSendLink} loading={linkSending} className="border border-border bg-surface! text-primary! shadow-none! hover:border-primary">
+                <Send size={16} /> Email me a link
+              </AuthButton>
+            </div>
+          ) : (
+            <button type="button" onClick={() => setShowLinkForm(true)} className="flex w-full items-center gap-3 text-left">
+              <span className="flex h-9 w-9 shrink-0 items-center justify-center rounded-xl bg-surface">
+                <MonitorSmartphone size={17} />
+              </span>
+              <span className="min-w-0 flex-1">
+                <span className="block text-small font-medium">New device?</span>
+                <span className="text-[12px] text-muted">Add it to the account you use elsewhere</span>
+              </span>
+              <ArrowRight size={16} className="text-muted" />
             </button>
-          </p>
-        )}
+          )}
+        </div>
 
-        {/* REGISTER */}
-
-        <p
-          className="
-            text-center
-
-            text-small
-          "
-        >
-          Don’t have an account?{" "}
-          <Link
-            to="/register"
-            className="
-              text-primary
-
-              hover:opacity-70
-
-              transition-opacity
-            "
-          >
-            Create account
+        <p className="text-center text-small text-muted">
+          New here?{" "}
+          <Link to="/register" className="font-medium text-primary underline-offset-4 hover:underline">
+            Create an account
           </Link>
         </p>
       </div>

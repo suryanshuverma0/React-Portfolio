@@ -1,15 +1,11 @@
-import { useEffect, useState } from "react";
-import { KeyRound } from "lucide-react";
+import { useState } from "react";
+import { Fingerprint } from "lucide-react";
 import { browserSupportsWebAuthn } from "@simplewebauthn/browser";
 
 import AuthButton from "./AuthButton";
 
 function PasskeyLoginButton({ onClick, loading = false, label = "Continue with Passkey" }) {
-  const [supported, setSupported] = useState(false);
-
-  useEffect(() => {
-    setSupported(browserSupportsWebAuthn());
-  }, []);
+  const [supported] = useState(() => browserSupportsWebAuthn());
 
   if (!supported) {
     return null;
@@ -20,9 +16,9 @@ function PasskeyLoginButton({ onClick, loading = false, label = "Continue with P
       type="button"
       onClick={onClick}
       loading={loading}
-      className="bg-surface text-primary border border-border hover:opacity-80"
+      className="border border-border bg-surface! text-primary! shadow-none! hover:border-primary"
     >
-      <KeyRound size={18} />
+      <Fingerprint size={19} />
       {label}
     </AuthButton>
   );

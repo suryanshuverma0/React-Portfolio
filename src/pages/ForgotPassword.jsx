@@ -85,6 +85,7 @@ function ForgotPassword() {
 
   return (
     <AuthLayout
+      mode="recover"
       title="Forgot password"
       subtitle="
         Enter your email and

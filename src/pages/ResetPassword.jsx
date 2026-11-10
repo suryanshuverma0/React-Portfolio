@@ -80,6 +80,7 @@ function ResetPassword() {
 
   return (
     <AuthLayout
+      mode="recover"
       title="Reset password"
       subtitle="
         Choose a new password
@@ -126,6 +127,7 @@ function ResetPassword() {
       ) : (
         <form onSubmit={handleSubmit(onSubmit)} className="space-y-5">
           <PasswordInput
+            showStrength
             label="New password"
             placeholder="Enter your new password"
             autoComplete="new-password"

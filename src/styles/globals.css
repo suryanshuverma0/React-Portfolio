@@ -970,3 +970,14 @@ input:-webkit-autofill {
   from { opacity: 0; }
   to { opacity: 1; }
 }
+
+/* AUTH — slow drifting aurora behind the sign-in showcase */
+@keyframes auth-aurora {
+  0%, 100% { transform: translate3d(0, 0, 0) scale(1); }
+  33% { transform: translate3d(6%, 8%, 0) scale(1.08); }
+  66% { transform: translate3d(-5%, 4%, 0) scale(0.95); }
+}
+.auth-aurora { animation: auth-aurora 18s ease-in-out infinite; }
+@media (prefers-reduced-motion: reduce) {
+  .auth-aurora { animation: none; }
+}
