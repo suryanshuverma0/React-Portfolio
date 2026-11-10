@@ -76,7 +76,8 @@ function AdminLayout() {
   }, [pathname]);
 
   // The notes workspace manages its own panes and scrolling edge to edge.
-  const fullBleed = pathname.startsWith("/dashboard/notes");
+  // So does a whiteboard (/dashboard/boards/<id>).
+  const fullBleed = pathname.startsWith("/dashboard/notes") || /^\/dashboard\/boards\/[^/]+/.test(pathname);
 
   return (
     <div className="h-screen bg-background flex overflow-hidden print:h-auto print:overflow-visible print:block">

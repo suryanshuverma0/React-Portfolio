@@ -47,6 +47,8 @@ import {
   Planner,
   Bookmarks,
   Vault,
+  Boards,
+  BoardEditor,
   Automations,
   BlogAnalytics,
   ExecutiveReport,
@@ -328,6 +330,8 @@ function App() {
                 <Route path="planner" element={<Planner />} />
                 <Route path="bookmarks" element={<Bookmarks />} />
                 <Route path="vault" element={<Vault />} />
+                <Route path="boards" element={<Boards />} />
+                <Route path="boards/:id" element={<BoardEditor />} />
                 <Route
                   path="notes"
                   element={
