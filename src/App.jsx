@@ -45,6 +45,7 @@ import {
   Notes,
   LifeDashboard,
   Planner,
+  Bookmarks,
   Automations,
   BlogAnalytics,
   ExecutiveReport,
@@ -324,6 +325,7 @@ function App() {
                 <Route path="card" element={<CardAdmin />} />
                 <Route path="life" element={<LifeDashboard />} />
                 <Route path="planner" element={<Planner />} />
+                <Route path="bookmarks" element={<Bookmarks />} />
                 <Route
                   path="notes"
                   element={

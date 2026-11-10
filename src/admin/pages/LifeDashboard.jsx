@@ -2,7 +2,7 @@ import { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 import { toast } from "react-toastify";
 import { ResponsiveContainer, AreaChart, Area, XAxis, YAxis, CartesianGrid, Tooltip } from "recharts";
-import { Heart, NotebookPen, PenLine, Type, Pin, BookOpen, Lock, KeyRound, LifeBuoy, Timer, Fingerprint, Copy, CheckCircle2, Target, Flame, AlertTriangle } from "lucide-react";
+import { Heart, NotebookPen, PenLine, Type, Pin, BookOpen, Lock, KeyRound, LifeBuoy, Timer, Fingerprint, Copy, CheckCircle2, Target, Flame, AlertTriangle, Bookmark, BookmarkPlus, Inbox } from "lucide-react";
 
 import { today } from "../planner/dates";
 
@@ -195,6 +195,46 @@ function Overview() {
                 </div>
               )}
             </Panel>
+          )}
+
+          {data.bookmarks && data.bookmarks.total > 0 && (
+            <div className="grid gap-6 lg:grid-cols-3">
+              <Panel title="Bookmarks" right={<Link to="/dashboard/bookmarks" className="text-xs text-muted hover:text-primary">Open →</Link>}>
+                <div className="grid grid-cols-3 gap-3 text-center">
+                  {[
+                    [Bookmark, data.bookmarks.total, "saved"],
+                    [Inbox, data.bookmarks.unread, "to read"],
+                    [BookmarkPlus, data.bookmarks.added, `new · ${days}d`],
+                  ].map(([Icon, v, l]) => (
+                    <div key={l} className="rounded-2xl bg-surface p-3">
+                      <Icon size={15} className="mx-auto text-muted" />
+                      <p className="mt-1 text-[20px] font-semibold tabular-nums">{v}</p>
+                      <p className="text-[11px] text-muted">{l}</p>
+                    </div>
+                  ))}
+                </div>
+              </Panel>
+              <Panel title="Bookmark categories">
+                <RankBars items={data.bookmarks.categories} color="var(--color-chart-3)" />
+              </Panel>
+              <Panel title="Most opened">
+                {data.bookmarks.mostOpened.length ? (
+                  <ul className="space-y-1">
+                    {data.bookmarks.mostOpened.map((b) => (
+                      <li key={b.id}>
+                        <a href={b.url} target="_blank" rel="noreferrer" className="flex items-center gap-2.5 rounded-xl px-2 py-2 hover:bg-surface">
+                          {b.icon ? <img src={b.icon} alt="" className="h-4 w-4 rounded-sm" /> : <Bookmark size={14} className="text-muted" />}
+                          <span className="min-w-0 flex-1 truncate text-small">{b.title}</span>
+                          <span className="text-[11px] text-muted">{b.opens}×</span>
+                        </a>
+                      </li>
+                    ))}
+                  </ul>
+                ) : (
+                  <Empty>Open a bookmark to see it here.</Empty>
+                )}
+              </Panel>
+            </div>
           )}
 
           <div className="grid gap-6 xl:grid-cols-[minmax(0,1.6fr)_minmax(0,1fr)]">
