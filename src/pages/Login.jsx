@@ -119,7 +119,7 @@ function Login() {
         return;
       }
 
-      toast.error("Invalid credentials");
+      toast.error(error.response?.data?.message || "Invalid email or password");
     }
   };
 

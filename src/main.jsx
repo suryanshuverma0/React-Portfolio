@@ -1,4 +1,18 @@
+// Record Content-Security-Policy violations (anything the browser refused
+// to load) so a too-strict policy is easy to spot: window.__cspViolations.
+if (typeof document !== "undefined") {
+  window.__cspViolations = [];
+  document.addEventListener("securitypolicyviolation", (e) => {
+    if (window.__cspViolations.length < 50) window.__cspViolations.push(`${e.effectiveDirective} ← ${e.blockedURI || "inline"} (${location.pathname})`);
+  });
+}
+
 import { StrictMode } from "react";
+import { z } from "zod";
+
+// Our CSP forbids eval; tell zod not to probe for it (the probe would be
+// reported as a violation even though zod falls back fine).
+z.config({ jitless: true });
 
 import { createRoot } from "react-dom/client";
 
