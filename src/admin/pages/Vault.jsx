@@ -8,6 +8,7 @@ import {
 
 import api from "../../lib/axios";
 import LifeGate from "../life/LifeGate";
+import Passwords from "../vault/Passwords";
 import {
   useVault, loadVaultConfig, setupVault, openWithPassword, openWithRecovery, changeVaultPassword, lockVault, touchVault,
   fetchItems, decryptItems, uploadEncrypted, downloadDecrypted, saveItem, newItemKey,
@@ -526,6 +527,21 @@ function Items() {
   const [changing, setChanging] = useState(false);
   const [newPw, setNewPw] = useState("");
   const [recovery, setRecovery] = useState("");
+  const [tab, setTab] = useState(() => {
+    try {
+      return localStorage.getItem("vault:tab") || "documents";
+    } catch {
+      return "documents";
+    }
+  });
+  const switchTab = (t) => {
+    setTab(t);
+    try {
+      localStorage.setItem("vault:tab", t);
+    } catch {
+      /* ignore */
+    }
+  };
 
   const load = () =>
     fetchItems()
@@ -538,9 +554,11 @@ function Items() {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [vault.vk]);
 
-  const categories = useMemo(() => ["All", ...new Set((items || []).map((i) => i.meta.category || "Other"))], [items]);
-  const list = (items || []).filter((i) => (cat === "All" || (i.meta.category || "Other") === cat) && `${i.meta.title} ${i.meta.category} ${i.meta.fields.map((f) => `${f.label} ${f.value}`).join(" ")} ${i.meta.notes}`.toLowerCase().includes(q.toLowerCase()));
-  const expiring = (items || []).map((i) => ({ i, e: expiryOf(i.meta) })).filter((x) => x.e && x.e.days < 60);
+  const docs = useMemo(() => (items || []).filter((i) => i.meta.type !== "login"), [items]);
+  const logins = useMemo(() => (items || []).filter((i) => i.meta.type === "login"), [items]);
+  const categories = useMemo(() => ["All", ...new Set(docs.map((i) => i.meta.category || "Other"))], [docs]);
+  const list = docs.filter((i) => (cat === "All" || (i.meta.category || "Other") === cat) && `${i.meta.title} ${i.meta.category} ${i.meta.fields.map((f) => `${f.label} ${f.value}`).join(" ")} ${i.meta.notes}`.toLowerCase().includes(q.toLowerCase()));
+  const expiring = docs.map((i) => ({ i, e: expiryOf(i.meta) })).filter((x) => x.e && x.e.days < 60);
   const used = vault.usage ? Math.round((vault.usage.bytes / vault.usage.quota) * 100) : 0;
 
   const remove = async (item) => {
@@ -616,6 +634,24 @@ function Items() {
         </form>
       )}
 
+      <div className="inline-flex rounded-2xl border border-border bg-surface p-1" role="tablist">
+        {[
+          ["documents", "Documents", FileLock2, docs.length],
+          ["passwords", "Passwords", KeyRound, logins.length],
+        ].map(([id, label, Icon, n]) => (
+          <button key={id} type="button" role="tab" aria-selected={tab === id} onClick={() => switchTab(id)} className={`relative inline-flex items-center gap-2 rounded-xl px-4 py-2 text-small transition-colors ${tab === id ? "text-background" : "text-secondary hover:text-primary"}`}>
+            {tab === id && <motion.span layoutId="vault-tab" className="absolute inset-0 rounded-xl bg-primary" transition={{ type: "spring", stiffness: 420, damping: 34 }} />}
+            <Icon size={15} className="relative" />
+            <span className="relative">{label}</span>
+            {items && <span className="relative text-[11px] opacity-70">{n}</span>}
+          </button>
+        ))}
+      </div>
+
+      {tab === "passwords" ? (
+        items ? <Passwords vk={vault.vk} items={logins} reload={load} /> : <div className="h-40 animate-pulse rounded-3xl bg-surface" />
+      ) : (
+      <>
       {expiring.length > 0 && (
         <div className="flex flex-wrap items-center gap-2 rounded-2xl border border-amber-500/40 bg-amber-500/5 px-4 py-3 text-small">
           <AlertTriangle size={15} className="text-amber-600" />
@@ -690,9 +726,12 @@ function Items() {
       ) : (
         <div className="rounded-3xl border border-dashed border-border p-10 text-center">
           <ShieldCheck size={28} className="mx-auto text-muted" />
-          <p className="mt-3 text-small font-medium">{items.length ? "Nothing matches." : "Your vault is empty"}</p>
+          <p className="mt-3 text-small font-medium">{docs.length ? "Nothing matches." : "No documents yet"}</p>
           <p className="mt-1 text-xs text-muted">Add your citizenship, NID, passport or certificates — with photos of the documents.</p>
         </div>
+      )}
+
+      </>
       )}
 
       {editing && (
