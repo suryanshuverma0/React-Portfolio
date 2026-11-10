@@ -96,6 +96,7 @@ export const sidebarLinks = [
       { label: "Planner", path: "/dashboard/planner", icon: CalendarDays, keywords: "tasks todo habits daily weekly monthly yearly goals streak tracker" },
       { label: "Notes", path: "/dashboard/notes", icon: NotebookPen, keywords: "write ink pen" },
       { label: "Bookmarks", path: "/dashboard/bookmarks", icon: BookmarkIcon, keywords: "links saved reading list snippets urls" },
+      { label: "Vault", path: "/dashboard/vault", icon: ShieldCheck, keywords: "documents citizenship nid passport certificates encrypted secure files" },
     ],
   },
   {
