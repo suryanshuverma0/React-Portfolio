@@ -52,9 +52,10 @@ const main = async () => {
     // Content file moved — API projects below still apply.
   }
 
-  const [projects, posts] = await Promise.all([
+  const [projects, posts, products] = await Promise.all([
     fetchJson("/projects/public"),
     fetchJson("/blog/public?limit=100"),
+    fetchJson("/products/public"),
   ]);
 
   for (const project of projects?.data || []) {
@@ -90,10 +91,56 @@ ${body}
 
   await writeFile(join(root, "public/sitemap.xml"), xml);
 
+  await updateLlmsTxt({ products: products?.data, posts: posts?.data });
+
   console.log(
     `sitemap.xml: ${urls.size} URLs (${posts?.data?.length ?? "no"} posts from API${posts ? "" : " — API unreachable"})`,
   );
 };
+
+/*
+  llms.txt — the plain-text summary AI assistants read (GEO). The
+  hand-written parts stay as they are; the block between the markers is
+  rebuilt from the API on every build so products and posts are current.
+  If the API is down the previous block is kept.
+*/
+const START = "<!-- generated:start -->";
+const END = "<!-- generated:end -->";
+const oneLine = (s = "", max = 220) => String(s).replace(/\s+/g, " ").trim().slice(0, max);
+
+async function updateLlmsTxt({ products, posts }) {
+  if (!products && !posts) return;
+  const file = join(root, "public/llms.txt");
+  let text = await readFile(file, "utf8");
+  const lines = [START];
+  if (products?.length) {
+    lines.push("", "## Products", "");
+    for (const p of products) {
+      const link = p.url || p.links?.website || p.links?.playStore || p.links?.appStore || `${SITE}/#products`;
+      const detail = [oneLine(p.tagline || p.description), p.status && `Status: ${p.status}`, p.kind === "mobile" ? "Mobile app" : "Web product"].filter(Boolean).join(". ");
+      lines.push(`- [${oneLine(p.name, 80)}](${link}): ${detail}`);
+    }
+  }
+  if (posts?.length) {
+    lines.push("", "## Latest writing", "");
+    for (const post of posts.slice(0, 25)) {
+      if (!post.slug) continue;
+      const excerpt = oneLine(post.excerpt || post.description || "", 180);
+      lines.push(`- [${oneLine(String(post.title || "").replace(/^#+\s*/, ""), 120)}](${SITE}/blog/${post.slug})${excerpt ? `: ${excerpt}` : ""}`);
+    }
+  }
+  lines.push("", END);
+  const NL = String.fromCharCode(10);
+  const block = lines.join(NL);
+  if (text.includes(START) && text.includes(END)) {
+    text = text.slice(0, text.indexOf(START)) + block + text.slice(text.indexOf(END) + END.length);
+  } else {
+    const anchor = text.indexOf("## Optional");
+    text = anchor >= 0 ? text.slice(0, anchor) + block + NL + NL + text.slice(anchor) : text.trimEnd() + NL + NL + block + NL;
+  }
+  await writeFile(file, text);
+  console.log(`llms.txt: ${products?.length || 0} products, ${Math.min(posts?.length || 0, 25)} posts`);
+}
 
 main().catch((error) => {
   console.warn("sitemap generation skipped:", error.message);

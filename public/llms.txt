@@ -44,6 +44,15 @@
 
 - [Blog](https://www.suryanshuverma.com.np/blog): Articles on software engineering, blockchain and building things.
 
+<!-- generated:start -->
+
+## Latest writing
+
+- [JWT Authentication Explained: From Login to Logout](https://www.suryanshuverma.com.np/blog/jwt-authentication-explained-from-login-to-logout): JWT looks simple at first: log in, get a token, send it with requests. But things get interesting when access tokens expire, users log out, refresh tokens are involved, and you nee
+- [Detection of Counterfeit Pharmaceutical Products Using Blockchain](https://www.suryanshuverma.com.np/blog/detection-of-counterfeit-pharmaceutical-products-using-blockchain): A deep dive into building PharmaTrace, a blockchain-powered pharmaceutical supply chain platform that combats counterfeit medicines using Ethereum smart contracts, QR verification,
+
+<!-- generated:end -->
+
 ## Optional
 
 - [Sitemap](https://www.suryanshuverma.com.np/sitemap.xml)

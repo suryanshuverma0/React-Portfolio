@@ -67,19 +67,22 @@ function BlogPost() {
     return <NotFound />;
   }
 
+  // Titles pasted from Markdown sometimes keep a leading "# ".
+  const title = String(post.title || "").replace(/^#+\s*/, "");
+
   return (
     <main className="min-h-screen bg-background">
       <SEO
-        title={`${post.seoTitle || post.title} | Suryanshu Verma`}
-        description={post.seoDescription || post.excerpt || post.title}
-        keywords={`${post.title}, ${(post.tags || []).join(", ")}`}
+        title={`${post.seoTitle || title} | Suryanshu Verma`}
+        description={post.seoDescription || post.excerpt || title}
+        keywords={`${title}, ${(post.tags || []).join(", ")}`}
         image={post.coverImage || "/og-image.png"}
         type="article"
         jsonLd={{
           "@context": "https://schema.org",
           "@type": "BlogPosting",
-          headline: post.title,
-          description: post.seoDescription || post.excerpt || post.title,
+          headline: title,
+          description: post.seoDescription || post.excerpt || title,
           image: absoluteUrl(post.coverImage || "/og-image.png"),
           datePublished: post.publishedAt,
           dateModified: post.updatedAt || post.publishedAt,
@@ -101,7 +104,7 @@ function BlogPost() {
 
         {/* TITLE */}
         <h1 className="text-4xl sm:text-5xl font-semibold tracking-[-0.04em] leading-[1.05] mb-6">
-          {post.title}
+          {title}
         </h1>
 
         {/* META */}
@@ -154,7 +157,7 @@ function BlogPost() {
           <div className="mb-10 md:mb-14 rounded-3xl overflow-hidden border border-border">
             <img
               src={post.coverImage}
-              alt={post.title}
+              alt={title}
               className="w-full h-auto object-cover"
             />
           </div>
